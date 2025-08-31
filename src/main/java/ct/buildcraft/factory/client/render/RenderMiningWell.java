@@ -132,7 +132,7 @@ public class RenderMiningWell implements BlockEntityRenderer<TileMiningWell> {
 
     @Override
 	public boolean shouldRenderOffScreen(TileMiningWell p_112306_) {
-		return false;
+		return true;
 	}
     
     @Override

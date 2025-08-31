@@ -6,17 +6,22 @@
 
 package ct.buildcraft.factory.block;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.factory.blockEntity.TileMiner;
+import ct.buildcraft.factory.blockEntity.TilePump;
 import ct.buildcraft.lib.block.BlockBCBase_Neptune;
-
+import ct.buildcraft.lib.misc.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -57,6 +62,28 @@ public class BlockTube extends BlockBCBase_Neptune {
 			CollisionContext context) {
 		return BOUNDING_BOX;
 	}
-    
+
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+			BlockPos fromPos, boolean p_60514_) {
+		if(pos.getY() - 1 == fromPos.getY() && BlockUtil.getFluid(block) != Fluids.EMPTY && block != level.getBlockState(fromPos).getBlock()) {
+			BlockPos p = pos.above();
+			while(true) {
+				BlockEntity be = level.getBlockEntity(p);
+				if(be instanceof TilePump pump) {
+					pump.neighbourBlockChanged(level.getBlockState(p), fromPos, true);
+					BCLog.logger.debug("111");
+					break;
+				}
+				if(be instanceof TileMiner ) {
+					break;
+				}
+				p = p.above();
+			}
+		}
+		super.neighborChanged(state, level, pos, block, fromPos, p_60514_);
+	}
+
+	
     
 }

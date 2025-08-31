@@ -6,6 +6,7 @@ import ct.buildcraft.api.tools.IToolWrench;
 import ct.buildcraft.core.BCCore;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.blockEntity.TileTank;
+import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -45,7 +46,9 @@ public class ItemWrench extends Item implements IToolWrench{
 		Vec3 c = coc.getClickLocation();
         BlockState state = world.getBlockState(pos);
 		//DEBUG
-//        BCLog.logger.info(""+FMLLoader.getNaming());
+        var f = BlockUtil.getFluidWithoutFlowing(world.getBlockState(pos.above()));
+        if(f!=null)
+        BCLog.logger.info(""+f);
 		if(world.getBlockEntity(pos) instanceof TileTank tile) {
 			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench"+tile.tank.getFluidType().getFluidType().getDescriptionId());
 			return InteractionResult.CONSUME;

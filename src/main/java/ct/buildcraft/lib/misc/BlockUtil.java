@@ -20,7 +20,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.BuildCraftAPI;
 import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.core.BCCoreConfig;
@@ -69,7 +68,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -305,22 +304,43 @@ public final class BlockUtil {
         return false;
     }
 
+    //Only get Source or WaterLogged block
     public static Fluid getFluid(Level world, BlockPos pos) {
         FluidStack fluid = drainBlock(world, pos, false);
         return fluid != null ? fluid.getFluid() : null;
     }
 
-    public static Fluid getFluidWithFluidState(Level world, BlockPos pos) {
-        BlockState bs = world.getBlockState(pos);
-        Fluid f = getBlockFluid(bs.getBlock());
-        return f;
+    //check for Source block
+    public static Fluid getFluidWithFlowing(Level world, BlockPos pos) {
+        FluidState fs = world.getBlockState(pos).getFluidState();
+        if(!fs.isEmpty())
+        	return Fluids.EMPTY;
+        return fs.getType();
     }
 
-    public static Fluid getBlockFluid(Block block) {
-    	if(block == Blocks.LAVA)
-    		return Fluids.LAVA.getSource();
-    	if(block == Blocks.WATER)
-    		return Fluids.WATER.getSource();
+    /**
+     * check is block is FluidBlock
+     * */
+    public static Fluid getFluid(Block block) {
+    	if(block instanceof IFluidBlock lb) {
+    		return lb.getFluid();
+    	}
+    	if(block instanceof LiquidBlock lb) {
+      		return lb.getFluid();
+    	}
+    	return Fluids.EMPTY;
+    }
+    
+    public static Fluid getFluidWithoutFlowing(BlockState state) {
+    	FluidState fs = state.getFluidState();
+    	if(!fs.isEmpty()&&fs.isSource()) {
+    		return fs.getType();
+    	}
+    	return Fluids.EMPTY;
+
+    }
+
+    public static Fluid getFluidWithFlowing(Block block) {
         if (block instanceof LiquidBlock) {
             return ((LiquidBlock)block).getFluid();
         }
@@ -329,6 +349,9 @@ public final class BlockUtil {
 
     public static FluidStack drainBlock(Level world, BlockPos pos, boolean doDrain) {
     	Block block = world.getBlockState(pos).getBlock();
+    	if(!world.getFluidState(pos).isSource())
+    		return FluidStack.EMPTY;
+  //  	BCLog.logger.debug(world.getBlockState(pos).toString());
         IFluidHandler targetFluidHandler;
         if (block instanceof IFluidBlock)
         {
@@ -339,7 +362,7 @@ public final class BlockUtil {
             targetFluidHandler = new BucketPickupHandlerWrapper((BucketPickup) block, world, pos);
         }
         else return FluidStack.EMPTY;
-        return targetFluidHandler.drain(1000, doDrain ? FluidAction.EXECUTE : FluidAction.SIMULATE);
+        return targetFluidHandler.drain(FluidType.BUCKET_VOLUME, doDrain ? FluidAction.EXECUTE : FluidAction.SIMULATE);
 /*        IFluidHandler handler = FluidUtil.getFluidHandler(world, pos, null).orElse(null);
         if (handler != null) {
             return handler.drain(1000, doDrain?FluidAction.EXECUTE:FluidAction.SIMULATE);
@@ -512,12 +535,6 @@ public final class BlockUtil {
         };
     }
 
-	public static Fluid getFluidWithoutFlowing(BlockState state) {
-	        FluidState fluidState = state.getFluidState();
-	        if(fluidState.isEmpty()) 
-	        	return Fluids.EMPTY;
-	        return fluidState.getType();
-	}
 	
 /*	public static @Nullable FlowingFluid getFlowingFluidWithState(BlockState state) {
         FluidState fluidState = state.getFluidState();

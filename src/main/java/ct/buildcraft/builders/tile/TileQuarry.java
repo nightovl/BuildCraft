@@ -401,7 +401,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
         if (level.getBlockState(blockPos).getDestroySpeed(level, blockPos) < 0) {
             return false;
         }
-        Fluid fluid = BlockUtil.getFluidWithFluidState(level, blockPos);
+        Fluid fluid = BlockUtil.getFluidWithFlowing(level, blockPos);
         return fluid == Fluids.EMPTY || fluid.getFluidType().getViscosity() <= 1000;
     }
 
@@ -409,7 +409,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
         if (level.isEmptyBlock(blockPos)) {
             return true;
         }
-        Fluid fluid = BlockUtil.getFluidWithFluidState(level, blockPos);
+        Fluid fluid = BlockUtil.getFluidWithFlowing(level, blockPos);
         return fluid != Fluids.EMPTY && fluid.getFluidType().getViscosity() <= 1000;
     }
 
@@ -423,7 +423,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
     }
 
     private boolean canIgnoreInFrameBox(BlockPos blockPos) {
-        return !level.isEmptyBlock(blockPos) && BlockUtil.getFluidWithFluidState(level, blockPos) == Fluids.EMPTY;
+        return !level.isEmptyBlock(blockPos) && BlockUtil.getFluidWithFlowing(level, blockPos) == Fluids.EMPTY;
     }
 
     private void check(BlockPos blockPos) {

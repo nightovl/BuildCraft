@@ -131,7 +131,7 @@ public class TilePump extends TileMiner {
             if (worldPosition.getY() - targetPos.getY() > BCCoreConfig.miningMaxDepth) {
                 break;
             }
-            Fluid t = BlockUtil.getFluidWithFluidState(level, targetPos);
+            Fluid t = BlockUtil.getFluidWithFlowing(level, targetPos);//TODO check
             if (t != Fluids.EMPTY) {
                 queueFluid = t;
                 nextPosesToCheck.add(targetPos);
@@ -262,7 +262,7 @@ public class TilePump extends TileMiner {
 
     @Override
     protected BlockPos getTargetPos() {
-        if (queue.isEmpty()) {
+        if (queue.isEmpty() && currentPos == null) {
             return null;
         }
         return targetPos;
@@ -384,7 +384,7 @@ public class TilePump extends TileMiner {
             return from;
         }
         do {
-            if (BlockUtil.getFluidWithFluidState(level, path.thisPos) == Fluids.EMPTY) {
+            if (BlockUtil.getFluidWithFlowing(level, path.thisPos) == Fluids.EMPTY) {
                 return path.thisPos;
             }
         } while ((path = path.parent) != null);
@@ -454,4 +454,16 @@ public class TilePump extends TileMiner {
     protected long getBatteryCapacity() {
         return 50 * MjAPI.MJ;
     }
+
+	@Override
+	public void neighbourBlockChanged(BlockState state, BlockPos neighbor, boolean harvest) {
+		if(harvest) {
+	        buildQueue();
+	        nextPos();
+	        BCLog.logger.debug("a");
+		}
+		super.neighbourBlockChanged(state, neighbor, harvest);
+	}
+    
+    
 }
