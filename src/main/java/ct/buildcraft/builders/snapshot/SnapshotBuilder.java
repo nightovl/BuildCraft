@@ -116,16 +116,16 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
     public void validate() {
     	Level level = tile.getWorldBC();
         if (!level.isClientSide) {
-        	BlockPos pos = tile.getBuilderPos();
-        	level.getChunk(pos).getEventDispatcher(SectionPos.blockToSectionCoord(pos.getY())).register(worldEventListener);
+//        	BlockPos pos = tile.getBuilderPos();
+//        	level.getChunk(pos).getEventDispatcher(SectionPos.blockToSectionCoord(pos.getY())).register(worldEventListener);
         }
     }
 
     public void invalidate() {
     	Level level = tile.getWorldBC();
         if (!level.isClientSide) {
-        	BlockPos pos = tile.getBuilderPos();
-        	level.getChunk(pos).getEventDispatcher(SectionPos.blockToSectionCoord(pos.getY())).unregister(worldEventListener);
+//        	BlockPos pos = tile.getBuilderPos();
+//        	level.getChunk(pos).getEventDispatcher(SectionPos.blockToSectionCoord(pos.getY())).unregister(worldEventListener);
         }
     }
 
@@ -518,6 +518,10 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
     }
 
     protected void afterChecks() {
+    }
+    
+    public GameEventListener getListener() {
+    	return this.worldEventListener;
     }
 
     public void writeToByteBuf(FriendlyByteBuf buffer) {

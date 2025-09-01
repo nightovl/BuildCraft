@@ -54,7 +54,9 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
              }
             stack.setDamageValue(63);
             if (stack.isEmpty()) {
-                player.setItemInHand(hand, new ItemStack(BCCoreItems.PAINT_BRUSH.get(), 1, tag));
+            	ItemStack stack1 = new ItemStack(BCCoreItems.PAINT_BRUSH.get(), 1);
+            	stack1.setTag(tag);
+                player.setItemInHand(hand, stack1);
             }
             // We just changed the damage NBT value
             player.inventoryMenu.broadcastChanges();

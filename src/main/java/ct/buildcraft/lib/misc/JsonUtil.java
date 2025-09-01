@@ -145,7 +145,10 @@ public class JsonUtil {
                 BCLog.logger.warn("[lib.recipe] Found deprecated item 'meta' tag inside of " + json);
 //                meta = JsonUtil.getInt(obj, "meta");
             }
-            return data == null ? new ItemStack(item, count) : new ItemStack(item, count, data);
+            ItemStack stack = new ItemStack(item, count);
+            if(data != null) 
+            	stack.setTag(data);
+             return stack;
         } else {
             throw new JsonSyntaxException("Expected either a string or an object, got " + json);
         }

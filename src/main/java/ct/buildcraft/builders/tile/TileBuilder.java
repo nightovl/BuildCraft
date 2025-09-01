@@ -59,12 +59,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.gameevent.PositionSource;
+import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -106,6 +110,28 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     private Rotation rotation = null;
 
     private boolean isDone = false;
+    
+/*    public final GameEventListener worldEventListener = new GameEventListener() {
+    	
+    	GameEventListener blueprint = blueprintBuilder.getListener();
+    	GameEventListener template = templateBuilder.getListener();
+    	@Override
+    	public boolean handleEventsImmediately() {
+    		return true;
+    	}
+    	@Override
+    	public PositionSource getListenerSource() {
+    		return blueprint.getListenerSource();
+    	}
+    	@Override
+    	public int getListenerRadius() {
+    		return 64;
+    	}
+    	@Override
+    	public boolean handleGameEvent(ServerLevel level, Message msg) {
+    		return blueprint.handleGameEvent(level, msg) || template.handleGameEvent(level, msg);
+    	}
+    };*/
 
     public TileBuilder(BlockPos pos, BlockState state) {
     	super(BCBuildersBlocks.BUILDER_TILE_BC8.get(), pos, state);
@@ -205,7 +231,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 basePoses.addAll(PositionUtil.getAllOnPath(path.get(i - 1), path.get(i)));
             }
         } else {
-            basePoses.add(worldPosition.offset(level.getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING).getOpposite().getNormal()));
+ //           basePoses.add(worldPosition.offset(level.getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING).getOpposite().getNormal()));
         }
     }
 
@@ -231,6 +257,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
     @Override
     public void update() {
+//    	if(true)return;
 //        level.profiler.startSection("main");
 //        level.profiler.startSection("power");
         battery.tick(getLevel(), getBlockPos());

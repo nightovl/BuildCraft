@@ -42,7 +42,7 @@ public class BCBuildersItems {
     public static void registerItemProperties() {
     	ResourceLocation label = new ResourceLocation("used");
     	ItemProperties.register(BLUEPRINT.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
-    			return EnumItemSnapshotType.getFromStack(itemStack).used ? 1.0F : 0.0F;
+    			return EnumItemSnapshotType.getFromStack(itemStack).used ? 1.1F : 0.1F;
     	});
     	ItemProperties.register(TEMPLATE.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
 			return EnumItemSnapshotType.getFromStack(itemStack).used ? 1.0F : 0.0F;

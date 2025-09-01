@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -67,9 +68,11 @@ public class MessageUpdateTile {
                 	((IPayloadReceiver) tile).receivePayload(ctx.get(), message.payload);
                     return ;
                 } else {
+//                	level.setBlock(message.pos, Blocks.AIR.defaultBlockState(), 2);
                     BCLog.logger.warn("Dropped message for player " + "null" + " for tile at " + message.pos
                         + " (found " + tile + ")");
                 }
+                //ctx.get().setPacketHandled(true);
                 return;
             } catch (IOException io) {
                 throw new RuntimeException(io);

@@ -45,9 +45,9 @@ public class ItemWrench extends Item implements IToolWrench{
 		Vec3 c = coc.getClickLocation();
         BlockState state = world.getBlockState(pos);
 		//DEBUG
-        var f = BlockUtil.getFluidWithoutFlowing(world.getBlockState(pos.above()));
-        if(f!=null)
-        BCLog.logger.info(""+f);
+        var f = world.getBlockEntity(pos);
+      //  if(f!=null)
+        BCLog.logger.info(""+(f==null));
 		if(world.getBlockEntity(pos) instanceof TileTank tile) {
 			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench"+tile.tank.getFluidType().getFluidType().getDescriptionId());
 			return InteractionResult.CONSUME;

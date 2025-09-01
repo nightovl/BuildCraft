@@ -7,9 +7,11 @@ package ct.buildcraft.builders.block;
 import ct.buildcraft.api.enums.EnumOptionalSnapshotType;
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.builders.tile.TileBuilder;
+import ct.buildcraft.factory.blockEntity.TileMiningWell;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockBuilder extends BlockBCTile_Neptune implements IBlockWithFacing {
@@ -87,4 +90,10 @@ public class BlockBuilder extends BlockBCTile_Neptune implements IBlockWithFacin
         BlockEntity tile = world.getBlockEntity(pos);
         return !(tile instanceof TileBuilder) || ((TileBuilder) tile).getBuilder() == null;
     }
+    
+	@Override
+	public <T extends BlockEntity> GameEventListener getListener(ServerLevel level, T tile) {
+		return null;
+		//return tile instanceof TileBuilder be ? be.worldEventListener :null;
+	}
 }

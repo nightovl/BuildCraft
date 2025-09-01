@@ -9,11 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ScreenArchitectTable extends AbstractContainerScreen<MenuArchitectTable>{
+public class ScreenBuilder extends AbstractContainerScreen<MenuArchitectTable>{
 
 	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.ARCHITECT_GUI;
 	
-	public ScreenArchitectTable(MenuArchitectTable be, Inventory p_97742_, Component p_97743_) {
+	public ScreenBuilder(MenuArchitectTable be, Inventory p_97742_, Component p_97743_) {
 		super(be, p_97742_, p_97743_);
 		inventoryLabelX +=40;
 	}

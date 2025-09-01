@@ -60,7 +60,8 @@ public class ItemSnapshot extends Item {
         CompoundTag nbt = new CompoundTag();
         nbt.put("header", header.serializeNBT());
         //nbt.putInt("type", EnumItemSnapshotType.get(snapshotType, true).ordinal());
-        ItemStack stack = new ItemStack(snapshots[id], 1, nbt);
+		ItemStack stack = new ItemStack(snapshots[id], 1);
+		stack.setTag(nbt);
         return stack;
     }
 
@@ -114,6 +115,7 @@ public class ItemSnapshot extends Item {
 	@Override
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
         Snapshot.Header header = getHeader(stack);
+        //BCLog.logger.debug("" + (header == null));
         if (header == null) {
             tooltip.add(Component.translatable("item.blueprint.blank"));
         } else {
@@ -170,7 +172,7 @@ public class ItemSnapshot extends Item {
             return values()[Math.abs(meta) % values().length];*/
         	Item item = stack.getItem();
         	if(item instanceof ItemSnapshot snapshot) {
-        		return get(snapshot.snapshotType, stack.getTagElement("head") != null);
+        		return get(snapshot.snapshotType, stack.getTagElement("header") != null);
         	}
         	BCLog.logger.warn("ItemSnapshot.EnumItemSnapshotType : No a snapshot ItemStack!");
         	return BLUEPRINT_CLEAN;

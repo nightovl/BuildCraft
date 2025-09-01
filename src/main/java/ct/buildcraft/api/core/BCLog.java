@@ -43,4 +43,8 @@ public final class BCLog {
     public static String getVersion() {
         return BuildCraftAPI.getVersion();
     }
+    
+    public static void d(String s) {
+    	logger.debug(new Exception().getStackTrace()[1].getClassName() + " : " + s);
+    }
 }

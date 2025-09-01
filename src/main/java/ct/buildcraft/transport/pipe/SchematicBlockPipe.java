@@ -61,13 +61,10 @@ public class SchematicBlockPipe implements ISchematicBlock {
             	//to debug
             	CompoundTag tag = new CompoundTag();
             	tag.putInt("color", color.getId() + 1);
-                builder.add(
-                    new ItemStack(
-                        item,
-                        1,
-                        color == null ? null : tag
-                    )
-                );
+    			ItemStack stack = new ItemStack(item, 1);
+    			if(color != null)
+    				stack.setTag(tag);
+                builder.add(stack);
             }
             return builder.build();
         } catch (InvalidInputDataException e) {

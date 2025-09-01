@@ -510,7 +510,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				if (item != null) {
 					CompoundTag tag = new CompoundTag();
 					tag.putInt("color", pipe.getColour() == null ? 0 : pipe.getColour().getId() + 1);
-					return new ItemStack(item, 1, tag);
+					ItemStack stack = new ItemStack(item, 1);
+					stack.setTag(tag);
+					return stack;
 				}
 			}
 		} else if (subHit <= 12) {
@@ -685,7 +687,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		} else if (part != null) {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("color", tile.wireManager.getColorOfPart(part).getId());
-			toDrop.add(new ItemStack(BCTransportItems.wire.get(), 1, tag));
+			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), 1);
+			stack.setTag(tag);
+			toDrop.add(stack);
 			tile.wireManager.removePart(part);
 			if (!player.isCreative()) {
 				InventoryUtil.dropAll(world, pos, toDrop);
@@ -695,7 +699,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		} else if (between != null) {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("color", tile.wireManager.getColorOfPart(between.parts[0]).getId());
-			toDrop.add(new ItemStack(BCTransportItems.wire.get(), between.to == null ? 2 : 1, tag));
+			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), between.to == null ? 2 : 1);
+			stack.setTag(tag);
+			toDrop.add(stack);
 			if (between.to == null) {
 				tile.wireManager.removeParts(Arrays.asList(between.parts));
 			} else {
@@ -739,7 +745,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		for (DyeColor color : tile.wireManager.parts.values()) {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt(ItemStack.TAG_COLOR, color.getId());
-			toDrop.add(new ItemStack(BCTransportItems.wire.get(), 1, tag));
+			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), 1);
+			stack.setTag(tag);
+			toDrop.add(stack);
 		}
 		Pipe pipe = tile.getPipe();
 		if (pipe != null) {
