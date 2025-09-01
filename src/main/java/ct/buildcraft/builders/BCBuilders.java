@@ -41,6 +41,7 @@ public class BCBuilders {
     	
     	BCBuildersBlocks.registry(modEventBus);
     	BCBuildersItems.registry(modEventBus);
+    	BCBuildersSchematics.preInit();
     	BCBuildersConfig.preInit();
     	BCBuildersRegistries.preInit();
     	BCBuildersGuis.preInit(modEventBus);

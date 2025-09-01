@@ -6,7 +6,6 @@
 
 package ct.buildcraft.builders.snapshot;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +22,12 @@ import ct.buildcraft.lib.misc.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public class SchematicBlockFluid implements ISchematicBlock {
     private BlockState blockState;
@@ -51,8 +49,8 @@ public class SchematicBlockFluid implements ISchematicBlock {
     @Nonnull
     @Override
     public Set<BlockPos> getRequiredBlockOffsets() {
-        return Stream.concat(Arrays.stream(Direction.HORIZONTALS), Stream.of(Direction.DOWN))
-            .map(Direction::getDirectionVec)
+        return Stream.concat((Direction.Plane.HORIZONTAL.stream()), Stream.of(Direction.DOWN))
+            .map(Direction::getNormal)
             .map(BlockPos::new)
             .collect(Collectors.toSet());
     }
@@ -61,7 +59,7 @@ public class SchematicBlockFluid implements ISchematicBlock {
     @Override
     public List<FluidStack> computeRequiredFluids() {
         return Optional.ofNullable(BlockUtil.getFluidWithoutFlowing(blockState))
-            .map(fluid -> new FluidStack(fluid, Fluid.BUCKET_VOLUME))
+            .map(fluid -> new FluidStack(fluid, FluidType.BUCKET_VOLUME))
             .map(Collections::singletonList)
             .orElseGet(Collections::emptyList);
     }
@@ -76,7 +74,7 @@ public class SchematicBlockFluid implements ISchematicBlock {
 
     @Override
     public boolean canBuild(Level world, BlockPos blockPos) {
-        return world.isAirBlock(blockPos) ||
+        return world.isEmptyBlock(blockPos) ||
             BlockUtil.getFluidWithFlowing(world, blockPos) == BlockUtil.getFluidWithFlowing(blockState.getBlock()) &&
                 BlockUtil.getFluid(world, blockPos) == null;
     }
@@ -88,13 +86,13 @@ public class SchematicBlockFluid implements ISchematicBlock {
         }
         if (world.setBlock(blockPos, blockState, 11)) {
             Stream.concat(
-                Stream.of(Direction.VALUES)
-                    .map(Direction::getDirectionVec)
+                Stream.of(Direction.values())
+                    .map(Direction::getNormal)
                     .map(BlockPos::new),
                 Stream.of(BlockPos.ZERO)
             )
-                .map(blockPos::add)
-                .forEach(updatePos -> world.notifyNeighborsOfStateChange(updatePos, blockState.getBlock(), false));
+                .map(blockPos::offset)
+                .forEach(updatePos -> world.updateNeighborsAt(updatePos, blockState.getBlock()));
             return true;
         }
         return false;

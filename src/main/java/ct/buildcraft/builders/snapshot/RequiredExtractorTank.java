@@ -13,9 +13,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RequiredExtractorTank extends RequiredExtractor {
@@ -23,20 +22,20 @@ public class RequiredExtractorTank extends RequiredExtractor {
 
     @Nonnull
     @Override
-    public List<FluidStack> extractFluidsFromBlock(@Nonnull IBlockState blockState, @Nullable NBTTagCompound tileNbt) {
+    public List<FluidStack> extractFluidsFromBlock(@Nonnull BlockState blockState, @Nullable CompoundTag tileNbt) {
         return Optional.ofNullable(path.get(tileNbt))
-            .map(NBTTagCompound.class::cast)
-            .map(nbt -> !nbt.hasKey("Empty") ? FluidStack.loadFluidStackFromNBT(nbt) : null)
+            .map(CompoundTag.class::cast)
+            .map(nbt -> !nbt.contains("Empty") ? FluidStack.loadFluidStackFromNBT(nbt) : null)
             .map(Collections::singletonList)
             .orElseGet(Collections::emptyList);
     }
 
     @Nonnull
     @Override
-    public List<FluidStack> extractFluidsFromEntity(@Nonnull NBTTagCompound entityNbt) {
+    public List<FluidStack> extractFluidsFromEntity(@Nonnull CompoundTag entityNbt) {
         return Optional.ofNullable(path.get(entityNbt))
-            .map(NBTTagCompound.class::cast)
-            .map(nbt -> !nbt.hasKey("Empty") ? FluidStack.loadFluidStackFromNBT(nbt) : null)
+            .map(CompoundTag.class::cast)
+            .map(nbt -> !nbt.contains("Empty") ? FluidStack.loadFluidStackFromNBT(nbt) : null)
             .map(Collections::singletonList)
             .orElseGet(Collections::emptyList);
     }

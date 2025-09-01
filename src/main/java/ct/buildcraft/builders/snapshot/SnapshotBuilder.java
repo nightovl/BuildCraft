@@ -339,7 +339,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
             }
             Arrays.stream(blocks)
                 .mapToObj(this::indexToPos)
-                .filter(blockPos -> BlockUtil.getFluidWithFluidState(tile.getWorldBC(), blockPos) == null)
+                .filter(blockPos -> BlockUtil.getFluidWithFlowing(tile.getWorldBC(), blockPos) == null)
                 .map(blockPos ->
                     new BreakTask(
                         blockPos,
