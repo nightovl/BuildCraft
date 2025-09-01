@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "buildcraftenergy:block/fuel_mixed_heavy/fuel_mixed_heavy_cool"
+    }
+  }
+}

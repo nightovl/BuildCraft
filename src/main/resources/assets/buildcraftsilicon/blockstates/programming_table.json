@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "buildcraftsilicon:table/programming",
+        "textures": {
+            "glass": "buildcraftsilicon:blocks/table/programming/transparent"
+        }
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": []
+    }
+}

@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,snapshot_type=none": {
+      "model": "buildcraftbuilders:block/builder/slot_empty",
+      "y": 90
+    },
+    "facing=east,snapshot_type=blueprint": {
+      "model": "buildcraftbuilders:block/builder/slot_blueprint",
+      "y": 90
+    },
+	"facing=east,snapshot_type=template": {
+	  "model": "buildcraftbuilders:block/builder/slot_template",
+	  "y": 90
+	},
+    "facing=north,snapshot_type=none": {
+      "model": "buildcraftbuilders:block/builder/slot_empty"
+    },
+    "facing=north,snapshot_type=blueprint": {
+      "model": "buildcraftbuilders:block/builder/slot_blueprint"
+    },
+	"facing=north,snapshot_type=template": {
+	  "model": "buildcraftbuilders:block/builder/slot_template"
+	},
+    "facing=south,snapshot_type=none": {
+      "model": "buildcraftbuilders:block/builder/slot_empty",
+      "y": 180
+    },
+    "facing=south,snapshot_type=blueprint": {
+      "model": "buildcraftbuilders:block/builder/slot_blueprint",
+      "y": 180
+    },
+	"facing=south,snapshot_type=template": {
+	  "model": "buildcraftbuilders:block/builder/slot_template",
+	  "y": 180
+	},
+    "facing=west,snapshot_type=none": {
+      "model": "buildcraftbuilders:block/builder/slot_empty",
+      "y": 270
+    },
+    "facing=west,snapshot_type=blueprint": {
+      "model": "buildcraftbuilders:block/builder/slot_blueprint",
+      "y": 270
+    },
+	"facing=west,snapshot_type=template": {
+	  "model": "buildcraftbuilders:block/builder/slot_template",
+	  "y": 270
+	}
+  }
+}

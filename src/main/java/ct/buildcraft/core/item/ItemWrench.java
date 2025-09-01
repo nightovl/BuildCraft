@@ -8,7 +8,6 @@ import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.blockEntity.TileTank;
 import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
