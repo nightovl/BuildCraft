@@ -22,6 +22,7 @@ import com.google.common.primitives.Bytes;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.data.NbtSquishConstants;
 import ct.buildcraft.builders.BCBuildersBlocks;
+import ct.buildcraft.builders.gui.MenuElectronicLibrary;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.snapshot.GlobalSavedDataSnapshots;
 import ct.buildcraft.builders.snapshot.Snapshot;
@@ -37,13 +38,19 @@ import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.lib.tile.item.StackInsertionFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
 
-public class TileElectronicLibrary extends TileBC_Neptune {
+public class TileElectronicLibrary extends TileBC_Neptune implements MenuProvider{
 
 	public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("library");
     public static final int NET_DOWN = IDS.allocId("DOWN");
@@ -297,4 +304,14 @@ public class TileElectronicLibrary extends TileBC_Neptune {
             }
         }
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+		return new MenuElectronicLibrary(id, inv, invDownIn, invDownOut, invUpIn, invUpOut, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return getBlockState().getBlock().getName();
+	}
 }

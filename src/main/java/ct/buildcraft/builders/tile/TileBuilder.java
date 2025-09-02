@@ -27,6 +27,7 @@ import ct.buildcraft.api.mj.MjBattery;
 import ct.buildcraft.api.mj.MjCapabilityHelper;
 import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.builders.BCBuildersBlocks;
+import ct.buildcraft.builders.gui.MenuBuilder;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.snapshot.Blueprint;
 import ct.buildcraft.builders.snapshot.BlueprintBuilder;
@@ -40,6 +41,7 @@ import ct.buildcraft.builders.snapshot.TemplateBuilder;
 import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.fluid.TankManager;
+import ct.buildcraft.lib.gui.TankContainer;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.BoundingBoxUtil;
 import ct.buildcraft.lib.misc.CapUtil;
@@ -58,9 +60,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -77,7 +86,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
 
-public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileForTemplateBuilder, ITileForBlueprintBuilder {
+public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileForTemplateBuilder, ITileForBlueprintBuilder, MenuProvider {
     public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("builder");
     public static final int NET_CAN_EXCAVATE = IDS.allocId("CAN_EXCAVATE");
     public static final int NET_SNAPSHOT_TYPE = IDS.allocId("SNAPSHOT_TYPE");
@@ -108,8 +117,12 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     public BlueprintBuilder blueprintBuilder = new BlueprintBuilder(this);
     private Box currentBox = new Box();
     private Rotation rotation = null;
-
+    
     private boolean isDone = false;
+    
+    private boolean shouldInit = false;
+    
+    private final ContainerData container;
     
 /*    public final GameEventListener worldEventListener = new GameEventListener() {
     	
@@ -135,15 +148,18 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
     public TileBuilder(BlockPos pos, BlockState state) {
     	super(BCBuildersBlocks.BUILDER_TILE_BC8.get(), pos, state);
-        for (int i = 1; i <= 4; i++) {
-            tankManager.add(new Tank("tank" + i, FluidType.BUCKET_VOLUME * 8, this) {
+    	Tank[] tanks = new Tank[4];
+        for (int i = 0; i < 4; i++) {
+            tanks[i] = new Tank(("tank" + (i+1)), FluidType.BUCKET_VOLUME * 8, this) {
                 @Override
                 protected void onContentsChanged() {
                     super.onContentsChanged();
                     Optional.ofNullable(getBuilder()).ifPresent(SnapshotBuilder::resourcesChanged);
                 }
-            });
+            };
+            tankManager.add(tanks[i]);
         }
+        container = new TankContainer(tanks);
         caps.addProvider(new MjCapabilityHelper(new MjBatteryReceiver(battery)));
         caps.addCapabilityInstance(CapUtil.CAP_FLUIDS, tankManager, EnumPipePart.VALUES);
     }
@@ -258,6 +274,10 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     @Override
     public void update() {
 //    	if(true)return;
+    	if(shouldInit) {
+    		updateBasePoses();
+    		shouldInit = false;
+    	}
 //        level.profiler.startSection("main");
 //        level.profiler.startSection("power");
         battery.tick(getLevel(), getBlockPos());
@@ -330,7 +350,8 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 } else {
                     path = null;
                 }
-                updateBasePoses();
+                //updateBasePoses();
+                shouldInit = true;
                 if (buffer.readBoolean()) {
                     snapshotType = buffer.readEnum(EnumSnapshotType.class);
                     getBuilder().readFromByteBuf(buffer);
@@ -505,5 +526,15 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     public TankManager getTankManager() {
         return tankManager;
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+		return new MenuBuilder(id, inv, invSnapshot, invResources, container, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return this.getBlockState().getBlock().getName();
+	}
 
 }

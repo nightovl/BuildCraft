@@ -13,12 +13,14 @@ import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class BlockReplacer extends BlockBCTile_Neptune implements IBlockWithFacing {
     public BlockReplacer() {
@@ -34,8 +36,8 @@ public class BlockReplacer extends BlockBCTile_Neptune implements IBlockWithFaci
     @Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-        if (!world.isClientSide) {
-//            BCBuildersGuis.REPLACER.openGUI(player, pos);//TODO
+        if (!world.isClientSide && world.getBlockEntity(pos) instanceof TileReplacer tile) {
+        	NetworkHooks.openScreen((ServerPlayer)player, tile, pos);
         }
         return InteractionResult.SUCCESS;
 	}

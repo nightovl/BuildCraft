@@ -5,38 +5,33 @@ import ct.buildcraft.builders.BCBuildersGuis;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class MenuBuilder extends AbstractContainerMenu {
+public class MenuReplacer extends AbstractContainerMenu {
 
 	protected final ContainerLevelAccess access;
-	protected final ContainerData data;
 	
-	public MenuBuilder(int containerId, Inventory playerInventory) {
-		this(containerId, playerInventory, new ItemStackHandler(1), new ItemStackHandler(27), new SimpleContainerData(8) ,ContainerLevelAccess.NULL);
+	public MenuReplacer(int containerId, Inventory playerInventory) {
+		this(containerId, playerInventory, new ItemStackHandler(1), new ItemStackHandler(1), new ItemStackHandler(1), ContainerLevelAccess.NULL);
 	}
 	
-	public MenuBuilder(int containerId, Inventory playerInventory, IItemHandler blueprint, IItemHandler resources, ContainerData data, ContainerLevelAccess access) {
-		super(BCBuildersGuis.MENU_BUILDER.get(), containerId);
+	public MenuReplacer(int containerId, Inventory playerInventory, IItemHandler snapshot, IItemHandler from, IItemHandler to, ContainerLevelAccess access) {
+		super(BCBuildersGuis.MENU_REPLACER.get(), containerId);
 		this.access = ContainerLevelAccess.NULL;
-		this.data = data;
 		for(int i = 0; i < 3; ++i) 
 			for(int j = 0; j < 9; ++j) 
-				this.addSlot(new Slot(playerInventory, j + i * 9 + 9, -32 + j * 18, 102 + i * 18));
+				this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 48 + j * 18, 84 + i * 18));
 		
 		for(int k = 0; k < 9; ++k) 
-			this.addSlot(new Slot(playerInventory, k, -32 + k * 18, 160));
-		this.addSlot(new SlotItemHandler(blueprint, 0 ,95, 35));
-		for(int i = 0; i < 3; ++i) 
-			for(int j = 0; j < 9; ++j) 
-				this.addSlot(new SlotItemHandler(resources, j+i*9 , -32 +j*18, 34+i*18 ));
+			this.addSlot(new Slot(playerInventory, k, 48 + k * 18, 142));
+		this.addSlot(new SlotItemHandler(snapshot, 0 ,95, 35));
+		this.addSlot(new SlotItemHandler(from, 0 ,154, 35));
+		this.addSlot(new SlotItemHandler(from, 0 ,184, 35));
 		
 /*		for(int j = 0; j<9;j++) {
 			Slot typeSlot = new RecordSlot(filter, j, 8+18*j, 27).setBackground(InventoryMenu.BLOCK_ATLAS, BCTransportSprites.FILTERED_BUFFER_EMPTY_SLOT_GUI);
@@ -53,7 +48,7 @@ public class MenuBuilder extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return super.stillValid(this.access, player, BCBuildersBlocks.BUILDER.get());
+		return super.stillValid(this.access, player, BCBuildersBlocks.REPLACER.get());
 	}
 
 	

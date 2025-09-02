@@ -31,6 +31,7 @@ import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.addon.AddonFillerPlanner;
 import ct.buildcraft.builders.filler.FillerType;
 import ct.buildcraft.builders.filler.FillerUtil;
+import ct.buildcraft.builders.gui.MenuFiller;
 import ct.buildcraft.builders.snapshot.ITileForTemplateBuilder;
 import ct.buildcraft.builders.snapshot.SnapshotBuilder;
 import ct.buildcraft.builders.snapshot.Template;
@@ -56,7 +57,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -69,8 +76,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class TileFiller extends TileBC_Neptune
-    implements IDebuggable, ITileForTemplateBuilder, IFillerStatementContainer, IControllable {
+public class TileFiller extends TileBC_Neptune 
+    implements IDebuggable, ITileForTemplateBuilder, IFillerStatementContainer, IControllable, MenuProvider {
     public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("filler");
     public static final int NET_CAN_EXCAVATE = IDS.allocId("CAN_EXCAVATE");
     public static final int NET_INVERT = IDS.allocId("INVERT");
@@ -501,4 +508,14 @@ public class TileFiller extends TileBC_Neptune
         }
         this.mode = mode;
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+		return new MenuFiller(id, inv, invResources, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return this.getBlockState().getBlock().getName();
+	}
 }

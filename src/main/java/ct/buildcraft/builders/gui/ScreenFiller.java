@@ -1,40 +1,21 @@
 package ct.buildcraft.builders.gui;
 
 import ct.buildcraft.builders.BCBuildersSprites;
-import ct.buildcraft.lib.gui.ContainerScreenBase;
-import ct.buildcraft.lib.gui.component.TankComponent;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerData;
 
-public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
+public class ScreenFiller extends AbstractContainerScreen<MenuFiller>{
 
-	private static final ResourceLocation TEXTURE_BASE1 = BCBuildersSprites.BUILDER_GUI;
-	private static final ResourceLocation TEXTURE_BASE2 = BCBuildersSprites.BUILDER_BLUEPRINT_GUI;
+	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.FillER_GUI;
 	
-	protected static final TankComponent tank0 = new TankComponent(26, 18, 16, 60, 10000);
-	protected static final TankComponent tank1 = new TankComponent(80, 18, 16, 60, 10000);
-	protected static final TankComponent tank2 = new TankComponent(134, 18, 16, 60, 10000);
-	protected static final TankComponent tank3 = new TankComponent(134, 18, 16, 60, 10000);
-	
-	protected final ContainerData data;
-	
-	public ScreenBuilder(MenuBuilder be, Inventory p_97742_, Component p_97743_) {
-		super(be, p_97742_, p_97743_, 4);
-		data = be.data;
-		inventoryLabelX -= 40;
-		inventoryLabelY += 18;
-		titleLabelX -= 4;
-		this.add(tank0, true);
-		this.add(tank1, true);
-		this.add(tank2, true);
-		this.add(tank3, true);
-		setup(data);
+	public ScreenFiller(MenuFiller be, Inventory p_97742_, Component p_97743_) {
+		super(be, p_97742_, p_97743_);
+		inventoryLabelX +=40;
 	}
 
 	@Override
@@ -65,9 +46,8 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 	
 	@Override
 	protected void renderBg(PoseStack pose, float partialTick, int mouseX, int mouseY) {
-		RenderSystem.setShaderTexture(0, TEXTURE_BASE1);
-		this.blit(pose, this.leftPos + (this.imageWidth - 256)/2, this.topPos + (this.imageHeight - 242)/2, 0, 0, 256, 222);
-		RenderSystem.setShaderTexture(0, TEXTURE_BASE2);
+		RenderSystem.setShaderTexture(0, TEXTURE_BASE);
+		this.blit(pose, this.leftPos + (this.imageWidth - 256)/2, this.topPos + (this.imageHeight - 166)/2, 0, 0, 256, 166);
 	}
 	
 	@Override

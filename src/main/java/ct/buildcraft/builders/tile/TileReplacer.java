@@ -12,6 +12,7 @@ import ct.buildcraft.api.core.InvalidInputDataException;
 import ct.buildcraft.api.enums.EnumSnapshotType;
 import ct.buildcraft.api.schematics.ISchematicBlock;
 import ct.buildcraft.builders.BCBuildersBlocks;
+import ct.buildcraft.builders.gui.MenuReplacer;
 import ct.buildcraft.builders.item.ItemSchematicSingle;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.snapshot.Blueprint;
@@ -25,10 +26,16 @@ import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileReplacer extends TileBC_Neptune {
+public class TileReplacer extends TileBC_Neptune implements MenuProvider{
 
 	public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("replacer");
 
@@ -105,4 +112,14 @@ public class TileReplacer extends TileBC_Neptune {
             }
         }
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+		return new MenuReplacer(id, inv, invSnapshot, invSchematicFrom, invSchematicTo, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return getBlockState().getBlock().getName();
+	}
 }

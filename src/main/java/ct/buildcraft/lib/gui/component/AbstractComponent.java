@@ -25,6 +25,14 @@ public abstract class AbstractComponent implements ContainerComponent{
 		this.ys = ys;
 	}
 	
+	//for debug
+	public void resetPos(int x, int y, int xs, int ys) {
+		this.x = x;
+		this.y = y;
+		this.xs = xs;
+		this.ys = ys;
+	}
+	
 	
 	@Override
 	public boolean isHovering(int x, int y) {

@@ -21,6 +21,11 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 public class BCBuildersSprites {
 	
 	public static final ResourceLocation ARCHITECT_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/architect.png");
+	public static final ResourceLocation BUILDER_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/builder.png");
+	public static final ResourceLocation BUILDER_BLUEPRINT_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/builder_blueprint.png");
+	public static final ResourceLocation FillER_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/filler.png");
+	public static final ResourceLocation ELIBRARY_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/electronic_library.png");
+	public static final ResourceLocation REPLACER_GUI = new ResourceLocation("buildcraftbuilders:textures/gui/replacer.png");
 	
     public static final SpriteHolder FILLER_PLANNER;
     public static final SpriteHolder ROBOT;
@@ -142,6 +147,8 @@ public class BCBuildersSprites {
 //    		event.addSprite(DIAMOND_CB_GUI);
     		event.addSprite(FILTERED_BUFFER_GUI);*/
     		event.addSprite(ARCHITECT_GUI);
+    		event.addSprite(BUILDER_BLUEPRINT_GUI);
+    		event.addSprite(BUILDER_GUI);
     	}
 
     }

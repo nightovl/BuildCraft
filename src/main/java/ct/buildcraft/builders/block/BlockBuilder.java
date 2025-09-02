@@ -12,6 +12,7 @@ import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class BlockBuilder extends BlockBCTile_Neptune implements IBlockWithFacing {
     public static final EnumProperty<EnumOptionalSnapshotType> SNAPSHOT_TYPE = BuildCraftProperties.SNAPSHOT_TYPE;
@@ -77,8 +79,8 @@ public class BlockBuilder extends BlockBCTile_Neptune implements IBlockWithFacin
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-        if (!world.isClientSide) {
-//            BCBuildersGuis.BUILDER.openGUI(player, pos);
+        if (!world.isClientSide && world.getBlockEntity(pos) instanceof TileBuilder builder) {
+            NetworkHooks.openScreen((ServerPlayer)player, builder, pos);
         }
         return InteractionResult.SUCCESS;
 	}

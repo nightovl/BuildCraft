@@ -48,8 +48,8 @@ public class BlockArchitectTable extends BlockBCTile_Neptune implements IBlockWi
     @Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-        if (!world.isClientSide&&world.getBlockEntity(pos) instanceof TileArchitectTable arch) {
-        	NetworkHooks.openScreen((ServerPlayer)player, arch, pos);
+        if (!world.isClientSide&&world.getBlockEntity(pos) instanceof TileArchitectTable tile) {
+        	NetworkHooks.openScreen((ServerPlayer)player, tile, pos);
         }
         return InteractionResult.SUCCESS;
 	}

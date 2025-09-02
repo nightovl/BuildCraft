@@ -11,6 +11,7 @@ import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 public class BlockFiller extends BlockBCTile_Neptune implements IBlockWithFacing {
     // public static final IProperty<EnumFillerPattern> PATTERN = BuildCraftProperties.FILLER_PATTERN;
@@ -59,13 +61,13 @@ public class BlockFiller extends BlockBCTile_Neptune implements IBlockWithFacing
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileFiller) {
-            if (!((TileFiller) tile).hasBox()) {
+        if (tile instanceof TileFiller filler) {
+            if (!filler.hasBox()) {
                 return InteractionResult.PASS;
             }
-        }
-        if (!world.isClientSide) {
-//            BCBuildersGuis.FILLER.openGUI(player, pos);//TODO
+            if (!world.isClientSide) {
+            	NetworkHooks.openScreen((ServerPlayer)player, filler, pos);
+            }
         }
         return InteractionResult.SUCCESS;
 	}
