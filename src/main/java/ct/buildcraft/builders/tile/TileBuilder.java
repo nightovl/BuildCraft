@@ -298,7 +298,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             }
         }
 //        level.profiler.endStartSection("net_update");
-        sendNetworkUpdate(NET_RENDER_DATA); // FIXME
+      //  sendNetworkUpdate(NET_RENDER_DATA); // FIXME
 //        level.profiler.endSection();
 //        level.profiler.endSection();
     }

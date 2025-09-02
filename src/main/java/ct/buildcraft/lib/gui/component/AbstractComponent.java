@@ -46,7 +46,7 @@ public abstract class AbstractComponent implements ContainerComponent{
 	public boolean onClick(double x, double y, int mouse) {
 		if(isHovering((int)(x-screen.getGuiLeft()), (int)(y-screen.getGuiTop()))) {
 			isPressing = true;
-			return ClickedAction(y, y, mouse);
+			return ClickedAction(x, y, mouse);
 		}
 		return false;
 	}

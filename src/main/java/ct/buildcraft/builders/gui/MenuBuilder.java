@@ -1,7 +1,10 @@
 package ct.buildcraft.builders.gui;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.BCBuildersGuis;
+import ct.buildcraft.builders.tile.TileBuilder;
+import ct.buildcraft.lib.fluid.Tank;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -10,6 +13,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -25,18 +29,18 @@ public class MenuBuilder extends AbstractContainerMenu {
 	
 	public MenuBuilder(int containerId, Inventory playerInventory, IItemHandler blueprint, IItemHandler resources, ContainerData data, ContainerLevelAccess access) {
 		super(BCBuildersGuis.MENU_BUILDER.get(), containerId);
-		this.access = ContainerLevelAccess.NULL;
+		this.access = access;
 		this.data = data;
 		for(int i = 0; i < 3; ++i) 
 			for(int j = 0; j < 9; ++j) 
-				this.addSlot(new Slot(playerInventory, j + i * 9 + 9, -32 + j * 18, 102 + i * 18));
+				this.addSlot(new Slot(playerInventory, j + i * 9 + 9, -32 + j * 18, 107 + i * 18));
 		
 		for(int k = 0; k < 9; ++k) 
-			this.addSlot(new Slot(playerInventory, k, -32 + k * 18, 160));
-		this.addSlot(new SlotItemHandler(blueprint, 0 ,95, 35));
+			this.addSlot(new Slot(playerInventory, k, -32 + k * 18, 165));
+		this.addSlot(new SlotItemHandler(blueprint, 0 ,40, -6));
 		for(int i = 0; i < 3; ++i) 
 			for(int j = 0; j < 9; ++j) 
-				this.addSlot(new SlotItemHandler(resources, j+i*9 , -32 +j*18, 34+i*18 ));
+				this.addSlot(new SlotItemHandler(resources, j+i*9 , -32 +j*18, 39+i*18 ));
 		
 /*		for(int j = 0; j<9;j++) {
 			Slot typeSlot = new RecordSlot(filter, j, 8+18*j, 27).setBackground(InventoryMenu.BLOCK_ATLAS, BCTransportSprites.FILTERED_BUFFER_EMPTY_SLOT_GUI);
@@ -56,6 +60,20 @@ public class MenuBuilder extends AbstractContainerMenu {
 		return super.stillValid(this.access, player, BCBuildersBlocks.BUILDER.get());
 	}
 
+	@Override
+	public boolean clickMenuButton(Player player, int index) {
+		return access.evaluate((level, pos) ->{
+			BlockEntity be = level.getBlockEntity(pos);
+			if(be instanceof TileBuilder tile) {
+				BCLog.d(""+index);
+				Tank tank= tile.tankManager.get(index/2);
+				if(tank!=null)
+					tank.onGuiClicked(this, player);
+			}
+			return false;
+		}).orElse(false);
+		
+	}
 	
 
 }

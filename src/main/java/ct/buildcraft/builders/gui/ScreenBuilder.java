@@ -28,8 +28,9 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 		super(be, p_97742_, p_97743_, 4);
 		data = be.data;
 		inventoryLabelX -= 40;
-		inventoryLabelY += 18;
-		titleLabelX -= 4;
+		inventoryLabelY += 23;
+		titleLabelX -= 40;
+		titleLabelY -= 32;
 		this.add(tank0, true);
 		this.add(tank1, true);
 		this.add(tank2, true);
@@ -41,6 +42,10 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
 //	    this.renderBackground(pose);
 	    super.render(pose, mouseX, mouseY, partialTick);
+	    tank0.resetPos(140, 110, 16, 50);
+	    tank1.resetPos(157, 110, 16, 50);
+	    tank2.resetPos(174, 110, 16, 50);
+	    tank3.resetPos(191, 110, 16, 50);
 /*	    RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 	    for(int i = 0;i<9;i++) {
 	    	Slot slot1 = menu.getSlot(36 + 2*i);
@@ -66,8 +71,11 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 	@Override
 	protected void renderBg(PoseStack pose, float partialTick, int mouseX, int mouseY) {
 		RenderSystem.setShaderTexture(0, TEXTURE_BASE1);
-		this.blit(pose, this.leftPos + (this.imageWidth - 256)/2, this.topPos + (this.imageHeight - 242)/2, 0, 0, 256, 222);
+		this.blit(pose, this.leftPos + (this.imageWidth - 256)/2, this.topPos + (this.imageHeight - 232)/2, 0, 0, 256, 221);
 		RenderSystem.setShaderTexture(0, TEXTURE_BASE2);
+		this.blit(pose, this.leftPos + (this.imageWidth - 256 +64)/2, this.topPos + (this.imageHeight - 232)/2, 30, 0, this.imageWidth+50, 221);
+		
+		
 	}
 	
 	@Override
