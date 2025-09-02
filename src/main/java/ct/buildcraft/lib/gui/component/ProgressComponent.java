@@ -3,6 +3,7 @@ package ct.buildcraft.lib.gui.component;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 
 public class ProgressComponent extends AbstractComponent{
@@ -23,7 +24,7 @@ public class ProgressComponent extends AbstractComponent{
 	}
 
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
 		double pro =  (getProgress(partialTick));
 		RenderSystem.setShaderTexture(0, bg);
 //		screen.blit(pose, screen.getGuiLeft()+x, screen.getGuiTop()+y, u0, v0, (xs*pro), ys);//L_to_r

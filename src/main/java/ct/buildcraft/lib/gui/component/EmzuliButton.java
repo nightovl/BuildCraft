@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.transport.BCTransportSprites;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -24,7 +25,7 @@ public class EmzuliButton extends AbstractComponent{
 	
 	
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
 		int leftpos = screen.getGuiLeft() + x;
 		int toppos = screen.getGuiTop() + y-2;
 		RenderSystem.setShaderTexture(0, TEXTURE_BASE);

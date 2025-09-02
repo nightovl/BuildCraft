@@ -21,9 +21,17 @@ public class ListContainerComponent implements ContainerComponent {
 	}
 
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
 		for(int i = 0;i<size;i++) {
-			components[i].render(pose, mouseX, mouseY, partialTick);
+			components[i].render(pose, mouseX, mouseY, partialTick, screen);
+		}
+	}
+	
+	@Override
+	public void postRender(PoseStack pose, int mouseX, int mouseY, float partialTick,
+			AbstractContainerScreen<?> screen) {
+		for(int i = 0;i<size;i++) {
+			components[i].postRender(pose, mouseX, mouseY, partialTick, screen);
 		}
 	}
 	
@@ -81,4 +89,5 @@ public class ListContainerComponent implements ContainerComponent {
 	public int getNeedDataSize() {
 		return 0;
 	}
+
 }

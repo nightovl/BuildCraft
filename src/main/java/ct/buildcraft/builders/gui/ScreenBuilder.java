@@ -17,15 +17,15 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 	private static final ResourceLocation TEXTURE_BASE1 = BCBuildersSprites.BUILDER_GUI;
 	private static final ResourceLocation TEXTURE_BASE2 = BCBuildersSprites.BUILDER_BLUEPRINT_GUI;
 	
-	protected static final TankComponent tank0 = new TankComponent(26, 18, 16, 60, 10000);
-	protected static final TankComponent tank1 = new TankComponent(80, 18, 16, 60, 10000);
-	protected static final TankComponent tank2 = new TankComponent(134, 18, 16, 60, 10000);
-	protected static final TankComponent tank3 = new TankComponent(134, 18, 16, 60, 10000);
+	protected static final TankComponent tank0 = new TankComponent(141, 112, 16, 47, 8000, 0, 55);
+	protected static final TankComponent tank1 = new TankComponent(159, 112, 16, 47, 8000, 0, 55);
+	protected static final TankComponent tank2 = new TankComponent(177, 112, 16, 47, 8000, 0, 55);
+	protected static final TankComponent tank3 = new TankComponent(195, 112, 16, 47, 8000, 0, 55);
 	
 	protected final ContainerData data;
 	
 	public ScreenBuilder(MenuBuilder be, Inventory p_97742_, Component p_97743_) {
-		super(be, p_97742_, p_97743_, 4);
+		super(be, p_97742_, p_97743_, 4, TEXTURE_BASE2);
 		data = be.data;
 		inventoryLabelX -= 40;
 		inventoryLabelY += 23;
@@ -42,10 +42,10 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
 //	    this.renderBackground(pose);
 	    super.render(pose, mouseX, mouseY, partialTick);
-	    tank0.resetPos(140, 110, 16, 50);
-	    tank1.resetPos(157, 110, 16, 50);
-	    tank2.resetPos(174, 110, 16, 50);
-	    tank3.resetPos(191, 110, 16, 50);
+/*	    tank0.resetPos(141, 109, 16, 50);
+	    tank1.resetPos(159, 109, 16, 50);
+	    tank2.resetPos(177, 109, 16, 50);
+	    tank3.resetPos(195, 109, 16, 50);*/
 /*	    RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 	    for(int i = 0;i<9;i++) {
 	    	Slot slot1 = menu.getSlot(36 + 2*i);

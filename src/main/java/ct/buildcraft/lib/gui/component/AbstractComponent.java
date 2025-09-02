@@ -1,5 +1,7 @@
 package ct.buildcraft.lib.gui.component;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.ContainerData;
@@ -33,6 +35,9 @@ public abstract class AbstractComponent implements ContainerComponent{
 		this.ys = ys;
 	}
 	
+	@Override
+	public void postRender(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
+	}
 	
 	@Override
 	public boolean isHovering(int x, int y) {

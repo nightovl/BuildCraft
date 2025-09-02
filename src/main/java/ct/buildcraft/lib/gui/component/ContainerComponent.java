@@ -12,7 +12,9 @@ public interface ContainerComponent{
 	public static final byte U_TO_D = 4;
 	public static final byte D_TO_U = 8;
 	
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick);
+	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen);
+	
+	public void postRender(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen);
 	
 	public default boolean onClick(double x, double y, int mouse) {return false;}
 	

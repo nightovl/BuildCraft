@@ -7,7 +7,6 @@ package ct.buildcraft.builders.block;
 import ct.buildcraft.api.enums.EnumOptionalSnapshotType;
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.builders.tile.TileBuilder;
-import ct.buildcraft.factory.blockEntity.TileMiningWell;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import net.minecraft.core.BlockPos;
@@ -95,7 +94,6 @@ public class BlockBuilder extends BlockBCTile_Neptune implements IBlockWithFacin
     
 	@Override
 	public <T extends BlockEntity> GameEventListener getListener(ServerLevel level, T tile) {
-		return null;
-		//return tile instanceof TileBuilder be ? be.worldEventListener :null;
+		return tile instanceof TileBuilder be ? be.worldEventListener :null;
 	}
 }

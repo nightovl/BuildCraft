@@ -7,7 +7,6 @@ import ct.buildcraft.lib.gui.ContainerScreenBase;
 import ct.buildcraft.lib.gui.component.TankComponent;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -21,9 +20,9 @@ public class ScreenEngineIron extends ContainerScreenBase<MenuEngineIron_BC8>{
 
 	private static final ResourceLocation TEXTURE_BASE = BCEnergySprites.ENGINE_IRON_GUI;
 
-	protected static final TankComponent fuelTank = new TankComponent(26, 18, 16, 60, 10000);
-	protected static final TankComponent coolantTank = new TankComponent(80, 18, 16, 60, 10000);
-	protected static final TankComponent residueTank = new TankComponent(134, 18, 16, 60, 10000);
+	protected static final TankComponent fuelTank = new TankComponent(26, 18, 16, 60, 10000, 176, 0);
+	protected static final TankComponent coolantTank = new TankComponent(80, 18, 16, 60, 10000, 176, 0);
+	protected static final TankComponent residueTank = new TankComponent(134, 18, 16, 60, 10000, 176, 0);
 	
 	protected final ContainerData data;
 	
@@ -41,10 +40,10 @@ public class ScreenEngineIron extends ContainerScreenBase<MenuEngineIron_BC8>{
 	@Override
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
 	    super.render(pose, mouseX, mouseY, partialTick);
-	    RenderSystem.setShaderTexture(0, TEXTURE_BASE);
+/*	    RenderSystem.setShaderTexture(0, TEXTURE_BASE);
 	    this.blit(pose, this.leftPos+26, this.topPos+18, 176, 0, 16, 60);
 	    this.blit(pose, this.leftPos+80, this.topPos+18, 176, 0, 16, 60);
-	    this.blit(pose, this.leftPos+134, this.topPos+18, 176, 0, 16, 60);
+	    this.blit(pose, this.leftPos+134, this.topPos+18, 176, 0, 16, 60);*/
 	    renderTooltip(pose, mouseX, mouseY);
 	}
 	

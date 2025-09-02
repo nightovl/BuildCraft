@@ -14,10 +14,10 @@ public class ScreenHeatExchange extends ContainerScreenBase<MenuHeatExchange>{
 	private static final ResourceLocation TEXTURE_BASE = BCFactorySprites.HEAT_EXCHANGE;
 	
 	protected static final TankComponent[] tanks = {
-		new TankComponent(44, 12, 16, 38, 2000),
-		new TankComponent(44, 64, 33, 16, 2000),
-		new TankComponent(98, 12, 33, 16, 2000),
-		new TankComponent(116,43 ,16, 38, 2000),
+		new TankComponent(44, 12, 16, 38, 2000, -1, -1),
+		new TankComponent(44, 64, 33, 16, 2000, -1, -1),
+		new TankComponent(98, 12, 33, 16, 2000, -1, -1),
+		new TankComponent(116,43 ,16, 38, 2000, -1, -1),
 	};
 	
 	public ScreenHeatExchange(MenuHeatExchange menu, Inventory inventory, Component name) {

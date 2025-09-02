@@ -9,6 +9,7 @@ import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.gui.TankContainer;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 
@@ -18,22 +19,33 @@ public class TankComponent extends AbstractComponent{
 	protected Fluid fluidCache;
 	protected final int capacity;
 	protected final byte renderType;
+	protected /*final*/ int tankx;
+	protected /*final*/ int tanky;
 	
-	public TankComponent(int x, int y, int sx, int sy, int capacity) {
+	public TankComponent(int x, int y, int sx, int sy, int capacity, int tankx, int tanky) {
 		super(x, y, sx, sy);
 		this.capacity = capacity;
 		renderType = U_TO_D;
+		this.tankx = tankx;
+		this.tanky = tanky;
 	}
 	
-	public TankComponent(int x, int y, int sx, int sy, int capacity, byte type) {
+	public TankComponent(int x, int y, int sx, int sy, int capacity, int tankx, int tanky, byte type) {
 		super(x, y, sx, sy);
 		this.capacity = capacity;
 		renderType = type;
+		this.tankx = tankx;
+		this.tanky = tanky;
 	}
 	
+	//for debug
+	public void resetSpritePos(int tankx, int tanky) {
+		this.tankx = tankx;
+		this.tanky = tanky;
+	}
 	
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
 		int leftpos = screen.getGuiLeft();
 		int toppos = screen.getGuiTop();
 		int type = data.get(offset);
@@ -43,6 +55,12 @@ public class TankComponent extends AbstractComponent{
 		}
 		if(this.fluidCache != null)
 			FluidRenderer.drawFluidForGui(this.fluidCache,leftpos+x,toppos+y+ys, leftpos+x+xs, toppos+y+ys-(ys*data.get(offset+1)/capacity), pose.last());
+	}
+	
+	@Override
+	public void postRender(PoseStack pose, int mouseX, int mouseY, float partialTick, AbstractContainerScreen<?> screen) {
+		if(tankx>=0&&tanky>=0)
+			screen.blit(pose, screen.getGuiLeft()+x, screen.getGuiTop()+y+1, tankx, tanky, xs, ys);
 	}
 
 	@Override

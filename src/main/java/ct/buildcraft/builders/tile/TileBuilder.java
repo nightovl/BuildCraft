@@ -124,7 +124,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     
     private final ContainerData container;
     
-/*    public final GameEventListener worldEventListener = new GameEventListener() {
+    public final GameEventListener worldEventListener = new GameEventListener() {
     	
     	GameEventListener blueprint = blueprintBuilder.getListener();
     	GameEventListener template = templateBuilder.getListener();
@@ -144,7 +144,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     	public boolean handleGameEvent(ServerLevel level, Message msg) {
     		return blueprint.handleGameEvent(level, msg) || template.handleGameEvent(level, msg);
     	}
-    };*/
+    };
 
     public TileBuilder(BlockPos pos, BlockState state) {
     	super(BCBuildersBlocks.BUILDER_TILE_BC8.get(), pos, state);
@@ -247,7 +247,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 basePoses.addAll(PositionUtil.getAllOnPath(path.get(i - 1), path.get(i)));
             }
         } else {
- //           basePoses.add(worldPosition.offset(level.getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING).getOpposite().getNormal()));
+            basePoses.add(worldPosition.offset(level.getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING).getOpposite().getNormal()));
         }
     }
 

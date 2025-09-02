@@ -41,6 +41,7 @@ public class MenuBuilder extends AbstractContainerMenu {
 		for(int i = 0; i < 3; ++i) 
 			for(int j = 0; j < 9; ++j) 
 				this.addSlot(new SlotItemHandler(resources, j+i*9 , -32 +j*18, 39+i*18 ));
+		this.addDataSlots(data);
 		
 /*		for(int j = 0; j<9;j++) {
 			Slot typeSlot = new RecordSlot(filter, j, 8+18*j, 27).setBackground(InventoryMenu.BLOCK_ATLAS, BCTransportSprites.FILTERED_BUFFER_EMPTY_SLOT_GUI);
@@ -67,10 +68,13 @@ public class MenuBuilder extends AbstractContainerMenu {
 			if(be instanceof TileBuilder tile) {
 				BCLog.d(""+index);
 				Tank tank= tile.tankManager.get(index/2);
+				int amount0 = tank.getFluidAmount();
 				if(tank!=null)
 					tank.onGuiClicked(this, player);
+				if(amount0 != tank.getFluidAmount())
+					tile.markChunkDirty();
 			}
-			return false;
+			return true;
 		}).orElse(false);
 		
 	}

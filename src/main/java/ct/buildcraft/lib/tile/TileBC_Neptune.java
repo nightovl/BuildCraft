@@ -50,6 +50,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
@@ -377,7 +378,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
      * the current chunk is saved after the last tick. */
     public void markChunkDirty() {
         if (level != null) {
-//            level.blockEntityChanged(worldPosition);
+            level.getChunkAt(worldPosition).setUnsaved(true);
         }
     }
 
@@ -690,14 +691,14 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
         super.load(nbt);
 //        migrateOldNBT(nbt.getInt("data-version"), nbt);
         deltaManager.readFromNBT(nbt.getCompound("deltas"));
-/*        if (nbt.contains("owner")) {
-            owner = NBTUtil.readGameProfileFromNBT(nbt.getCompound("owner"));
-        }*/
+        if (nbt.contains("owner")) {
+            owner = NbtUtils.readGameProfile(nbt.getCompound("owner"));
+        }
         if (nbt.contains("items", Tag.TAG_COMPOUND)) {
             itemManager.deserializeNBT(nbt.getCompound("items"));
         }
         if (nbt.contains("tanks", Tag.TAG_COMPOUND)) {
-//            tankManager.deserializeNBT(nbt.getCompound("tanks"));
+            tankManager.deserializeNBT(nbt.getCompound("tanks"));
         }
     }
 
@@ -716,17 +717,17 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     public void saveAdditional(CompoundTag nbt) {
         nbt.putInt("data-version", BCVersion.CURRENT.dataVersion);
         nbt.put("deltas", deltaManager.writeToNBT());
- /*       if (owner != null && owner.isComplete() && owner != FakePlayerProvider.NULL_PROFILE) {
-            nbt.put("owner", NBTUtil.writeGameProfile(new CompoundTag(), owner));
-        }*/
+        if (owner != null && owner.isComplete() && owner != FakePlayerProvider.NULL_PROFILE) {
+            nbt.put("owner", NbtUtils.writeGameProfile(new CompoundTag(), owner));
+        }
         CompoundTag items = itemManager.serializeNBT();
         if (!items.isEmpty()) {
             nbt.put("items", items);
         }
-/*        CompoundTag tanks = tankManager.serializeNBT();
-        if (!tanks.hasNoTags()) {
+        CompoundTag tanks = tankManager.serializeNBT();
+        if (!tanks.isEmpty()) {
             nbt.put("tanks", tanks);
-        }*/
+        }
         super.saveAdditional(nbt);
     }
 

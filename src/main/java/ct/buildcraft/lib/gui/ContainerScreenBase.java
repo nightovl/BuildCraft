@@ -37,14 +37,18 @@ public abstract class ContainerScreenBase<T extends AbstractContainerMenu> exten
 		this.size = ComponentSize;
 	}
 	
-	
-	
 	@Override
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
 		this.renderBackground(pose);
 		super.render(pose, mouseX, mouseY, partialTick);
 		for(int i = 0;i<size;i++) 
-			components[i].render(pose, mouseX, mouseY, partialTick);
+			components[i].render(pose, mouseX, mouseY, partialTick, this);
+		if(TEXTURE_BASE == null)
+			return;
+		RenderSystem.setShaderTexture(0, TEXTURE_BASE);
+		for(int i = 0;i<size;i++) {
+			components[i].postRender(pose, mouseX, mouseY, partialTick, this);
+		}
 		
 	}
 	
