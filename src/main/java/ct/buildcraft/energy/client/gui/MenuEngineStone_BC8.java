@@ -1,9 +1,7 @@
 package ct.buildcraft.energy.client.gui;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergyGuis;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;

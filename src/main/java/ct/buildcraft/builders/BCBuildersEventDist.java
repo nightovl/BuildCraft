@@ -14,12 +14,21 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import ct.buildcraft.api.schematics.ISchematicBlock;
 import ct.buildcraft.builders.client.ClientArchitectTables;
+import ct.buildcraft.builders.item.ItemSchematicSingle;
+import ct.buildcraft.builders.item.ItemSnapshot;
+import ct.buildcraft.builders.snapshot.Blueprint;
+import ct.buildcraft.builders.snapshot.Snapshot;
+import ct.buildcraft.builders.snapshot.Snapshot.Header;
 import ct.buildcraft.builders.tile.TileQuarry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -76,20 +85,20 @@ public class BCBuildersEventDist {
         }
     }*/
 
-/*    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)Event
-    public void onRenderTooltipPostText(RenderTooltipEvent.PostText event) {
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void onRenderTooltipPostText(RenderTooltipEvent.Color event) {
         Snapshot snapshot = null;
-        ItemStack stack = event.getStack();
-        Header header = BCBuildersItems.snapshot != null ? BCBuildersItems.snapshot.getHeader(stack) : null;
+        ItemStack stack = event.getItemStack();
+        Header header = BCBuildersItems.BLUEPRINT.get() != null &&  BCBuildersItems.TEMPLATE.get() != null? ItemSnapshot.getHeader(stack) : null;
         if (header != null) {
             snapshot = ClientSnapshots.INSTANCE.getSnapshot(header.key);
-        } else if (BCBuildersItems.schematicSingle != null) {
+        } else if (BCBuildersItems.SCHEMATIC_SINGLE.get() != null) {
             ISchematicBlock schematicBlock = ItemSchematicSingle.getSchematicSafe(stack);
             if (schematicBlock != null) {
                 Blueprint blueprint = new Blueprint();
                 blueprint.size = new BlockPos(1, 1, 1);
-                blueprint.offset = BlockPos.ORIGIN;
+                blueprint.offset = BlockPos.ZERO;
                 blueprint.data = new int[] { 0 };
                 blueprint.palette.add(schematicBlock);
                 blueprint.computeKey();
@@ -99,7 +108,7 @@ public class BCBuildersEventDist {
 
         if (snapshot != null) {
             int pX = event.getX();
-            int pY = event.getY() + event.getHeight() + 10;
+            int pY = event.getY() + event.get() + 10;
             int sX = 100;
             int sY = 100;
 
@@ -127,7 +136,7 @@ public class BCBuildersEventDist {
 
             ClientSnapshots.INSTANCE.renderSnapshot(snapshot, pX, pY, sX, sY);
         }
-    }*/
+    }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

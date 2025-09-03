@@ -41,6 +41,7 @@ import ct.buildcraft.builders.snapshot.TemplateBuilder;
 import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.fluid.TankManager;
+import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.gui.TankContainer;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.BoundingBoxUtil;
@@ -100,6 +101,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 EnumAccess.BOTH, EnumPipePart.VALUES);
     public final ItemHandlerSimple invResources =
         itemManager.addInvHandler("resources", 27, EnumAccess.BOTH, EnumPipePart.VALUES);
+    public final ItemProvider invRequire = new ItemProvider(this::getDisplay, 24);
 
     private final MjBattery battery = new MjBattery(16000 * MjAPI.MJ);
     private boolean canExcavate = true;
@@ -526,10 +528,18 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     public TankManager getTankManager() {
         return tankManager;
     }
+    
+	
+    private ItemStack getDisplay(int index) {
+        return snapshotType == EnumSnapshotType.BLUEPRINT &&
+                index < blueprintBuilder.remainingDisplayRequired.size()
+                ? blueprintBuilder.remainingDisplayRequired.get(index)
+                : ItemStack.EMPTY;
+    }
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new MenuBuilder(id, inv, invSnapshot, invResources, container, ContainerLevelAccess.create(level, worldPosition));
+		return new MenuBuilder(id, inv, invSnapshot, invResources, container, invRequire, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

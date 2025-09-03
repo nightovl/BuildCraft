@@ -40,31 +40,7 @@ public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 
 	@Override
 	public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-//	    this.renderBackground(pose);
 	    super.render(pose, mouseX, mouseY, partialTick);
-/*	    tank0.resetPos(141, 109, 16, 50);
-	    tank1.resetPos(159, 109, 16, 50);
-	    tank2.resetPos(177, 109, 16, 50);
-	    tank3.resetPos(195, 109, 16, 50);*/
-/*	    RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-	    for(int i = 0;i<9;i++) {
-	    	Slot slot1 = menu.getSlot(36 + 2*i);
-	    	Slot slot2 = menu.getSlot(37 + 2*i);
-	    	if(!slot2.getItem().isEmpty())
-	    		continue;
-	    	ItemStack item = slot1.getItem();
-	    	int x = slot1.x + leftPos;
-    		int y = slot1.y + topPos + 34;
-	    	if(item.isEmpty()) {
-	    		blit(pose, x, y, 515, 16, 16, NOTHING);
-	    	}
-	    	else {
-	    		itemRenderer.renderAndDecorateFakeItem(item, x, y);
-	    	}
-	    	RenderSystem.depthFunc(516);
-	    	GuiComponent.fill(pose, x, y, x+16,  y + 16, 822083583);
-	    	RenderSystem.depthFunc(515);
-	    }*/
 	    this.renderTooltip(pose, mouseX, mouseY);
 	}
 	
