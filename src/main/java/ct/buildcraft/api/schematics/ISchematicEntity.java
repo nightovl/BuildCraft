@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,9 +32,9 @@ public interface ISchematicEntity {
 
     ISchematicEntity getRotated(Rotation rotation);
 
-    Entity build(Level world, BlockPos basePos);
+    Entity build(BlockAndTintGetter world, BlockPos basePos);
 
-    Entity buildWithoutChecks(Level world, BlockPos basePos);
+    Entity buildWithoutChecks(BlockAndTintGetter world, BlockPos basePos);
 
     CompoundTag serializeNBT();
 

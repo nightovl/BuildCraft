@@ -8,16 +8,21 @@ package ct.buildcraft.builders.snapshot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 
-public class FakeChunkProvider implements IChunkProvider {
+public class FakeChunkProvider extends ChunkSource {
     private final FakeWorld world;
-    public final Map<ChunkPos, Chunk> chunks = new HashMap<>();
+    public final Map<ChunkPos, LevelChunk> chunks = new HashMap<>();
 
     public FakeChunkProvider(FakeWorld world) {
         this.world = world;
@@ -25,35 +30,45 @@ public class FakeChunkProvider implements IChunkProvider {
 
     @Nullable
     @Override
-    public Chunk getLoadedChunk(int x, int z) {
+    public LevelChunk getChunkNow(int x, int z) {
         ChunkPos chunkPos = new ChunkPos(x, z);
         if (!chunks.containsKey(chunkPos)) {
-            chunks.put(chunkPos, new Chunk(world, x, z) {
-                @Override
-                public void generateSkylightMap() {
-                }
-            });
+            chunks.put(chunkPos, new LevelChunk(world, chunkPos));
         }
         return chunks.get(chunkPos);
     }
 
     @Override
-    public Chunk provideChunk(int x, int z) {
-        return getLoadedChunk(x, z);
+    public void tick(BooleanSupplier p_202162_, boolean p_202163_) {
     }
 
     @Override
-    public boolean tick() {
-        return false;
-    }
-
-    @Override
-    public String makeString() {
-        return "fake";
-    }
-
-    @Override
-    public boolean isChunkGeneratedAt(int x, int z) {
+    public boolean hasChunk(int x, int z) {
         return true;
     }
+
+	@Override
+	public BlockGetter getLevel() {
+		return world;
+	}
+
+	@Override
+	public ChunkAccess getChunk(int x, int z, ChunkStatus p_62225_, boolean p_62226_) {
+		return getChunkNow(x, z);
+	}
+
+	@Override
+	public String gatherStats() {
+		return "fake";
+	}
+
+	@Override
+	public int getLoadedChunksCount() {
+		return 0;
+	}
+
+	@Override
+	public LevelLightEngine getLightEngine() {
+		return new LevelLightEngine(this, true, true);
+	}
 }

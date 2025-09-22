@@ -38,7 +38,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
@@ -128,7 +128,7 @@ public class SchematicEntityDefault implements ISchematicEntity {
     }
 
     @Override
-    public Entity build(Level world, BlockPos basePos) {
+    public Entity build(BlockAndTintGetter world, BlockPos basePos) {
         Set<JsonRule> rules = RulesLoader.getRules(
             new ResourceLocation(entityNbt.getString("id")),
             entityNbt
@@ -163,8 +163,11 @@ public class SchematicEntityDefault implements ISchematicEntity {
         EntityType<?> entityType = EntityType.by(nbt).get();
         Entity entity = null;
         if (entityType != null) {
-        	entity = entityType.spawn((ServerLevel)world, (CompoundTag)null, (Component)null, (Player)null, new BlockPos(placePos), MobSpawnType.STRUCTURE, false, false);
-            if (rotate) {
+        	if(world instanceof ServerLevel seworld)
+        		entity = entityType.spawn(seworld, (CompoundTag)null, (Component)null, (Player)null, new BlockPos(placePos), MobSpawnType.STRUCTURE, false, false);
+        	else if(world instanceof FakeWorld fakeWorld)
+        		fakeWorld.addEntity(entity);
+        	if (rotate) {
                 entity.absMoveTo(
                     placePos.x,
                     placePos.y,
@@ -178,7 +181,7 @@ public class SchematicEntityDefault implements ISchematicEntity {
     }
 
     @Override
-    public Entity buildWithoutChecks(Level world, BlockPos basePos) {
+    public Entity buildWithoutChecks(BlockAndTintGetter world, BlockPos basePos) {
         return build(world, basePos);
     }
 
