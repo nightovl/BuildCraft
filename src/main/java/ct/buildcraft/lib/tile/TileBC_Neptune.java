@@ -41,6 +41,9 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 
 import ct.buildcraft.lib.cap.CapabilityHelper;
+import ct.buildcraft.lib.client.render.DetachedRenderer.IDetachedRenderer;
+import ct.buildcraft.lib.debug.BCAdvDebugging;
+import ct.buildcraft.lib.debug.IAdvDebugTarget;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -72,6 +75,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
@@ -79,7 +84,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkEvent.Context;
 
-public abstract class TileBC_Neptune extends BlockEntity implements IPayloadReceiver/*,IAdvDebugTarget*/, IPlayerOwned {
+public abstract class TileBC_Neptune extends BlockEntity implements IPayloadReceiver, IAdvDebugTarget, IPlayerOwned {
 
 	public static final boolean DEBUG = BCDebugging.shouldDebugLog("lib.tile");
 
@@ -750,7 +755,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     // Advanced debugging
     //
     // ##################
-/*
+
     public boolean isBeingDebuggWed() {
         return BCAdvDebugging.isBeingDebugged(this);
     }
@@ -768,7 +773,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     }
 
     @Override
-    public boolean doesExistInLevel() {
+    public boolean doesExistInWorld() {
         return hasLevel() && level.getBlockEntity(worldPosition) == this;
     }
 
@@ -781,5 +786,5 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     @OnlyIn(Dist.CLIENT)
     public IDetachedRenderer getDebugRenderer() {
         return null;
-    }*/
+    }
 }

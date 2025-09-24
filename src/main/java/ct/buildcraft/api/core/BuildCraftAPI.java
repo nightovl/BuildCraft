@@ -12,10 +12,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 public final class BuildCraftAPI {
     public static IFakePlayerProvider fakePlayerProvider;
@@ -49,12 +52,12 @@ public final class BuildCraftAPI {
         return worldProperties.get("soft").get(world, pos);
     }
 
-/*    public static ResourceLocation nameToResourceLocation(String name) {
+    public static ResourceLocation nameToResourceLocation(String name) {
         if (name.indexOf(':') > 0) return new ResourceLocation(name);
-        ModContainer modContainer = ModList.get().;
+        ModContainer modContainer = null;//TODO
         if (modContainer == null) {
             throw new IllegalStateException("Illegal recipe name " + name + ". Provide domain id to register it correctly.");
         }
         return new ResourceLocation(modContainer.getModId(), name);
-    }*/
+    }
 }

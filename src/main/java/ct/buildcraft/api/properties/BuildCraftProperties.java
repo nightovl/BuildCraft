@@ -21,11 +21,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public final class BuildCraftProperties {
-	/**use {@link BlockStateProperties.HORIZONTAL_FACING}*/
-	@Deprecated 
     public static final DirectionProperty BLOCK_FACING_6 = BlockStateProperties.FACING;
-	/**use {@link BlockStateProperties.FACING}*/
-	@Deprecated 
     public static final DirectionProperty BLOCK_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
 /*    public static final EnumPropetry<DyeColor> BLOC K_COLOR = PropertyEnum.create("color", DyeColor.class);*/

@@ -41,6 +41,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
@@ -185,7 +187,7 @@ public enum ClientSnapshots {
 //            TileEntityRendererDispatcher.instance.drawBatch(1);
         }
         // noinspection Guava
-        for (Entity entity : world.getEntities(Entity.class, Predicates.alwaysTrue())) {
+        for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.ofSize(null, viewportWidth, viewportHeight, snapshotSize))) {
             Vec3 pos = entity.getPositionVector();
             GlStateManager.pushAttrib();
             Minecraft.getMinecraft().getRenderManager().renderEntity(
