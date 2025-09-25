@@ -28,7 +28,7 @@ public class MessageDebugResponse {
     }
 
     public static void toBytes(MessageDebugResponse msg, ByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         buf.writeInt(msg.left.size());
         msg.left.forEach(buf::writeUtf);
         buf.writeInt(msg.right.size());
@@ -36,7 +36,7 @@ public class MessageDebugResponse {
     }
 
     public MessageDebugResponse(ByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         IntStream.range(0, buf.readInt())
             .mapToObj(i -> new PacketBufferBC(buf).readString())
             .forEach(left::add);

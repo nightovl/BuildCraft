@@ -3,10 +3,11 @@ package ct.buildcraft.lib.gui.component;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.ContainerData;
 
-public abstract class AbstractComponent implements ContainerComponent{
+public abstract class AbstractComponent/* extends GuiComponent */implements ContainerComponent{
 
 	protected AbstractContainerScreen<?> screen;
 	protected ContainerData data ;

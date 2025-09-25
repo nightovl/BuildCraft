@@ -77,7 +77,7 @@ public class TriggerParameterSignal implements IStatementParameter {
     }
 
     public static TriggerParameterSignal readFromBuf(FriendlyByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         DyeColor colour = MessageUtil.readEnumOrNull(buf, DyeColor.class);
         if (colour == null) {
             return EMPTY;

@@ -45,7 +45,7 @@ public class AssemblyRecipeBasic extends AssemblyRecipe {
 
     @Override
     public Set<ItemStack> getOutputs(NonNullList<ItemStack> inputs) {
-        if (requiredStacks.stream().allMatch((definition) -> inputs.stream().anyMatch((stack) -> !stack.isEmpty() && definition.ingredient.apply(stack) && stack.getCount() >= definition.count)))
+        if (requiredStacks.stream().allMatch((definition) -> inputs.stream().anyMatch((stack) -> !stack.isEmpty() && definition.ingredient.test(stack) && stack.getCount() >= definition.count)))
             return output;
         return Collections.emptySet();
     }

@@ -92,7 +92,7 @@ public class MessageUtil {
     }
 
     public static void writeBooleanArray(FriendlyByteBuf buf, boolean[] bool) {
-        PacketBufferBC bufBc = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC bufBc = PacketBufferBC.asPacketBufferBc(buf);
         for (boolean b : bool) {
             bufBc.writeBoolean(b);
         }
@@ -105,7 +105,7 @@ public class MessageUtil {
     }
 
     public static void readBooleanArray(FriendlyByteBuf buf, boolean[] into) {
-        PacketBufferBC bufBc = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC bufBc = PacketBufferBC.asPacketBufferBc(buf);
         for (int i = 0; i < into.length; i++) {
             into[i] = bufBc.readBoolean();
         }
@@ -257,7 +257,7 @@ public class MessageUtil {
     }
 
     public static <E extends Enum<E>> void writeEnumSet(ByteBuf buffer, Set<E> set, Class<E> clazz) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         E[] constants = clazz.getEnumConstants();
         if (constants == null) throw new IllegalArgumentException("Not an enum type " + clazz);
         for (E e : constants) {
@@ -266,7 +266,7 @@ public class MessageUtil {
     }
 
     public static <E extends Enum<E>> EnumSet<E> readEnumSet(ByteBuf buffer, Class<E> clazz) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         E[] constants = clazz.getEnumConstants();
         if (constants == null) throw new IllegalArgumentException("Not an enum type " + clazz);
         EnumSet<E> set = EnumSet.noneOf(clazz);

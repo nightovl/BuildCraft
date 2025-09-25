@@ -33,7 +33,7 @@ public class MessageMarker {
     public MessageMarker() {}
     
     public MessageMarker(FriendlyByteBuf buf) {
-        PacketBufferBC packet = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC packet = PacketBufferBC.asPacketBufferBc(buf);
         add = packet.readBoolean();
         multiple = packet.readBoolean();
         connection = packet.readBoolean();
@@ -53,7 +53,7 @@ public class MessageMarker {
     public static void toBytes(MessageMarker msg, FriendlyByteBuf buf) {
         msg.count = msg.positions.size();
         msg.multiple = msg.count != 1;
-        PacketBufferBC packet = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC packet = PacketBufferBC.asPacketBufferBc(buf);
         packet.writeBoolean(msg.add);
         packet.writeBoolean(msg.multiple);
         packet.writeBoolean(msg.connection);

@@ -714,7 +714,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
 
     @Override
     public void writePayload(int id, FriendlyByteBuf buf, LogicalSide side) {
-        PacketBufferBC buffer = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(buf);
         if (side == LogicalSide.SERVER) {
             if (id == NET_FLUID_AMOUNTS || id == NET_ID_FULL_STATE) {
                 boolean full = id == NET_ID_FULL_STATE;
@@ -745,7 +745,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
 
     @Override
     public void readPayload(int id, FriendlyByteBuf buf, LogicalSide side) throws IOException {
-        PacketBufferBC buffer = PacketBufferBC.asFriendlyByteBufBc(buf);
+        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(buf);
         if (side == LogicalSide.CLIENT) {
             if (id == NET_FLUID_AMOUNTS || id == NET_ID_FULL_STATE) {
                 boolean full = id == NET_ID_FULL_STATE;

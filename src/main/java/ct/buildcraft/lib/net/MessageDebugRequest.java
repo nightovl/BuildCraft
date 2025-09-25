@@ -32,13 +32,13 @@ public class MessageDebugRequest {
     }
 
     public static void toBytes(MessageDebugRequest msg, FriendlyByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         buf.writeBlockPos(msg.pos);
         buf.writeEnum(msg.side);
     }
 
     public MessageDebugRequest(FriendlyByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
         pos = buf.readBlockPos();
         side = buf.readEnum(Direction.class);
     }

@@ -6,11 +6,17 @@
 
 package ct.buildcraft.silicon;
 
+import ct.buildcraft.api.facades.FacadeAPI;
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.BCBuildersConfig;
 import ct.buildcraft.builders.client.render.RenderQuarry;
 import ct.buildcraft.lib.CreativeTabManager;
 import ct.buildcraft.lib.CreativeTabManager.CreativeTabBC;
+import ct.buildcraft.silicon.plug.FacadeStateManager;
+import ct.buildcraft.silicon.recipe.FacadeSwapRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
@@ -24,6 +30,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(BCSilicon.MODID)
 public class BCSilicon {
@@ -31,6 +39,9 @@ public class BCSilicon {
 
     private static CreativeTabBC tabPlugs;
     private static CreativeTabBC tabFacades;
+    
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, BCSilicon.MODID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, BCSilicon.MODID);
 
     public BCSilicon() {
  //       RegistryConfig.useOtherModConfigFor(MODID, BCCore.MODID);
@@ -38,15 +49,23 @@ public class BCSilicon {
     	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	modEventBus.addListener(BCSilicon::commonSetup);
     	modEventBus.addListener(BCSilicon::postInit);
+    	BCSiliconSprites.fmlPreInit();
         tabPlugs = CreativeTabManager.createTab("buildcraft.plugs");
         tabFacades = CreativeTabManager.createTab("buildcraft.facades");
-    //    FacadeAPI.registry = FacadeStateManager.INSTANCE;
+        FacadeAPI.registry = FacadeStateManager.INSTANCE;
 
         BCSiliconConfig.preInit();
         BCSiliconBlocks.registry(modEventBus);
-     //   BCSiliconPlugs.preInit();
+        BCSiliconPlugs.preInit();
         BCSiliconItems.registry(modEventBus);
-       // BCSiliconStatements.preInit();
+        BCSiliconStatements.preInit();
+        
+        
+        RECIPE_SERIALIZERS.register("facade_swap_recipe_", () -> FacadeSwapRecipe.SERIALIZER);
+        RECIPE_TYPE.register("facade_swap", () -> FacadeSwapRecipe.TYPE);
+        RECIPE_SERIALIZERS.register(modEventBus);
+        RECIPE_TYPE.register(modEventBus);
+        
 
         ModLoadingContext.get().registerConfig(Type.COMMON, BCSiliconConfig.config);
         MinecraftForge.EVENT_BUS.register(this);

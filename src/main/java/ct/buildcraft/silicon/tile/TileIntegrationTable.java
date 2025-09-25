@@ -9,28 +9,37 @@ package ct.buildcraft.silicon.tile;
 import java.io.IOException;
 import java.util.List;
 
+import org.spongepowered.asm.mixin.MixinEnvironment.Side;
+
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemStack;
+import ct.buildcraft.api.core.EnumPipePart;
+import ct.buildcraft.api.recipes.IngredientStack;
+import ct.buildcraft.api.recipes.IntegrationRecipe;
+import ct.buildcraft.lib.misc.StackUtil;
+import ct.buildcraft.lib.net.PacketBufferBC;
+import ct.buildcraft.lib.recipe.IntegrationRecipeRegistry;
+import ct.buildcraft.lib.tile.item.ItemHandlerManager;
+import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
+import ct.buildcraft.silicon.BCSiliconBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-
-import buildcraft.api.core.EnumPipePart;
-import buildcraft.api.recipes.IngredientStack;
-import buildcraft.api.recipes.IntegrationRecipe;
-
-import buildcraft.lib.misc.StackUtil;
-import buildcraft.lib.net.PacketBufferBC;
-import buildcraft.lib.recipe.IntegrationRecipeRegistry;
-import buildcraft.lib.tile.item.ItemHandlerManager;
-import buildcraft.lib.tile.item.ItemHandlerSimple;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.network.NetworkEvent;
 
 public class TileIntegrationTable extends TileLaserTableBase {
-    public final ItemHandlerSimple invTarget = itemManager.addInvHandler(
+	
+	public TileIntegrationTable(BlockPos pos, BlockState state) {
+		super(BCSiliconBlocks.INTERGRATION_TABLE_TILE.get(), pos, state);
+	}
+
+	public final ItemHandlerSimple invTarget = itemManager.addInvHandler(
         "target",
         1,
         ItemHandlerManager.EnumAccess.BOTH,
@@ -90,7 +99,7 @@ public class TileIntegrationTable extends TileLaserTableBase {
     public void update() {
         super.update();
 
-        if (level.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -112,45 +121,44 @@ public class TileIntegrationTable extends TileLaserTableBase {
 
         sendNetworkGuiUpdate(NET_GUI_DATA);
     }
-
+    
     @Override
-    public CompoundTag writeToNBT(CompoundTag nbt) {
-        super.writeToNBT(nbt);
-        if (recipe != null) {
-            nbt.setString("recipe", recipe.name.toString());
-        }
-        return nbt;
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag nbt) {
-        super.readFromNBT(nbt);
-        if (nbt.hasKey("recipe")) {
+	public void saveAdditional(CompoundTag nbt) {
+		super.saveAdditional(nbt);
+		if (recipe != null) {
+			nbt.putString("recipe", recipe.name.toString());
+		}
+	}
+    
+	@Override
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
+        if (nbt.contains("recipe")) {
             recipe = lookupRecipe(nbt.getString("recipe"));
         } else {
             recipe = null;
         }
-    }
+	}
 
     @Override
-    public void writePayload(int id, PacketBufferBC buffer, Side side) {
+    public void writePayload(int id, FriendlyByteBuf buffer, LogicalSide side) {
         super.writePayload(id, buffer, side);
 
         if (id == NET_GUI_DATA) {
             buffer.writeBoolean(recipe != null);
             if (recipe != null) {
-                buffer.writeString(recipe.name.toString());
+                buffer.writeUtf(recipe.name.toString());
             }
         }
     }
 
     @Override
-    public void readPayload(int id, PacketBufferBC buffer, Side side, MessageContext ctx) throws IOException {
+    public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
         super.readPayload(id, buffer, side, ctx);
 
         if (id == NET_GUI_DATA) {
             if (buffer.readBoolean()) {
-                recipe = lookupRecipe(buffer.readString());
+                recipe = lookupRecipe(buffer.readUtf());
             } else {
                 recipe = null;
             }

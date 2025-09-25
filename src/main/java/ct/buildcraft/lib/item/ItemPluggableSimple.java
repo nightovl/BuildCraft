@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class ItemPluggableSimple extends ItemBC_Neptune implements IItemPluggable {
+public class ItemPluggableSimple extends Item implements IItemPluggable {
 
     private static final IPlacementPredicate ALWAYS_CAN = (item, h, s) -> true;
 
@@ -45,9 +45,9 @@ public class ItemPluggableSimple extends ItemBC_Neptune implements IItemPluggabl
     private final IPlacementPredicate canPlace;
     private final IPluggableCreator creator;
 
-    public ItemPluggableSimple(String id, PluggableDefinition definition, IPluggableCreator creator,
+    public ItemPluggableSimple(PluggableDefinition definition, IPluggableCreator creator,
         @Nullable IPlacementPredicate canPlace, Item.Properties p) {
-        super(id, p);
+        super(p);
         this.definition = definition;
         this.creator = creator;
         if (creator == null) {
@@ -56,16 +56,16 @@ public class ItemPluggableSimple extends ItemBC_Neptune implements IItemPluggabl
         this.canPlace = canPlace == null ? ALWAYS_CAN : canPlace;
     }
 
-    public ItemPluggableSimple(String id, PluggableDefinition definition, @Nullable IPlacementPredicate canPlace, Item.Properties p) {
-        this(id, definition, definition.creator, canPlace, p);
+    public ItemPluggableSimple(PluggableDefinition definition, @Nullable IPlacementPredicate canPlace, Item.Properties p) {
+        this(definition, definition.creator, canPlace, p);
     }
 
-    public ItemPluggableSimple(String id, PluggableDefinition definition, @Nonnull IPluggableCreator creator, Item.Properties p) {
-        this(id, definition, creator, null, p);
+    public ItemPluggableSimple(PluggableDefinition definition, @Nonnull IPluggableCreator creator, Item.Properties p) {
+        this(definition, creator, null, p);
     }
 
-    public ItemPluggableSimple(String id, PluggableDefinition definition, Item.Properties p) {
-        this(id, definition, definition.creator, null, p);
+    public ItemPluggableSimple(PluggableDefinition definition, Item.Properties p) {
+        this(definition, definition.creator, null, p);
     }
 
     @Override

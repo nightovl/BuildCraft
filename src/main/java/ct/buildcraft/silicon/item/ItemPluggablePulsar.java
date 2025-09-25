@@ -8,33 +8,30 @@ package ct.buildcraft.silicon.item;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-
-import buildcraft.api.mj.IMjRedstoneReceiver;
-import buildcraft.api.transport.IItemPluggable;
-import buildcraft.api.transport.pipe.IPipe;
-import buildcraft.api.transport.pipe.IPipeHolder;
-import buildcraft.api.transport.pipe.PipeBehaviour;
-import buildcraft.api.transport.pluggable.PipePluggable;
-
-import buildcraft.lib.item.ItemBC_Neptune;
-import buildcraft.lib.misc.SoundUtil;
-
-import buildcraft.silicon.BCSiliconPlugs;
-import buildcraft.silicon.plug.PluggablePulsar;
+import ct.buildcraft.api.mj.IMjRedstoneReceiver;
+import ct.buildcraft.api.transport.IItemPluggable;
+import ct.buildcraft.api.transport.pipe.IPipe;
+import ct.buildcraft.api.transport.pipe.IPipeHolder;
+import ct.buildcraft.api.transport.pipe.PipeBehaviour;
+import ct.buildcraft.api.transport.pluggable.PipePluggable;
+import ct.buildcraft.lib.misc.SoundUtil;
+import ct.buildcraft.silicon.BCSiliconPlugs;
+import ct.buildcraft.silicon.plug.PluggablePulsar;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 @Deprecated
-public class ItemPluggablePulsar extends ItemBC_Neptune implements IItemPluggable {
-    public ItemPluggablePulsar(String id) {
-        super(id);
+public class ItemPluggablePulsar extends Item implements IItemPluggable {
+    public ItemPluggablePulsar() {
+        super(new Item.Properties());
     }
 
     @Override
-    public PipePluggable onPlace(@Nonnull ItemStack stack, IPipeHolder holder, EnumFacing side, EntityPlayer player,
-        EnumHand hand) {
+    public PipePluggable onPlace(@Nonnull ItemStack stack, IPipeHolder holder, Direction side, Player player,
+        InteractionHand hand) {
         IPipe pipe = holder.getPipe();
         if (pipe == null) {
             return null;

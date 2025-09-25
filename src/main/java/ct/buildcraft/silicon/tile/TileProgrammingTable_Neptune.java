@@ -6,14 +6,23 @@
 
 package ct.buildcraft.silicon.tile;
 
+import ct.buildcraft.silicon.BCSiliconBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+
 public class TileProgrammingTable_Neptune extends TileLaserTableBase {
-    @Override
+	
+    public TileProgrammingTable_Neptune(BlockPos pos, BlockState state) {
+		super(BCSiliconBlocks.PROGRAMMING_TABLE_TABLE_TILE.get(), pos, state);
+	}
+
+	@Override
     public long getTarget() {
         return 0;
     }
 
-    @Override
+ /*   @Override
     public boolean hasFastRenderer() {
         return true;
-    }
+    }*/
 }

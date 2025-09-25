@@ -17,15 +17,13 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Side;
-
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.MessageManager;
-import ct.buildcraft.lib.net.PacketBufferBC;
+import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.recipe.AssemblyRecipe;
 import ct.buildcraft.lib.recipe.AssemblyRecipeRegistry;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
@@ -37,15 +35,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.network.NetworkEvent;
 
 public class TileAssemblyTable extends TileLaserTableBase {
@@ -226,9 +221,9 @@ public class TileAssemblyTable extends TileLaserTableBase {
             CompoundTag entryTag = recipesStatesTag.getCompound(i);
             String name = entryTag.getString("recipe");
             if (entryTag.contains("output")) {
-                AssemblyInstruction instruction = lookupRecipe(name, new ItemStack(entryTag.getCompoundTag("output")));
+                AssemblyInstruction instruction = lookupRecipe(name, ItemStack.of(entryTag.getCompound("output")));//TODO CHECK!
                 if (instruction != null)
-                    recipesStates.put(instruction, EnumAssemblyRecipeState.values()[entryTag.getInteger("state")]);
+                    recipesStates.put(instruction, EnumAssemblyRecipeState.values()[entryTag.getInt("state")]);
             }
         }
 	}
@@ -309,7 +304,7 @@ public class TileAssemblyTable extends TileLaserTableBase {
         public boolean equals(Object obj) {
             if (!(obj instanceof AssemblyInstruction)) return false;
             AssemblyInstruction instruction = (AssemblyInstruction) obj;
-            return recipe.getRegistryName().equals(instruction.recipe.getRegistryName()) && ItemStack.areItemStacksEqual(output, instruction.output);
+            return recipe.getRegistryName().equals(instruction.recipe.getRegistryName()) && ItemStack.isSame(output, instruction.output);
         }
     }
 }

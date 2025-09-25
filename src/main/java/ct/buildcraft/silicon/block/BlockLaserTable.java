@@ -6,25 +6,18 @@
 
 package ct.buildcraft.silicon.block;
 
-import buildcraft.silicon.BCSiliconGuis;
-import buildcraft.silicon.tile.TileAdvancedCraftingTable;
-import buildcraft.silicon.tile.TileAssemblyTable;
-import buildcraft.silicon.tile.TileChargingTable;
-import buildcraft.silicon.tile.TileIntegrationTable;
-import buildcraft.silicon.tile.TileProgrammingTable_Neptune;
 import ct.buildcraft.api.enums.EnumLaserTableType;
 import ct.buildcraft.api.mj.ILaserTargetBlock;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
-import net.minecraft.block.state.IBlockState;
+import ct.buildcraft.silicon.tile.TileAdvancedCraftingTable;
+import ct.buildcraft.silicon.tile.TileAssemblyTable;
+import ct.buildcraft.silicon.tile.TileChargingTable;
+import ct.buildcraft.silicon.tile.TileIntegrationTable;
+import ct.buildcraft.silicon.tile.TileProgrammingTable_Neptune;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.World;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -63,15 +56,15 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
     public TileBC_Neptune newBlockEntity(BlockPos pos, BlockState state) {
         switch(type) {
             case ASSEMBLY_TABLE:
-                return new TileAssemblyTable();
+                return new TileAssemblyTable(pos, state);
             case ADVANCED_CRAFTING_TABLE:
-                return new TileAdvancedCraftingTable();
+                return new TileAdvancedCraftingTable(pos, state);
             case INTEGRATION_TABLE:
-                return new TileIntegrationTable();
+                return new TileIntegrationTable(pos, state);
             case CHARGING_TABLE:
-                return new TileChargingTable();
+                return new TileChargingTable(pos, state);
             case PROGRAMMING_TABLE:
-                return new TileProgrammingTable_Neptune();
+                return new TileProgrammingTable_Neptune(pos, state);
         }
         return null;
     }
@@ -89,21 +82,21 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
             if (!world.isClientSide) {
                 //BCSiliconGuis.ASSEMBLY_TABLE.openGUI(player, pos);
             }
-            return true;
+            return InteractionResult.CONSUME;
         case ADVANCED_CRAFTING_TABLE:
             if (!world.isClientSide) {
                 //BCSiliconGuis.ADVANCED_CRAFTING_TABLE.openGUI(player, pos);
             }
-            return true;
+            return InteractionResult.CONSUME;
         case INTEGRATION_TABLE:
             if (!world.isClientSide) {
                // BCSiliconGuis.INTEGRATION_TABLE.openGUI(player, pos);
             }
-            return true;
+            return InteractionResult.CONSUME;
         case CHARGING_TABLE:
         case PROGRAMMING_TABLE:
     }
-    return InteractionResult.CONSUME;
+    return InteractionResult.PASS;
 	}
 
 }

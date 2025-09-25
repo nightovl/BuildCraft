@@ -10,21 +10,21 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
+import ct.buildcraft.api.core.EnumPipePart;
+import ct.buildcraft.api.mj.MjAPI;
+import ct.buildcraft.lib.tile.craft.IAutoCraft;
+import ct.buildcraft.lib.tile.craft.WorkbenchCrafting;
+import ct.buildcraft.lib.tile.item.ItemHandlerManager.EnumAccess;
+import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
+import ct.buildcraft.silicon.BCSiliconBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
-import buildcraft.api.core.EnumPipePart;
-import buildcraft.api.mj.MjAPI;
-
-import buildcraft.lib.net.PacketBufferBC;
-import buildcraft.lib.tile.craft.IAutoCraft;
-import buildcraft.lib.tile.craft.WorkbenchCrafting;
-import buildcraft.lib.tile.item.ItemHandlerManager.EnumAccess;
-import buildcraft.lib.tile.item.ItemHandlerSimple;
+import net.minecraftforge.network.NetworkEvent;
 
 public class TileAdvancedCraftingTable extends TileLaserTableBase implements IAutoCraft {
     private static final long POWER_REQ = 500 * MjAPI.MJ;
@@ -36,7 +36,8 @@ public class TileAdvancedCraftingTable extends TileLaserTableBase implements IAu
 
     public ItemStack resultClient = ItemStack.EMPTY;
 
-    public TileAdvancedCraftingTable() {
+    public TileAdvancedCraftingTable(BlockPos pos, BlockState state) {
+    	super(BCSiliconBlocks.ADVANCED_CRAFTING_TABLE_TILE.get(), pos, state);
         invBlueprint = itemManager.addInvHandler("blueprint", 3 * 3, EnumAccess.PHANTOM);
         invMaterials = itemManager.addInvHandler("materials", 5 * 3, EnumAccess.INSERT, EnumPipePart.VALUES);
         invResults = itemManager.addInvHandler("result", 3 * 3, EnumAccess.EXTRACT, EnumPipePart.VALUES);
@@ -47,20 +48,20 @@ public class TileAdvancedCraftingTable extends TileLaserTableBase implements IAu
     protected void onSlotChange(IItemHandlerModifiable handler, int slot, @Nonnull ItemStack before,
         @Nonnull ItemStack after) {
         super.onSlotChange(handler, slot, before, after);
-        if (!ItemStack.areItemStacksEqual(before, after)) {
+        if (!ItemStack.isSame(before, after)) {
             crafting.onInventoryChange(handler);
         }
     }
 
     @Override
     public long getTarget() {
-        return world.isRemote ? POWER_REQ : crafting.canCraft() ? POWER_REQ : 0;
+        return level.isClientSide ? POWER_REQ : crafting.canCraft() ? POWER_REQ : 0;
     }
 
     @Override
     public void update() {
         super.update();
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         boolean didChange = crafting.tick();
@@ -79,27 +80,27 @@ public class TileAdvancedCraftingTable extends TileLaserTableBase implements IAu
     }
 
     @Override
-    public void readPayload(int id, PacketBufferBC buffer, Side side, MessageContext ctx) throws IOException {
+    public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
         super.readPayload(id, buffer, side, ctx);
-        if (side == Side.CLIENT) {
+        if (side == LogicalSide.CLIENT) {
             if (id == NET_GUI_DATA) {
-                resultClient = buffer.readItemStack();
+                resultClient = buffer.readItem();
             }
         }
     }
 
     @Override
-    public void writePayload(int id, PacketBufferBC buffer, Side side) {
+    public void writePayload(int id, FriendlyByteBuf buffer, LogicalSide side) {
         super.writePayload(id, buffer, side);
-        if (side == Side.SERVER) {
+        if (side == LogicalSide.SERVER) {
             if (id == NET_GUI_DATA) {
-                buffer.writeItemStack(crafting.getAssumedResult());
+                buffer.writeItem(crafting.getAssumedResult());
             }
         }
 
     }
 
-    public InventoryCrafting getWorkbenchCrafting() {
+    public CraftingContainer getWorkbenchCrafting() {
         return crafting;
     }
 

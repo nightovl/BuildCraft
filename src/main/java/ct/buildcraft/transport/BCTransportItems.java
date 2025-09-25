@@ -133,8 +133,8 @@ public class BCTransportItems {
         // pipePowerIron = makePipeItem(BCTransportPipes.ironPower);
         PIPE_POWER_SAND_STONE = makePipeItem(BCTransportPipes.sandstonePower);
 
-        plugBlocker = ITEMS.register("plug_blocker",() -> new ItemPluggableSimple("plug_blocker", BCTransportPlugs.blocker, new Properties().tab(BCCore.tabPlugs)));
-        plugPowerAdaptor = ITEMS.register("plug_power_adaptor", () -> new ItemPluggableSimple("plug_power_adaptor",
+        plugBlocker = ITEMS.register("plug_blocker",() -> new ItemPluggableSimple(BCTransportPlugs.blocker, new Properties().tab(BCCore.tabPlugs)));
+        plugPowerAdaptor = ITEMS.register("plug_power_adaptor", () -> new ItemPluggableSimple(
             BCTransportPlugs.powerAdaptor, ItemPluggableSimple.PIPE_BEHAVIOUR_ACCEPTS_RS_POWER, new Properties().tab(BCCore.tabPlugs)));
 
         wire = ITEMS.register("wire", () -> new ItemWire("wire", new Properties().tab(BCCore.tabPlugs)));

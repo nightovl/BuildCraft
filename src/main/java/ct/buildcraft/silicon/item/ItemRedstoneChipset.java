@@ -6,43 +6,35 @@
 
 package ct.buildcraft.silicon.item;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
+import ct.buildcraft.api.enums.EnumRedstoneChipset;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import buildcraft.api.enums.EnumRedstoneChipset;
-
-import buildcraft.lib.item.ItemBC_Neptune;
-
-public class ItemRedstoneChipset extends ItemBC_Neptune {
-    public ItemRedstoneChipset(String id) {
-        super(id);
-        setHasSubtypes(true);
+public class ItemRedstoneChipset extends Item {
+	
+	protected final EnumRedstoneChipset type ;
+	
+    public ItemRedstoneChipset(EnumRedstoneChipset type) {
+        super(new Item.Properties()/*.stacksTo(16).tab(BCCore.BUILDCRAFT_TAB)*/);
+        this.type = type;
+        //setHasSubtypes(true);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
+/*    @Override
+    @OnlyI(Side.CLIENT)
     public void addModelVariants(TIntObjectHashMap<ModelResourceLocation> variants) {
         for (EnumRedstoneChipset type : EnumRedstoneChipset.values()) {
             addVariant(variants, type.ordinal(), type.getName());
         }
-    }
+    }*/
 
-    @Override
-    public void addSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        for (EnumRedstoneChipset type : EnumRedstoneChipset.values()) {
-            subItems.add(new ItemStack(this, 1, type.ordinal()));
-        }
-    }
+	@Override
+	public String getDescriptionId(ItemStack p_41455_) {
+		return "item.redstone_" + type.getSerializedName() + "_chipset";
+	}
+	
+	public EnumRedstoneChipset getType() {
+		return this.type;
+	}
 
-    @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return "item.redstone_" + EnumRedstoneChipset.values()[stack.getMetadata()].getName() + "_chipset";
-    }
 }
