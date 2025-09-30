@@ -23,7 +23,7 @@ public class BCSiliconBlocks {
     public static final RegistryObject<Block> LASER_BLOCK = BLOCKS.register("laser", BlockLaser::new);
     public static final RegistryObject<Block> ASSEMBLY_TABLE_BLOCK = BLOCKS.register("assembly_table", () -> new BlockLaserTable(EnumLaserTableType.ASSEMBLY_TABLE));
     public static final RegistryObject<Block> CHARGING_TABLE_BLOCK = BLOCKS.register("charging_table", () -> new BlockLaserTable(EnumLaserTableType.CHARGING_TABLE));
-    public static final RegistryObject<Block> INTERGRATION_TABLE_BLOCK = BLOCKS.register("integration_table", () -> new BlockLaserTable(EnumLaserTableType.INTEGRATION_TABLE));
+    public static final RegistryObject<Block> INTERGRATION_TABLE_BLOCK = BLOCKS.register("advanced_crafting_table", () -> new BlockLaserTable(EnumLaserTableType.INTEGRATION_TABLE));
     public static final RegistryObject<Block> ADVANCED_CRAFTING_TABLE_BLOCK = BLOCKS.register("integration_table", () -> new BlockLaserTable(EnumLaserTableType.ADVANCED_CRAFTING_TABLE));
     public static final RegistryObject<Block> PROGRAMMING_TABLE_TABLE_BLOCK = BLOCKS.register("programming_table", () -> new BlockLaserTable(EnumLaserTableType.PROGRAMMING_TABLE));
 

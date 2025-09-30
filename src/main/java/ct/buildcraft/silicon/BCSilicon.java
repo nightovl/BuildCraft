@@ -55,10 +55,11 @@ public class BCSilicon {
         FacadeAPI.registry = FacadeStateManager.INSTANCE;
 
         BCSiliconConfig.preInit();
-        BCSiliconBlocks.registry(modEventBus);
         BCSiliconPlugs.preInit();
-        BCSiliconItems.registry(modEventBus);
         BCSiliconStatements.preInit();
+        BCSiliconBlocks.registry(modEventBus);
+        BCSiliconItems.registry(modEventBus);
+        
         
         
         RECIPE_SERIALIZERS.register("facade_swap_recipe_", () -> FacadeSwapRecipe.SERIALIZER);

@@ -88,7 +88,7 @@ public class BCBuildersEventDist {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void onRenderTooltipPostText(RenderTooltipEvent.Color event) {
-        Snapshot snapshot = null;
+/*        Snapshot snapshot = null;
         ItemStack stack = event.getItemStack();
         Header header = BCBuildersItems.BLUEPRINT.get() != null &&  BCBuildersItems.TEMPLATE.get() != null? ItemSnapshot.getHeader(stack) : null;
         if (header != null) {
@@ -135,7 +135,7 @@ public class BCBuildersEventDist {
                 borderColorEnd);
 
             ClientSnapshots.INSTANCE.renderSnapshot(snapshot, pX, pY, sX, sY);
-        }
+        }*/
     }
 
     @OnlyIn(Dist.CLIENT)

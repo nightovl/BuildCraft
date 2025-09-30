@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.lib.client.model.ModelHolderRegistry;
+import ct.buildcraft.lib.client.reload.ReloadManager;
 import ct.buildcraft.lib.client.render.DetachedRenderer;
 import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
 import ct.buildcraft.lib.client.render.MarkerRenderer;
@@ -71,7 +72,7 @@ public class BCLibEventDist {
 	    @SubscribeEvent//(priority = EventPriority.HIGHEST)
 	    public static void textureStitchPre(TextureStitchEvent.Pre event) {
 	    	if("textures/atlas/blocks.png".equals(event.getAtlas().location().getPath())) {
-//	    		ReloadManager.INSTANCE.preReloadResources();
+	    		ReloadManager.INSTANCE.preReloadResources();
 	    		SpriteHolderRegistry.onTextureStitchPre(event);
 	    		ModelHolderRegistry.onTextureStitchPre(event);
 	    		FluidRenderer.onTextureStitchPre(event);

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import buildcraft.lib.misc.data.ModelVariableData;
+import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.api.transport.IWireEmitter;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
@@ -212,7 +212,7 @@ public class PluggableGate extends PipePluggable implements IWireEmitter {
 
     @Override
     public ItemStack getPickStack() {
-        return BCSiliconItems.plugGate.getStack(logic.variant);
+        return BCSiliconItems.PLUG_GATE_ITEM.get().getStack(logic.variant);
     }
 
     @Override

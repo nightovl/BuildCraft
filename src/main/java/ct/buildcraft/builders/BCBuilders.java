@@ -8,14 +8,18 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import ct.buildcraft.api.BCModules;
 import ct.buildcraft.builders.client.render.RenderArchitectTable;
 import ct.buildcraft.builders.client.render.RenderBuilder;
 import ct.buildcraft.builders.client.render.RenderFiller;
 import ct.buildcraft.builders.client.render.RenderQuarry;
+import ct.buildcraft.builders.snapshot.MessageSnapshotRequest;
+import ct.buildcraft.builders.snapshot.MessageSnapshotResponse;
+import ct.buildcraft.lib.net.MessageManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,6 +43,8 @@ public class BCBuilders {
     	modEventBus.addListener(BCBuilders::commonSetup);
 //    	modEventBus.addListener(this::gatherData);//DataGenerator
     	
+
+    	
     	BCBuildersBlocks.registry(modEventBus);
     	BCBuildersItems.registry(modEventBus);
     	BCBuildersSchematics.preInit();
@@ -46,6 +52,9 @@ public class BCBuilders {
     	BCBuildersRegistries.preInit();
     	BCBuildersGuis.preInit(modEventBus);
     	ModLoadingContext.get().registerConfig(Type.COMMON, BCBuildersConfig.config);
+    	
+        MessageManager.registerMessageClass(BCModules.BUILDERS, MessageSnapshotRequest.class, MessageSnapshotRequest.HANDLER, MessageSnapshotRequest::toBytes, MessageSnapshotRequest::new);
+        MessageManager.registerMessageClass(BCModules.BUILDERS, MessageSnapshotResponse.class, MessageSnapshotResponse.HANDLER, MessageSnapshotResponse::toBytes, MessageSnapshotResponse::new);
     	
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCBuildersConfig.class);

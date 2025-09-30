@@ -9,7 +9,7 @@ package ct.buildcraft.silicon.plug;
 import java.io.IOException;
 import java.util.Arrays;
 
-import buildcraft.lib.misc.data.ModelVariableData;
+import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.mj.IMjRedstoneReceiver;
 import ct.buildcraft.api.mj.MjAPI;

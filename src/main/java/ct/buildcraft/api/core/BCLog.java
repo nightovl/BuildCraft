@@ -4,13 +4,12 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package ct.buildcraft.api.core;
 
-
-
-import com.mojang.logging.LogUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class BCLog {
-    public static final org.slf4j.Logger logger = //LogManager.getLogger("BuildCraft");
-    									LogUtils.getLogger();
+    public static final Logger logger = LogManager.getLogger("BuildCraft");
+    									//LogUtils.getLogger();
     
     /** Deactivate constructor */
     private BCLog() {}

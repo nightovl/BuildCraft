@@ -12,15 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
-import com.google.common.base.Predicates;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -28,17 +25,10 @@ import com.mojang.math.Quaternion;
 
 import ct.buildcraft.lib.net.MessageManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.AABB;
@@ -84,7 +74,8 @@ public enum ClientSnapshots {
     @OnlyIn(Dist.CLIENT)
     public void renderSnapshot(Snapshot snapshot, int offsetX, int offsetY, int sizeX, int sizeY) {
         FakeWorld world = worlds.computeIfAbsent(snapshot.key, key -> {
-            FakeWorld localWorld = new FakeWorld(Minecraft.getInstance().level);
+        	Minecraft mc = Minecraft.getInstance();
+            FakeWorld localWorld = new FakeWorld(mc.level);
             localWorld.uploadSnapshot(snapshot);
             return localWorld;
         });
@@ -188,28 +179,38 @@ public enum ClientSnapshots {
         }
         // noinspection Guava
         for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.ofSize(null, viewportWidth, viewportHeight, snapshotSize))) {
-            Vec3 pos = entity.getPositionVector();
-            GlStateManager.pushAttrib();
-            Minecraft.getMinecraft().getRenderManager().renderEntity(
+            Vec3 pos = entity.position();
+            //GlStateManager.pushAttrib();
+            MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+            pose.pushPose();
+            Minecraft.getInstance().getEntityRenderDispatcher().render(
                 entity,
                 pos.x - FakeWorld.BLUEPRINT_OFFSET.getX(),
                 pos.y - FakeWorld.BLUEPRINT_OFFSET.getY(),
                 pos.z - FakeWorld.BLUEPRINT_OFFSET.getZ(),
                 0,
                 0,
-                true
+                pose,
+                multibuffersource$buffersource,
+                15728880
             );
-            GlStateManager.popAttrib();
+            pose.popPose();
+            multibuffersource$buffersource.endBatch();
+           // GlStateManager.popAttrib();
         }
-        GlStateManager.popMatrix();
+/*        GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
         GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.viewport(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        GlStateManager.viewport(0, 0, Minecraft.getInstance().displayWidth, Minecraft.getMinecraft().displayHeight);
         GlStateManager.popMatrix();
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
-        GlStateManager.disableDepth();
+        GlStateManager.disableDepth();*/
+        var win = Minecraft.getInstance().getWindow();
+        RenderSystem.viewport(0, 0, win.getWidth(), win.getHeight());
+        RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
         pose.popPose();
     }
 }

@@ -2,6 +2,7 @@ package ct.buildcraft.silicon;
 
 import java.util.EnumMap;
 
+import ct.buildcraft.silicon.plug.PluggablePulsar;
 import ct.buildcraft.api.enums.EnumRedstoneChipset;
 import ct.buildcraft.builders.BCBuilders;
 import ct.buildcraft.lib.item.ItemPluggableSimple;
@@ -23,7 +24,7 @@ public class BCSiliconItems {
     public static final RegistryObject<ItemPluggableFacade> PLUG_FACADE_ITEM = ITEMS.register("plug/facade", ItemPluggableFacade::new); 
     public static final RegistryObject<ItemPluggableLens> PLUG_LENS_ITEM = ITEMS.register("plug/lens", ItemPluggableLens::new); 
     public static final RegistryObject<ItemPluggableSimple> PLUG_LIGHT_SENSOR_ITEM = ITEMS.register("plug/light_sensor", () -> new ItemPluggableSimple(BCSiliconPlugs.lightSensor, new Item.Properties())); 
-    public static final RegistryObject<ItemPluggableSimple> PLUG_PULSAR_ITEM = ITEMS.register("plug/pulsar", () -> new ItemPluggableSimple(BCSiliconPlugs.pulsar, new Item.Properties())); 
+    public static final RegistryObject<ItemPluggableSimple> PLUG_PULSAR_ITEM = ITEMS.register("plug/pulsar", () -> new ItemPluggableSimple(BCSiliconPlugs.pulsar, PluggablePulsar::new, ItemPluggableSimple.PIPE_BEHAVIOUR_ACCEPTS_RS_POWER, new Item.Properties())); 
 
     
     public static void registry(IEventBus b) {

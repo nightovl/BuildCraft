@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.HashBiMap;
 import com.mojang.blaze3d.platform.NativeImage;

@@ -16,12 +16,13 @@ import ct.buildcraft.lib.crops.CropHandlerReeds;
 import ct.buildcraft.lib.fluid.CoolantRegistry;
 import ct.buildcraft.lib.fluid.FuelRegistry;
 import ct.buildcraft.lib.misc.FakePlayerProvider;
+import ct.buildcraft.lib.recipe.IntegrationRecipeRegistry;
 import ct.buildcraft.lib.recipe.RefineryRecipeRegistry;
 import ct.buildcraft.lib.registry.PluggableRegistry;
 
 public class BCLibRegistries {
     public static void fmlPreInit() {
-//        BuildcraftRecipeRegistry.integrationRecipes = IntegrationRecipeRegistry.INSTANCE;
+        BuildcraftRecipeRegistry.integrationRecipes = IntegrationRecipeRegistry.INSTANCE;
         BuildcraftRecipeRegistry.refineryRecipes = RefineryRecipeRegistry.INSTANCE;
         BuildcraftFuelRegistry.fuel = FuelRegistry.INSTANCE;
         BuildcraftFuelRegistry.coolant = CoolantRegistry.INSTANCE;
