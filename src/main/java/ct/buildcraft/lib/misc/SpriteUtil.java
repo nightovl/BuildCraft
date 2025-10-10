@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import ct.buildcraft.api.core.render.ISprite;
+import ct.buildcraft.lib.BCLibSprites;
 import ct.buildcraft.lib.client.sprite.SpriteRaw;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -92,7 +93,7 @@ public class SpriteUtil {
             return null;
         }
     }
-/*//temp cancel
+
     public static ISprite getFaceSprite(GameProfile profile) {
         if (profile == null) {
             return BCLibSprites.HELP;
@@ -103,7 +104,7 @@ public class SpriteUtil {
         }
         return new SpriteRaw(loc, 8, 8, 8, 8, 64);
     }
-*/
+
     @Nullable
     public static ISprite getFaceOverlaySprite(GameProfile profile) {
         if (profile == null) {

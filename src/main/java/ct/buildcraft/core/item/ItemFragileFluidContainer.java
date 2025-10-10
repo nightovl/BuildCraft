@@ -94,7 +94,7 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
         if (fluidTag != null) {
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(fluidTag);
             if (fluid != null && fluid.getAmount() > 0) {
-                tooltip.add(Component.literal(LocaleUtil.localizeFluidStaticAmount(fluid.getAmount(), MAX_FLUID_HELD)));
+                tooltip.add((LocaleUtil.localizeFluidStaticAmount(fluid.getAmount(), MAX_FLUID_HELD)));
             }
         }
 	}

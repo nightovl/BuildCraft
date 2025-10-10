@@ -10,13 +10,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import ct.buildcraft.lib.client.model.ModelUtil.UvFaceData;
 import ct.buildcraft.lib.expression.DefaultContexts;
 import ct.buildcraft.lib.expression.GenericExpressionCompiler;
 import ct.buildcraft.lib.expression.api.InvalidExpressionException;
 import ct.buildcraft.lib.misc.MathUtil;
+import net.minecraft.util.GsonHelper;
 
 public class JsonTexture {
     public final String location;
@@ -38,7 +38,7 @@ public class JsonTexture {
 
     public JsonTexture(JsonObject obj) {
         try {
-            location = JsonUtils.getStringOr("location", obj, "");
+            location = GsonHelper.getAsString(obj, "location");
             JsonArray uvs = obj.getAsJsonArray("uv");
             if (uvs.size() != 4) {
                 throw new JsonSyntaxException("Must have 4 elements (uMin, vMin, uMax, vMax)");

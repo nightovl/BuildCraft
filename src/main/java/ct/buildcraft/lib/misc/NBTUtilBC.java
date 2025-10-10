@@ -285,7 +285,7 @@ public final class NBTUtilBC {
     public static ListTag writeStringList(Stream<String> stream) {
     	ListTag list = new ListTag();
     	int counter = 0;
-    	for(StringTag tag : (StringTag[])stream.map(StringTag::valueOf).toArray())
+    	for(StringTag tag : stream.map(StringTag::valueOf).toList())
     		list.addTag(counter++, tag);
     	return list;
     }

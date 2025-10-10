@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import ct.buildcraft.builders.snapshot.RulesLoader;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.builders.client.render.RenderArchitectTable;
 import ct.buildcraft.builders.client.render.RenderBuilder;
@@ -67,6 +68,7 @@ public class BCBuilders {
     public static void commonSetup(final FMLCommonSetupEvent event) {
     	BCBuildersConfig.reloadConfig(MODID);
     	BCBuildersRegistries.init();
+    	RulesLoader.loadAll();
     }
 
 

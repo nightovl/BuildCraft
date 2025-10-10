@@ -23,10 +23,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -81,7 +81,7 @@ public class JsonModel {
     }
 
     public JsonModel(JsonObject obj, ResourceLoaderContext ctx) throws JsonParseException, IOException {
-        ambientOcclusion = JsonUtils.getBooleanOr("ambientocclusion", obj, false);
+        ambientOcclusion = GsonHelper.getAsBoolean(obj, "ambientocclusion", false);
         textures = JsonUtil.getSubAsImmutableMap(obj, "textures", new TypeToken<HashMap<String, String>>() {});
         if (obj.has("elements")) {
             cutoutElements = deserializePartArray(obj, "elements", false, ctx);

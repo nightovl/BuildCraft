@@ -79,7 +79,7 @@ public class TankComponent extends AbstractComponent{
         List<Component> toolTip = Lists.newArrayList();
         if (amount > 0) 
         	toolTip.add(fluid.getFluidType().getDescription());
-        toolTip.add(Component.translatable(LocaleUtil.localizeFluidStaticAmount(amount, capacity)).withStyle(ChatFormatting.GRAY));//TODO
+        toolTip.add((LocaleUtil.localizeFluidStaticAmount(amount, capacity)).withStyle(ChatFormatting.GRAY));
         return toolTip ;
     }
 	

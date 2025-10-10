@@ -14,12 +14,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import ct.buildcraft.lib.client.model.ResourceLoaderContext;
 import ct.buildcraft.lib.misc.JsonUtil;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.core.Direction;
+import net.minecraft.util.GsonHelper;
 
 /** {@link BlockElement} but with a few extra features */
 public class JsonModelPart {
@@ -70,7 +70,7 @@ public class JsonModelPart {
     private static JsonQuad[] readCuboid(JsonObject obj) {
         float[] from = readFloatPositionSmaller(obj, "from");
         float[] to = readFloatPositionSmaller(obj, "to");
-        boolean shade = JsonUtils.getBooleanOr("shade", obj, false);
+        boolean shade = GsonHelper.getAsBoolean(obj, "shade", false);
 
         if (obj.has("faces")) {
             JsonElement faces = obj.get("faces");

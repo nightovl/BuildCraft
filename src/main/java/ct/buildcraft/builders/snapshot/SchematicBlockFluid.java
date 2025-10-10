@@ -26,6 +26,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -35,9 +36,9 @@ public class SchematicBlockFluid implements ISchematicBlock {
 
     @SuppressWarnings("unused")
     public static boolean predicate(SchematicBlockContext context) {
-        return BlockUtil.getFluidWithFlowing(context.world, context.pos) != null &&
-            (BlockUtil.getFluid(context.world, context.pos) == null ||
-                BlockUtil.getFluidWithoutFlowing(context.world.getBlockState(context.pos)) != null);
+        return BlockUtil.getFluidWithFlowing(context.world, context.pos) != Fluids.EMPTY &&
+            (BlockUtil.getFluid(context.world, context.pos) == Fluids.EMPTY ||
+                BlockUtil.getFluidWithoutFlowing(context.world.getBlockState(context.pos)) != Fluids.EMPTY);
     }
 
     @Override

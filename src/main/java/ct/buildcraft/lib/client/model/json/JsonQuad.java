@@ -15,10 +15,10 @@ import ct.buildcraft.lib.misc.JsonUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.math.Vector3f;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.GsonHelper;
 
 public class JsonQuad {
     public boolean shade = false;
@@ -29,9 +29,9 @@ public class JsonQuad {
 
     public JsonQuad(JsonObject obj, float[] from, float[] to, Direction face) {
         this.face = face;
-        tint = JsonUtils.getIntOr("tintindex", obj, -1);
-        texture = JsonUtils.getStringOr("texture", obj, "minecraft:missingno");
-        int rotation = JsonUtils.getIntOr("rotation", obj, 0);
+        tint = GsonHelper.getAsInt(obj, "tintindex", -1);
+        texture = GsonHelper.getAsString(obj, "texture", "minecraft:missingno");
+        int rotation = GsonHelper.getAsInt(obj, "rotation", 0);
         float[] uv = JsonUtil.getSubAsFloatArray(obj, "uv");
         if (uv.length != 4) {
             throw new JsonSyntaxException("Expected exactly 4 floats, but got " + Arrays.toString(uv));

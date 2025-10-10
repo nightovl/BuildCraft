@@ -11,7 +11,6 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import ct.buildcraft.lib.client.model.MutableQuad;
 import ct.buildcraft.lib.client.model.ResourceLoaderContext;
@@ -22,6 +21,7 @@ import ct.buildcraft.lib.expression.api.IExpressionNode.INodeObject;
 import ct.buildcraft.lib.expression.node.value.NodeConstantDouble;
 import ct.buildcraft.lib.misc.ExpressionCompat;
 import net.minecraft.core.Direction;
+import net.minecraft.util.GsonHelper;
 
 /** A rule for changing a model's elements. The most basic example is rotating an entire model based of a single
  * property. */
@@ -38,18 +38,18 @@ public abstract class JsonModelRule {
             throw new JsonSyntaxException("Expected an object, got " + json);
         }
         JsonObject obj = json.getAsJsonObject();
-        String when = JsonUtils.getStringOr("when", obj, "");
+        String when = GsonHelper.getAsString(obj, "when");
         INodeBoolean nodeWhen = JsonVariableModelPart.convertStringToBooleanNode(when, fnCtx);
 
-        String type = JsonUtils.getStringOr("type", obj, "");
+        String type = GsonHelper.getAsString(obj, "type");
         if (type.startsWith("builtin:")) {
             String builtin = type.substring("builtin:".length());
             if ("rotate_facing".equals(builtin)) {
                 fnCtx = new FunctionContext(fnCtx, ExpressionCompat.DIRECTION);
-                String from = JsonUtils.getStringOr("from", obj, "");
+                String from = GsonHelper.getAsString(obj, "from");
                 INodeObject<Direction> nodeFrom = JsonVariableModelPart.convertStringToObjectNode(from, fnCtx, Direction.class);
 
-                String to = JsonUtils.getStringOr("to", obj, "");
+                String to = GsonHelper.getAsString(obj, "to");
                 INodeObject<Direction> nodeTo = JsonVariableModelPart.convertStringToObjectNode(to, fnCtx, Direction.class);
 
                 INodeDouble[] origin;

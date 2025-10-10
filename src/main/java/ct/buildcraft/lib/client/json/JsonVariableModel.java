@@ -23,7 +23,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.realmsclient.util.JsonUtils;
 
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.client.model.ModelHolderRegistry;
@@ -41,6 +40,7 @@ import ct.buildcraft.lib.misc.SpriteUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.InventoryMenu;
 
 /** {@link JsonModel} but any element can change depending on variables. */
@@ -101,7 +101,7 @@ public class JsonVariableModel extends JsonVariableObject {
         }
 
         if (obj.has("parent")) {
-            String parentName = JsonUtils.getStringOr("parent", obj, "");
+            String parentName = GsonHelper.getAsString(obj, "parent");
             parentName += ".json";
             ResourceLocation from = new ResourceLocation(parentName);
             JsonVariableModel parent;
@@ -111,22 +111,22 @@ public class JsonVariableModel extends JsonVariableObject {
                 throw new JsonParseException("Didn't find the parent '" + parentName + "'!", e);
             }
             ambf = parent.ambientOcclusion;
-            if (!JsonUtils.getBooleanOr("textures_reset", obj, false)) {
+            if (!GsonHelper.getAsBoolean(obj, "textures_reset", false)) {
                 textures.putAll(parent.textures);
             }
             variables.putAll(parent.variables);
-            if (!JsonUtils.getBooleanOr("cutout_replace", obj, false)) {
+            if (!GsonHelper.getAsBoolean(obj, "cutout_replace", false)) {
                 Collections.addAll(cutout, parent.cutoutElements);
             }
-            if (!JsonUtils.getBooleanOr("translucent_replace", obj, false)) {
+            if (!GsonHelper.getAsBoolean(obj, "translucent_replace", false)) {
                 Collections.addAll(translucent, parent.translucentElements);
             }
-            if (!JsonUtils.getBooleanOr("rules_replace", obj, false)) {
+            if (!GsonHelper.getAsBoolean(obj, "rules_replace", false)) {
                 Collections.addAll(rulesP, parent.rules);
             }
         }
 
-        ambientOcclusion = JsonUtils.getBooleanOr("ambientocclusion", obj, ambf);
+        ambientOcclusion = GsonHelper.getAsBoolean(obj, "ambientocclusion", ambf);
         deserializeTextures(obj.get("textures"));
         if (obj.has("variables")) {
             fnCtx = new FunctionContext(fnCtx);

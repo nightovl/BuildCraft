@@ -232,7 +232,7 @@ public class BlueprintBuilder extends SnapshotBuilder<ITileForBlueprintBuilder> 
     }
 
     @Override
-    public boolean tick() {
+	public boolean tick() {
     	Level level = tile.getWorldBC();
     	
         if (level.isClientSide) {

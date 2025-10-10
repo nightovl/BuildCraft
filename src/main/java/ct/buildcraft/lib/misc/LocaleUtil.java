@@ -23,6 +23,8 @@ import ct.buildcraft.lib.BCLibConfig.TimeGap;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -115,16 +117,16 @@ public class LocaleUtil {
         return localize("direction." + (face == null ? "center" : face.getName()));
     }
 
-    public static String localizeFluidStaticAmount(IFluidTank tank) {
+    public static MutableComponent localizeFluidStaticAmount(IFluidTank tank) {
         return localizeFluidStaticAmount(tank.getFluidAmount(), tank.getCapacity());
     }
 
-    public static String localizeFluidStaticAmount(int fluidAmount) {
+    public static MutableComponent localizeFluidStaticAmount(int fluidAmount) {
         return localizeFluidStaticAmount(fluidAmount, -1);
     }
 
     /** Localizes the given fluid amount, out of a given capacity */
-    public static String localizeFluidStaticAmount(int fluidAmount, int capacity) {
+    public static MutableComponent localizeFluidStaticAmount(int fluidAmount, int capacity) {
         if (fluidAmount <= 0) {
             if (capacity > 0) {
                 String cap;
@@ -133,9 +135,9 @@ public class LocaleUtil {
                 } else {
                     cap = FORMAT_FLUID.format(capacity);
                 }
-                return localize(localeKeyFluidStaticEmpty, cap);
+                return Component.translatable(localeKeyFluidStaticEmpty, cap);
             }
-            return localize("buildcraft.fluid.empty");
+            return Component.translatable("buildcraft.fluid.empty");
         } else {
             String amount;
             String cap;
@@ -147,36 +149,36 @@ public class LocaleUtil {
                 cap = FORMAT_FLUID.format(capacity);
             }
             if (capacity == fluidAmount) {
-                return localize(localeKeyFluidStaticFull, amount);
+                return Component.translatable(localeKeyFluidStaticFull, amount);
             }
-            return localize(capacity > 0 ? localeKeyFluidStaticCap : localeKeyFluidStatic, amount, cap);
+            return Component.translatable(capacity > 0 ? localeKeyFluidStaticCap : localeKeyFluidStatic, amount, cap);
         }
     }
 
-    public static String localizeFluidFlow(int milliBucketsPerTick) {
+    public static MutableComponent localizeFluidFlow(int milliBucketsPerTick) {
         String amount;
         if (BCLibConfig.useBucketsFlow) {
             amount = FORMAT_FLUID.format(milliBucketsPerTick / 50.0);
         } else {
             amount = FORMAT_FLUID.format(milliBucketsPerTick);
         }
-        return localize(localeKeyFluidFlow, amount);
+        return Component.translatable(localeKeyFluidFlow, amount);
     }
 
-    public static String localizeMj(long mj) {
-        return localize(localeKeyMjStatic, MjAPI.formatMj(mj));
+    public static MutableComponent localizeMj(long mj) {
+        return Component.translatable(localeKeyMjStatic, MjAPI.formatMj(mj));
     }
 
-    public static String localizeMjFlow(long mj) {
+    public static MutableComponent localizeMjFlow(long mj) {
         mj = BCLibConfig.displayTimeGap.convertTicksToGap(mj);
-        return localize(localeKeyMjFlow, MjAPI.formatMj(mj));
+        return Component.translatable(localeKeyMjFlow, MjAPI.formatMj(mj));
     }
 
-    public static String localizeHeat(double heat) {
+    public static MutableComponent localizeHeat(double heat) {
         // if (BCLibConfig.useLongLocalizedName) {
         // return localize("buildcraft.heat.long", heat);
         // } else {
-        return String.format("%.2f \u00B0C", heat);
+        return Component.translatable("%.2f \u00B0C", heat);
         // }
     }
 }

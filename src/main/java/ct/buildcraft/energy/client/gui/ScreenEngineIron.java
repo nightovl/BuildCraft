@@ -56,7 +56,7 @@ public class ScreenEngineIron extends ContainerScreenBase<MenuEngineIron_BC8>{
         List<Component> toolTip = Lists.newArrayList();
         if (amount > 0) 
         	toolTip.add(fluid.getFluidType().getDescription());
-        toolTip.add(Component.translatable(LocaleUtil.localizeFluidStaticAmount(amount, 10000)).withStyle(ChatFormatting.GRAY));//TODO
+        toolTip.add((LocaleUtil.localizeFluidStaticAmount(amount, 10000)).withStyle(ChatFormatting.GRAY));//TODO
         return toolTip ;
     }
 

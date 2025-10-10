@@ -25,6 +25,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,6 +55,7 @@ public class RulesLoader {
         .registerTypeAdapter(NbtPath.class, NbtPath.DESERIALIZER)
         .registerTypeAdapterFactory(JsonSelector.TYPE_ADAPTER_FACTORY)
         .registerTypeAdapterFactory(NbtRef.TYPE_ADAPTER_FACTORY)
+        .registerTypeAdapterFactory(NbtRef.NBT_TYPE_ADAPTER_FACTORY)
         .create();
 
     private static final List<JsonRule> RULES = new ArrayList<>();
@@ -75,7 +77,7 @@ public class RulesLoader {
                 if (modContainer.getMod() == null) {
                     return;
                 }
-                InputStream inputStream = modContainer.getMod().getClass().getClassLoader().getResourceAsStream(
+                InputStream inputStream = modContainer.getMod().getClass().getResourceAsStream("/" +
                     base + "index.json"
                 );
                 if (inputStream != null) {
@@ -88,8 +90,7 @@ public class RulesLoader {
                         .map(name -> {
                             InputStream resourceAsStream = modContainer.getMod()
                                 .getClass()
-                                .getClassLoader()
-                                .getResourceAsStream(name);
+                                .getResourceAsStream("/" +name);
                             if (resourceAsStream == null) {
                                 throw new RuntimeException(new IOException("Can't read " + name));
                             }

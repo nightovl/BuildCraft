@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import ct.buildcraft.api.core.IFluidFilter;
 import ct.buildcraft.api.core.IFluidHandlerAdv;
+import ct.buildcraft.lib.gui.elem.ToolTip;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
@@ -24,8 +25,11 @@ import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.NetworkedFluidStackCache;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +51,13 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
 
     public int colorRenderCache = 0xFFFFFF;
 
+    protected final ToolTip toolTip = new ToolTip() {
+        @Override
+        public void refresh() {
+            refreshTooltip();
+        }
+    };
+    
     @Nonnull
     private final String name;
 
@@ -131,6 +142,25 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
      * fluid. */
     protected void readTankFromNBT(CompoundTag nbt) {}
 
+    public ToolTip getToolTip() {
+        return toolTip;
+    }
+
+    protected void refreshTooltip() {
+        toolTip.clear();
+        int amount = clientAmount;
+        FluidStack fluidStack = clientFluid == null ? null : clientFluid.get().copy();
+        if (fluidStack != null && amount > 0) {
+            toolTip.add(fluidStack.getDisplayName());
+        }
+        toolTip.add(LocaleUtil.localizeFluidStaticAmount(amount, getCapacity()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+        FluidStack serverFluid = getFluid();
+        if (serverFluid != null && serverFluid.getAmount() > 0) {
+            toolTip.add(Component.literal("BUG: Server-side fluid on client!").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            toolTip.add(serverFluid.getDisplayName());
+            toolTip.add(LocaleUtil.localizeFluidStaticAmount(serverFluid.getAmount(), getCapacity()));
+        }
+    }
 
     @Override
 	public boolean isFluidValid(FluidStack stack) {
@@ -253,7 +283,7 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
         if (!fluid.isEmpty()) {
             return fluid.getTranslationKey() + LocaleUtil.localizeFluidStaticAmount(this);
         }
-        return LocaleUtil.localizeFluidStaticAmount(0, getCapacity());
+        return LocaleUtil.localizeFluidStaticAmount(0, getCapacity()).getString();
     }
 
     public void writeToBuffer(FriendlyByteBuf buffer) {

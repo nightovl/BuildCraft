@@ -8,6 +8,7 @@ package ct.buildcraft.builders.snapshot;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,8 +22,15 @@ import com.google.gson.stream.JsonWriter;
 
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 public class NbtRef<N extends Tag> {
@@ -66,7 +74,8 @@ public class NbtRef<N extends Tag> {
                 return null;
             }
             // noinspection unchecked
-            Class<? extends Tag> nClass = (Class<? extends Tag>)
+            @SuppressWarnings("unchecked")
+			Class<? extends Tag> nClass = (Class<? extends Tag>)
                 ((ParameterizedType) type.getType()).getActualTypeArguments()[0];
             if (nClass == ByteArrayTag.class || nClass == IntArrayTag.class || nClass == ListTag.class) {
                 return new TypeAdapter<T>() {
@@ -75,7 +84,8 @@ public class NbtRef<N extends Tag> {
                         throw new UnsupportedOperationException();
                     }
 
-                    @Override
+                    @SuppressWarnings("unchecked")
+					@Override
                     public T read(JsonReader in) throws IOException {
                         if (in.peek() != JsonToken.BEGIN_ARRAY) {
                             // noinspection unchecked
@@ -101,7 +111,8 @@ public class NbtRef<N extends Tag> {
                         throw new UnsupportedOperationException();
                     }
 
-                    @Override
+                    @SuppressWarnings("unchecked")
+					@Override
                     public T read(JsonReader in) throws IOException {
                         if (in.peek() == JsonToken.BEGIN_ARRAY) {
                             // noinspection unchecked
@@ -110,6 +121,7 @@ public class NbtRef<N extends Tag> {
                             );
                         } else {
                             // noinspection unchecked
+                        	//var car = gson.<String>fromJson(in, new String().getClass());
                             return (T) EnumType.BY_VALUE.create(
                                 gson.<Tag>fromJson(in, nClass)
                             );
@@ -118,6 +130,126 @@ public class NbtRef<N extends Tag> {
                 };
             }
         }
+    };
+    
+    public static final TypeAdapterFactory NBT_TYPE_ADAPTER_FACTORY = new TypeAdapterFactory() {
+		@Override
+		public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+			if(type.getRawType() == StringTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.STRING
+	                        ? (T) StringTag.valueOf(in.nextString())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == ByteTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) ByteTag.valueOf((byte)in.nextInt())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == DoubleTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) DoubleTag.valueOf(in.nextDouble())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == FloatTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) FloatTag.valueOf((float)in.nextDouble())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == IntTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) IntTag.valueOf(in.nextInt())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == LongTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) LongTag.valueOf(in.nextLong())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+			if(type.getRawType() == ShortTag.class){
+	            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+	            return new TypeAdapter<T>() {
+	                @Override
+	                public void write(JsonWriter out, T value) throws IOException {
+	                    throw new UnsupportedOperationException();
+	                }
+	                @SuppressWarnings("unchecked")
+	                @Override
+	                public T read(JsonReader in) throws IOException {
+	                    return in.peek() == JsonToken.NUMBER
+	                        ? (T) ShortTag.valueOf((short)in.nextInt())
+	                        : delegate.read(in);
+	                }
+	            };
+			}
+
+			return null;
+		}
     };
 
     public enum EnumType {

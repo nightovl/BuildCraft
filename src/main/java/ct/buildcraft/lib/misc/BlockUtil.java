@@ -307,7 +307,7 @@ public final class BlockUtil {
     //Only get Source or WaterLogged block
     public static Fluid getFluid(Level world, BlockPos pos) {
         FluidStack fluid = drainBlock(world, pos, false);
-        return fluid != null ? fluid.getFluid() : null;
+        return fluid != FluidStack.EMPTY ? fluid.getFluid() : Fluids.EMPTY;
     }
 
     //check for Source block
