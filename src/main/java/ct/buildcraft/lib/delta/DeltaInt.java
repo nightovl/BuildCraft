@@ -190,6 +190,20 @@ public class DeltaInt {
         nbt.put("changing", list);
         return nbt;
     }
+    
+    public static double getDynamic(ContainerData data, float partialTicks) {
+    	double dynamicValueThis = data.get(1) /10000;
+    	double dynamicValueLast = data.get(0) / 10000;
+        if (partialTicks <= 0) {
+            return dynamicValueLast;
+        } else if (partialTicks >= 1) {
+            return dynamicValueThis;
+        } else {
+            double a = dynamicValueLast * (1 - partialTicks);
+            double b = dynamicValueThis * partialTicks;
+            return a + b;
+        }
+    }
 
     private static class DeltaIntEntry {
         private boolean hasStarted = false;
@@ -223,5 +237,6 @@ public class DeltaInt {
 		public int getCount() {
 			return 2;
 		}
+
     }
 }

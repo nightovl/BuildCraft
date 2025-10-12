@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.render.ISprite;
@@ -109,9 +110,9 @@ public class BuildCraftJsonGui extends BuildCraftGui {
     }
 
     @Override
-    public void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY, Runnable backgroundRenderer) {
+    public void drawBackgroundLayer(PoseStack pose, float partialTicks, int mouseX, int mouseY, Runnable backgroundRenderer) {
         time.value = timeOpen + partialTicks;
         varData.refresh();
-        super.drawBackgroundLayer(partialTicks, mouseX, mouseY, backgroundRenderer);
+        super.drawBackgroundLayer(pose, partialTicks, mouseX, mouseY, backgroundRenderer);
     }
 }

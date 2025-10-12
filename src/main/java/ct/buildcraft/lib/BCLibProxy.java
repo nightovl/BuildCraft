@@ -9,42 +9,31 @@ package ct.buildcraft.lib;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.lib.net.MessageContainer;
-import ct.buildcraft.lib.net.MessageDebugRequest;
-import ct.buildcraft.lib.net.MessageDebugResponse;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheRequest;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.AbstractPackResources;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public abstract class BCLibProxy {
 
     static void MessageRegistry() {
-        MessageManager.registerMessageClass(BCModules.LIB, MessageUpdateTile.class, MessageUpdateTile.HANDLER, MessageUpdateTile::toBytes, MessageUpdateTile::new);
-//       MessageManager.registerMessageClass(BCModules.LIB, MessageContainer.class, MessageContainer.HANDLER, MessageContainer::toBytes, MessageContainer::new);
+    	MessageManager.registerMessageClass(BCModules.LIB, MessageUpdateTile.class, MessageUpdateTile.HANDLER, MessageUpdateTile::toBytes, MessageUpdateTile::new);
+        MessageManager.registerMessageClass(BCModules.LIB, MessageContainer.class, MessageContainer.HANDLER, MessageContainer::toBytes, MessageContainer::new);
         MessageManager.registerMessageClass(BCModules.LIB, MessageMarker.class, MessageMarker.HANDLER, MessageMarker::toBytes, MessageMarker::new/*, Dist.CLIENT*/);
         MessageManager.registerMessageClass(BCModules.LIB, MessageObjectCacheRequest.class,
-            MessageObjectCacheRequest.HANDLER, MessageObjectCacheRequest::toBytes, MessageObjectCacheRequest::new/*, Dist.DEDICATED_SERVER*/);
+        MessageObjectCacheRequest.HANDLER, MessageObjectCacheRequest::toBytes, MessageObjectCacheRequest::new/*, Dist.DEDICATED_SERVER*/);
         MessageManager.registerMessageClass(BCModules.LIB, MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, MessageObjectCacheResponse::toBytes, MessageObjectCacheResponse::new/*, Dist.CLIENT*/);
 //        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugRequest.class, MessageDebugRequest.HANDLER, MessageDebugRequest::toBytes, MessageDebugRequest::new, 
 //            Dist.DEDICATED_SERVER);

@@ -59,7 +59,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
 
     private final void standardLedgerInit() {
         if (container instanceof ContainerBCTile<?>) {
-            mainGui.shownElements.add(new LedgerOwnership(mainGui, ((ContainerBCTile<?>) container).tile, true));
+//            mainGui.shownElements.add(new LedgerOwnership(mainGui, ((ContainerBCTile<?>) container).tile, true));
         }
         if (shouldAddHelpLedger()) {
             mainGui.shownElements.add(new LedgerHelp(mainGui, false));
@@ -143,7 +143,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
     @Override
 	protected void renderBg(PoseStack pose, float partialTicks, int mouseX, int mouseY) {
         mainGui.drawBackgroundLayer(pose, partialTicks, mouseX, mouseY, () -> renderBackground(pose));
-        drawBackgroundLayer(partialTicks);
+        drawBackgroundLayer(pose, mouseX, mouseY, partialTicks);
         mainGui.drawElementBackgrounds(pose);
 	}
     
@@ -152,7 +152,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
 		super.renderLabels(pose, mouseX, mouseY);
         mainGui.preDrawForeground(pose);
 
-        drawForegroundLayer();
+        drawForegroundLayer(pose, mouseX, mouseY);
         mainGui.drawElementForegrounds(pose, () -> renderBackground(pose));
         drawForegroundLayerAboveElements();
 
@@ -198,15 +198,15 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
     @Override
 	public boolean keyPressed(int p_97765_, int p_97766_, int p_97767_) {
         if (!mainGui.onKeyTyped(p_97767_, InputConstants.getKey(p_97765_, p_97766_))) {
-            return super.keyPressed(p_97767_, p_97767_, p_97767_);
+            return super.keyPressed(p_97765_, p_97766_, p_97767_);
         }
         return true;
 	}
 
-    protected void drawBackgroundLayer(float partialTicks) {}
+    protected void drawBackgroundLayer(PoseStack pose, int mouseX, int mouseY, float partialTicks) {}
 
-    protected void drawForegroundLayer() {}
+    protected void drawForegroundLayer(PoseStack pose, int mouseX, int mouseY) {}
 
-    /** Like {@link #drawForegroundLayer()}, but is called after all {@link IGuiElement}'s have been drawn. */
+    /** Like {@link #drawForegroundLayer(PoseStack pose, int mouseX, int mouseY)}, but is called after all {@link IGuiElement}'s have been drawn. */
     protected void drawForegroundLayerAboveElements() {}
 }

@@ -243,7 +243,7 @@ public class GuiUtil {
             ScreenUtils.drawGradientRect(matrix, zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2,
                 tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
 
-            for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
+            for (int lineNumber = 0; lineNumber < wrappedTextLines.size(); ++lineNumber) {
                 FormattedCharSequence line = wrappedTextLines.get(lineNumber);
                 font.drawShadow(pose, line, tooltipX, tooltipY, -1);
 

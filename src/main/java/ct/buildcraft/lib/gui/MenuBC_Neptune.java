@@ -344,4 +344,7 @@ public abstract class MenuBC_Neptune extends AbstractContainerMenu {
             }
         });
     }
+    
+	public void clientInit(FriendlyByteBuf data) {
+	}
 }

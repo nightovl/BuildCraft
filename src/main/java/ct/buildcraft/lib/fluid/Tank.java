@@ -15,8 +15,10 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import buildcraft.lib.gui.ContainerBC_Neptune;
 import ct.buildcraft.api.core.IFluidFilter;
 import ct.buildcraft.api.core.IFluidHandlerAdv;
+import ct.buildcraft.lib.gui.MenuBC_Neptune;
 import ct.buildcraft.lib.gui.elem.ToolTip;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
@@ -26,6 +28,8 @@ import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.NetworkedFluidStackCache;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.ChatFormatting;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -325,6 +329,7 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
         return (f.isEmpty() ? 0 : f.getAmount()) + " / " + capacity + " mB of " + (!f.isEmpty() ? f.getFluid().getFluidType().getDescriptionId() : "n/a");
     }
 
+    @Deprecated
     public void onGuiClicked(AbstractContainerMenu menu, Player player){//ContainerBC_Neptune container) {
         ItemStack held = menu.getCarried();
         if (held.isEmpty()) {
@@ -334,6 +339,21 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
         //debug
         menu.setCarried(stack);
         menu.broadcastChanges();
+    }
+    
+    public void onGuiClicked(MenuBC_Neptune container) {
+        EntityPlayer player = container.player;
+        ItemStack held = player.inventory.getItemStack();
+        if (held.isEmpty()) {
+            return;
+        }
+        ItemStack stack = transferStackToTank(container, held);
+        player.inventory.setItemStack(stack);
+        ((EntityPlayerMP) player).updateHeldItem();
+        player.inventoryContainer.detectAndSendChanges();
+        if (player.openContainer != null) {
+            player.openContainer.detectAndSendChanges();
+        }
     }
 
     /** Attempts to transfer the given stack to this tank.

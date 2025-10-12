@@ -28,6 +28,7 @@ import ct.buildcraft.builders.block.BlockArchitectTable;
 import ct.buildcraft.builders.client.ClientArchitectTables;
 import ct.buildcraft.builders.gui.MenuArchitectTable;
 import ct.buildcraft.builders.item.ItemSnapshot;
+import ct.buildcraft.builders.menu.ContainerArchitectTable;
 import ct.buildcraft.builders.snapshot.Blueprint;
 import ct.buildcraft.builders.snapshot.GlobalSavedDataSnapshots;
 import ct.buildcraft.builders.snapshot.SchematicBlockManager;
@@ -403,7 +404,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut, ContainerLevelAccess.create(getLevel(), worldPosition));
+		return new ContainerArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut, deltaProgress.getContainerData(), ContainerLevelAccess.create(getLevel(), worldPosition));
 	}
 
 	@Override

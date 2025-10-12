@@ -2,6 +2,7 @@ package ct.buildcraft.lib.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -12,6 +13,7 @@ import ct.buildcraft.lib.client.sprite.SpriteRaw;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
 import ct.buildcraft.lib.gui.pos.IGuiPosition;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -176,6 +178,7 @@ public class GuiIcon implements ISimpleDrawable{
         float uMax = sprite.getInterpU(1);
         float vMax = sprite.getInterpV(1);
 
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder vb = tess.getBuilder();
         vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);

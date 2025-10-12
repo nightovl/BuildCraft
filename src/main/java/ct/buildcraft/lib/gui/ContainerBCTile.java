@@ -6,37 +6,50 @@
 
 package ct.buildcraft.lib.gui;
 
+import javax.annotation.Nullable;
+
 import ct.buildcraft.lib.tile.TileBC_Neptune;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 
 public abstract class ContainerBCTile<T extends TileBC_Neptune> extends MenuBC_Neptune {
-    public final T tile;
+    protected final @Nullable T tile;
+    protected final ContainerLevelAccess access;
 
-    @SuppressWarnings("resource")
-	public ContainerBCTile(Inventory playerInventory, MenuType<?> type, int id, T tile) {
+    @SuppressWarnings({ "resource", "unchecked" })
+	public ContainerBCTile(MenuType<?> type, Inventory playerInventory, int id, ContainerLevelAccess access) {
         super(playerInventory, type, id);
-        this.tile = tile;
-        if (!tile.getLevel().isClientSide) {
-            tile.onPlayerOpen(playerInventory.player);
-        }
+        this.access = access;
+        this.tile = (T)(access.evaluate((level, pos) -> {
+        	TileBC_Neptune b = (TileBC_Neptune) level.getBlockEntity(pos);
+            if (!level.isClientSide) {
+                b.onPlayerOpen(playerInventory.player);
+            }
+        	return b;
+        }, null));
+
     }
 
     @Override
     public void removed(Player player) {
         super.removed(player);
-        tile.onPlayerClose(player);
+        if(tile != null)
+        	tile.onPlayerClose(player);
     }
 
     @Override
-    public final boolean stillValid(Player player) {
-        return tile.canInteractWith(player);
+    public  boolean stillValid(Player player) {
+    	return tile != null ? tile.canInteractWith(player) : false;
     }
 
 	@Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        tile.sendNetworkGuiTick(playerInventory.player);
+        if(tile != null)
+        	tile.sendNetworkGuiTick(playerInventory.player);
     }
+	
 }

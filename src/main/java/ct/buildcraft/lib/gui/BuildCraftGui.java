@@ -6,12 +6,9 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-
 import ct.buildcraft.lib.BCLibSprites;
 import ct.buildcraft.lib.expression.api.IVariableNode.IVariableNodeBoolean;
 import ct.buildcraft.lib.gui.config.GuiConfigManager;
@@ -24,7 +21,6 @@ import ct.buildcraft.lib.misc.GuiUtil;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -189,7 +185,7 @@ public class BuildCraftGui {
         if (isDebuggingShown.evaluate()) {
             SPRITE_DEBUG.drawAt(0, 0);
             if (isDebuggingEnabled.evaluate()) {
-                Gui.drawRect(0, 0, 16, 16, 0x33_FF_FF_FF);
+            	GuiComponent.fill(pose, 0, 0, 16, 16, 0x33_FF_FF_FF);
 
                 if (rootElement != screenElement) {
                     // draw the outer resizing edges
@@ -204,10 +200,10 @@ public class BuildCraftGui {
                     sy--;
 
                     GuiComponent.fill(pose, sx, sy, ex + 1, sy + 1, -1);
-                    GuiComponent.fill(sx, ey, ex + 1, ey + 1, -1);
+                    GuiComponent.fill(pose, sx, ey, ex + 1, ey + 1, -1);
 
-                    GuiComponent.fill(sx, sy, sx + 1, ey + 1, -1);
-                    GuiComponent.fill(ex, sy, ex + 1, ey + 1, -1);
+                    GuiComponent.fill(pose, sx, sy, sx + 1, ey + 1, -1);
+                    GuiComponent.fill(pose, ex, sy, ex + 1, ey + 1, -1);
                 }
             }
         }
@@ -273,17 +269,17 @@ public class BuildCraftGui {
                 float[] hsb = Color.RGBtoHSB(colour & 0xFF, (colour >> 8) & 0xFF, (colour >> 16) & 0xFF, null);
                 int colourDark = Color.HSBtoRGB(hsb[0], hsb[1], Math.max(hsb[2] - 0.25f, 0)) | 0xFF_00_00_00;
 
-                Gui.drawRect(sx, sy, ex + 1, sy + 1, colour);
-                Gui.drawRect(sx, ey, ex + 1, ey + 1, colour);
+                GuiComponent.fill(pose, sx, sy, ex + 1, sy + 1, colour);
+                GuiComponent.fill(pose, sx, ey, ex + 1, ey + 1, colour);
 
-                Gui.drawRect(sx, sy, sx + 1, ey + 1, colour);
-                Gui.drawRect(ex, sy, ex + 1, ey + 1, colour);
+                GuiComponent.fill(pose, sx, sy, sx + 1, ey + 1, colour);
+                GuiComponent.fill(pose, ex, sy, ex + 1, ey + 1, colour);
 
-                Gui.drawRect(sx - 1, sy - 1, ex + 2, sy, colourDark);
-                Gui.drawRect(sx - 1, ey + 1, ex + 2, ey + 2, colourDark);
+                GuiComponent.fill(pose, sx - 1, sy - 1, ex + 2, sy, colourDark);
+                GuiComponent.fill(pose, sx - 1, ey + 1, ex + 2, ey + 2, colourDark);
 
-                Gui.drawRect(sx - 1, sy - 1, sx, ey + 2, colourDark);
-                Gui.drawRect(ex + 1, sy - 1, ex + 2, ey + 2, colourDark);
+                GuiComponent.fill(pose, sx - 1, sy - 1, sx, ey + 2, colourDark);
+                GuiComponent.fill(pose, ex + 1, sy - 1, ex + 2, ey + 2, colourDark);
 
                 fr.drawShadow(pose, name, x, y, -1);
 

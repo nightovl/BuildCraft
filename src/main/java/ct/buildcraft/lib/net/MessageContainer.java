@@ -6,22 +6,28 @@
 
 package ct.buildcraft.lib.net;
 
+import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import ct.buildcraft.lib.gui.MenuBC_Neptune;
+import ct.buildcraft.lib.misc.MessageUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
 public class MessageContainer {
 
     private int windowId;
     private int msgId;
-    private PacketBufferBC payload;
+    private FriendlyByteBuf payload;
 
     @SuppressWarnings("unused")
     public MessageContainer() {}
 
-    public MessageContainer(int windowId, int msgId, PacketBufferBC payload) {
+    public MessageContainer(int windowId, int msgId, FriendlyByteBuf payload) {
         this.windowId = windowId;
         this.msgId = msgId;
         this.payload = payload;
@@ -48,23 +54,26 @@ public class MessageContainer {
     }
 
     public static final BiConsumer<MessageContainer, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
-/*        try {
+        try {
             int id = message.windowId;
-            var per = ctx.get().getSender();
-            if (per != null && per.inventoryMenu instanceof ContainerBC_Neptune
-                && per.inventoryMenu.containerId == id) {
-                ContainerBC_Neptune container = (ContainerBC_Neptune) per.openContainer;
-                container.readMessage(message.msgId, message.payload, ctx.get, ctx);
-
+            NetworkEvent.Context context = ctx.get();
+            ServerPlayer per = context.getSender();
+            LogicalSide side = context.getDirection().getReceptionSide();
+            if (per != null && per.containerMenu.containerId == id && 
+            		per.containerMenu instanceof MenuBC_Neptune container) {
+            	
+                container.readMessage(message.msgId, message.payload, side, context);
                 // error checking
                 String extra = container.getClass() + ", id = " + container.getIdAllocator().getNameFor(message.msgId);
-                MessageUtil.ensureEmpty(message.payload, ctx.side == Dist.CLIENT, extra);
+                MessageUtil.ensureEmpty(message.payload, side == LogicalSide.CLIENT, extra);
             }
+            else if(side == LogicalSide.CLIENT && Minecraft.getInstance().player.containerMenu instanceof MenuBC_Neptune container)
+            	container.readMessage(message.msgId, message.payload, side, context);
         } catch (IOException e) {
             throw new Error(e);
         } finally {
             message.payload.release();
-        }*/
+        }
     	ctx.get().setPacketHandled(true);
     };
 

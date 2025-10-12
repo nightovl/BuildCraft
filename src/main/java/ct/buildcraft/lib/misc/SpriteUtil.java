@@ -33,7 +33,7 @@ public class SpriteUtil {
     private static final Map<GameProfile, GameProfile> CACHED = new HashMap<>();
 
     public static void bindBlockTextureMap() {
-        bindTexture(TextureAtlas.LOCATION_BLOCKS);
+        bindTexture(InventoryMenu.BLOCK_ATLAS);
     }
 
     public static void bindTexture(String identifier) {

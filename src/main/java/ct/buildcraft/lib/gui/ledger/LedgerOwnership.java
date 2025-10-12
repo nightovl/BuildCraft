@@ -44,6 +44,7 @@ public class LedgerOwnership extends Ledger_Neptune {
     }
 
     private String getOwnerName() {
+//    	if(tile == null) return "no-one";
         GameProfile owner = tile.getOwner();
         if (owner == null) {
             return "no-one";

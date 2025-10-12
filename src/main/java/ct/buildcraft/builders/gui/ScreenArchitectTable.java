@@ -1,6 +1,8 @@
 package ct.buildcraft.builders.gui;
 
 import ct.buildcraft.builders.BCBuildersSprites;
+import ct.buildcraft.builders.menu.ContainerArchitectTable;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -9,11 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ScreenArchitectTable extends AbstractContainerScreen<MenuArchitectTable>{
+public class ScreenArchitectTable extends AbstractContainerScreen<ContainerArchitectTable>{
 
 	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.ARCHITECT_GUI;
 	
-	public ScreenArchitectTable(MenuArchitectTable be, Inventory p_97742_, Component p_97743_) {
+	public ScreenArchitectTable(ContainerArchitectTable be, Inventory p_97742_, Component p_97743_) {
 		super(be, p_97742_, p_97743_);
 		inventoryLabelX +=40;
 	}

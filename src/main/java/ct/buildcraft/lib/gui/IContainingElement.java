@@ -3,6 +3,8 @@ package ct.buildcraft.lib.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
 import ct.buildcraft.lib.gui.elem.ToolTip;
 import ct.buildcraft.lib.gui.help.ElementHelpInfo.HelpPosition;
 import ct.buildcraft.lib.gui.pos.IGuiPosition;
@@ -76,7 +78,7 @@ public interface IContainingElement extends IInteractionElement {
     }
 
     @Override
-    default boolean onKeyPress(char typedChar, int keyCode) {
+    default boolean onKeyPress(int typedChar, Key keyCode) {
         boolean action = false;
         for (IGuiElement elem : getChildElements()) {
             if (elem instanceof IInteractionElement) {
