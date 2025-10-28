@@ -77,7 +77,7 @@ public class MessageUpdateTile {
             } catch (IOException io) {
                 throw new RuntimeException(io);
             } finally {
-                message.payload.release();
+                //message.payload.release();
             }
     	  });
     	  ctx.get().setPacketHandled(true);

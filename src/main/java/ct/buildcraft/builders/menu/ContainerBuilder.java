@@ -6,50 +6,70 @@
 
 package ct.buildcraft.builders.menu;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import buildcraft.lib.gui.widget.WidgetFluidTank;
-import ct.buildcraft.api.enums.EnumSnapshotType;
+import ct.buildcraft.builders.BCBuildersGuis;
 import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.lib.gui.ContainerBCTile;
+import ct.buildcraft.lib.gui.ItemProvider;
+import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.gui.slot.SlotBase;
 import ct.buildcraft.lib.gui.slot.SlotDisplay;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.item.ItemStack;
+import ct.buildcraft.lib.gui.widget.WidgetFluidTank;
+import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
+import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraftforge.items.IItemHandler;
 
 public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
-    public final List<WidgetFluidTank> widgetTanks;
+    public final List<WidgetFluidTank> widgetTanks = new ArrayList<WidgetFluidTank>(4);
+//    public final ContainerData remainingDisplayRequiredData;
+    
+	public ContainerBuilder(int containerId, Inventory playerInventory) {
+		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(27),
+				new SimpleContainerData(4 * TankContainerData.LEN), new ItemHandlerSimple(24), ContainerLevelAccess.NULL);
+	}
 
-    public ContainerBuilder(EntityPlayer player, TileBuilder tile) {
-        super(player, tile);
 
+    public ContainerBuilder(int containerId, Inventory playerInventory, IItemHandlerAdv invSnapshot, IItemHandlerAdv invResources, 
+    		ContainerData tanks, IItemHandler invRequire, /*ContainerData remainingDisplayRequiredData,*/ ContainerLevelAccess access) {
+    	super(BCBuildersGuis.MENU_BUILDER.get(), playerInventory, containerId, access);
+
+ //   	this.remainingDisplayRequiredData = remainingDisplayRequiredData;
         addFullPlayerInventory(140);
 
-        addSlotToContainer(new SlotBase(tile.invSnapshot, 0, 80, 27));
+        addSlot(new SlotBase(invSnapshot, 0, 80, 27));
 
         for (int sy = 0; sy < 3; sy++) {
             for (int sx = 0; sx < 9; sx++) {
-                addSlotToContainer(new SlotBase(tile.invResources, sx + sy * 9, 8 + sx * 18, 72 + sy * 18));
+            	addSlot(new SlotBase(invResources, sx + sy * 9, 8 + sx * 18, 72 + sy * 18));
             }
         }
-
-        widgetTanks = tile.getTankManager().stream()
-                .map(tank -> new WidgetFluidTank(this, tank))
-                .map(this::addWidget)
-                .collect(Collectors.toList());
+        
+        addDataSlots(tanks);
+        for(int point =0;point * TankContainerData.LEN < tanks.getCount();point++) {
+        	WidgetFluidTank widgetFluidTank = new WidgetFluidTank(this, tanks, point);
+        	widgetTanks.add(widgetFluidTank);
+        	addWidget(widgetFluidTank);
+        }
+        
 
         for(int y = 0; y < 6; y++) {
             for(int x = 0; x < 4; x++) {
-                addSlotToContainer(new SlotDisplay(this::getDisplay, x + y * 4, 179 + x * 18, 18 + y * 18));
+            	addSlot(new SlotDisplay(invRequire, x + y * 4, 179 + x * 18, 18 + y * 18));
             }
         }
     }
 
-    private ItemStack getDisplay(int index) {
-        return tile.snapshotType == EnumSnapshotType.BLUEPRINT &&
-                index < tile.blueprintBuilder.remainingDisplayRequired.size()
-                ? tile.blueprintBuilder.remainingDisplayRequired.get(index)
+
+ /*   private ItemStack getDisplay(int index) {
+        return blueprintData.get(0) == EnumSnapshotType.BLUEPRINT.ordinal() &&
+                index < remainingDisplayRequiredData.getCount()/2
+                ? new ItemStack(((ForgeRegistry<Item>)ForgeRegistries.ITEMS).getValue(remainingDisplayRequiredData.get(index <<1 + 1)),remainingDisplayRequiredData.get(index <<1))
                 : ItemStack.EMPTY;
-    }
+    }*/
 }

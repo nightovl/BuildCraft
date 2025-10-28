@@ -9,11 +9,11 @@ package ct.buildcraft.lib.gui;
 import javax.annotation.Nullable;
 
 import ct.buildcraft.lib.tile.TileBC_Neptune;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 
 public abstract class ContainerBCTile<T extends TileBC_Neptune> extends MenuBC_Neptune {
     protected final @Nullable T tile;

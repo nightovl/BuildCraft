@@ -72,7 +72,7 @@ public class MessageContainer {
         } catch (IOException e) {
             throw new Error(e);
         } finally {
-            message.payload.release();
+            //message.payload.release();
         }
     	ctx.get().setPacketHandled(true);
     };

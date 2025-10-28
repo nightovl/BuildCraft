@@ -149,7 +149,8 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
     
     @Override
 	protected void renderLabels(PoseStack pose, int mouseX, int mouseY) {
-		super.renderLabels(pose, mouseX, mouseY);
+		//super.renderLabels(pose, mouseX, mouseY);  //do not render InventoryLabel
+    	this.font.draw(pose, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         mainGui.preDrawForeground(pose);
 
         drawForegroundLayer(pose, mouseX, mouseY);

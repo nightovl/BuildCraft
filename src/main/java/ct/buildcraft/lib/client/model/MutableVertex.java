@@ -172,7 +172,7 @@ public class MutableVertex {
         .color(colour_r, colour_g, colour_b, colour_a)
         .uv(tex_u, tex_v)
         .overlayCoords(overlay)
-        .uv2(light_block, light_sky)
+        .uv2(light_block<<4, light_sky<<4)
 
 //        .uv2(15728640)
         .normal(normalMatrix, normal_x, normal_y, normal_z)
@@ -370,7 +370,7 @@ public class MutableVertex {
     }
 
     public MutableVertex lighti(int combined) {
-        return lighti(combined & 0xFFFF, combined >> 16 & 0xFFFF);
+        return lighti((combined & 0x00F0)>>4, (combined >> 16 & 0x00F0)>>4);
     }
 
     public MutableVertex lighti(int block, int sky) {

@@ -28,7 +28,7 @@ import ct.buildcraft.lib.fluid.FluidSmoother;
 import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.fluid.TankManager;
-import ct.buildcraft.lib.gui.TankContainer;
+import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.misc.BoundingBoxUtil;
 import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.FluidUtilBC;
@@ -60,7 +60,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -93,7 +92,7 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
      * be divisors of 1000 */
     private static final int[] FLUID_MULT = { 5, 10, 20 };
     
-    protected TankContainer tankData = null;
+    protected TankContainerData tankData = null;
     protected Tank[] tanks = new Tank[4];
     protected DataSlot stateData = new DataSlot(){
 		@Override
@@ -207,7 +206,7 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
                     exchangers.getFirst().setSection(sectionStart);
                     exchangers.getLast().setSection(sectionEnd);
                     
-                    tankData = new TankContainer(sectionStart.tankInput, sectionStart.tankOutput, sectionEnd.tankInput, sectionEnd.tankOutput);
+                    tankData = new TankContainerData(sectionStart.tankInput, sectionStart.tankOutput, sectionEnd.tankInput, sectionEnd.tankOutput);
                     tanks[0] = sectionStart.tankInput;
                     tanks[1] = sectionStart.tankOutput;
                     tanks[2] = sectionEnd.tankInput;

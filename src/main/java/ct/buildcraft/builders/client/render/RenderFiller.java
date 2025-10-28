@@ -41,7 +41,7 @@ public class RenderFiller implements BlockEntityRenderer<TileFiller> {
     	Matrix3f normal = matrix.last().normal();
 //        Minecraft.getMinecraft().mcProfiler.startSection("main");
         if (tile.getBuilder() != null) {
-            RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, bb, itemRenderer);
+            RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }
 //        Minecraft.getMinecraft().mcProfiler.endSection();
 

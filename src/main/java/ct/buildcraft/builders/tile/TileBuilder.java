@@ -29,6 +29,7 @@ import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.gui.MenuBuilder;
 import ct.buildcraft.builders.item.ItemSnapshot;
+import ct.buildcraft.builders.menu.ContainerBuilder;
 import ct.buildcraft.builders.snapshot.Blueprint;
 import ct.buildcraft.builders.snapshot.BlueprintBuilder;
 import ct.buildcraft.builders.snapshot.GlobalSavedDataSnapshots;
@@ -42,7 +43,9 @@ import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.fluid.TankManager;
 import ct.buildcraft.lib.gui.ItemProvider;
-import ct.buildcraft.lib.gui.TankContainer;
+import ct.buildcraft.lib.gui.TankContainerData;
+import ct.buildcraft.lib.gui.containerData.MutliProviderData;
+import ct.buildcraft.lib.gui.containerData.SingleProviderData;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.BoundingBoxUtil;
 import ct.buildcraft.lib.misc.CapUtil;
@@ -71,6 +74,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -86,6 +90,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileForTemplateBuilder, ITileForBlueprintBuilder, MenuProvider {
     public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("builder");
@@ -124,8 +130,15 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     
     private boolean shouldInit = false;
     
-    private final ContainerData container;
-    
+    private final ContainerData tankData;
+//    private final ContainerData blueprintData = new SingleProviderData(() -> snapshotType == null ? -1 : snapshotType.ordinal());
+/*    private final ContainerData remainingDisplayRequiredData = 
+    		new MutliProviderData((index) -> {
+    			ItemStack item = blueprintBuilder.remainingDisplayRequired.get(index>>1);
+    			return (index & 1) == 1 ? ((ForgeRegistry<Item>)ForgeRegistries.ITEMS).getID(item.getItem()) : item.getCount();
+    		},
+    			() -> blueprintBuilder.remainingDisplayRequired.size()*2) ;
+    */
     public final GameEventListener worldEventListener = new GameEventListener() {
     	
     	GameEventListener blueprint = blueprintBuilder.getListener();
@@ -161,7 +174,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             };
             tankManager.add(tanks[i]);
         }
-        container = new TankContainer(tanks);
+        tankData = new TankContainerData(tanks);
         caps.addProvider(new MjCapabilityHelper(new MjBatteryReceiver(battery)));
         caps.addCapabilityInstance(CapUtil.CAP_FLUIDS, tankManager, EnumPipePart.VALUES);
     }
@@ -300,7 +313,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             }
         }
 //        level.profiler.endStartSection("net_update");
-      //  sendNetworkUpdate(NET_RENDER_DATA); // FIXME
+        sendNetworkUpdate(NET_RENDER_DATA); // FIXME
 //        level.profiler.endSection();
 //        level.profiler.endSection();
     }
@@ -539,7 +552,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new MenuBuilder(id, inv, invSnapshot, invResources, container, invRequire, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerBuilder(id, inv, invSnapshot, invResources, tankData, invRequire, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

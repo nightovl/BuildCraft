@@ -45,11 +45,15 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
 //        Minecraft.getMinecraft().mcProfiler.startSection("builder");
 
 		VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
-//		matrix.translate(0.5f, 0.5f, 0.5f);
+		BlockPos pos = tile.getBlockPos();
+		matrix.translate(-pos.getX(), -pos.getY(), -pos.getZ());
 		Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
 //        Minecraft.getMinecraft().mcProfiler.startSection("box");
         Box box = tile.getBox();
+/*        if(tile.getBuilder() != null&&tile.getBuilder().robotPos != null) {
+        	tile.getBattery();
+        }*/
         LaserBoxRenderer.renderLaserBoxDynamic(box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
 
 //        Minecraft.getMinecraft().mcProfiler.endStartSection("path");
@@ -70,10 +74,12 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
             }
         }
 
+
 //        Minecraft.getMinecraft().mcProfiler.endSection();
 
+        matrix.translate(pos.getX(), pos.getY(), pos.getZ());
         if (tile.getBuilder() != null) {
-            RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, bb, itemRenderer);
+            RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }
 
 //        Minecraft.getMinecraft().mcProfiler.endSection();

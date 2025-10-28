@@ -19,6 +19,7 @@ import ct.buildcraft.builders.snapshot.MessageSnapshotResponse;
 import ct.buildcraft.lib.net.MessageManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -97,6 +98,9 @@ public class BCBuilders {
         @SubscribeEvent
         public static void onModelBakePre(RegisterAdditional event) {
         	BCBuildersItems.registerItemProperties();
+/*        	event.register(ModelBuilder.blueprint);
+        	event.register(ModelBuilder.template);
+        	event.register(ModelBuilder.empty);*/
         }
         
         @SubscribeEvent
@@ -104,6 +108,19 @@ public class BCBuilders {
         	BCBuildersSprites.onTextureStitchPre(e);
 //        	PipeWireRenderer.clearWireCache();
         }
+        
+        
+        @SubscribeEvent
+        public static void onModelBake(BakingCompleted event) {
+/*        	ModelBuilder.init(event.getModels().get(ModelBuilder.builder));
+        	ModelBuilder.init(event.getModels().get(ModelBuilder.blueprint));
+        	ModelBuilder.init(event.getModels().get(ModelBuilder.template));
+        	ModelBuilder.init(event.getModels().get(ModelBuilder.empty));
+        	for(ModelResourceLocation r : ModelBuilder.stateDefinetion) {
+        		event.getModels().put(r, ModelBuilder.INSTANCE);
+        	}*/
+        }
+        	
         	
     }
 }

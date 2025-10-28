@@ -6,20 +6,19 @@
 
 package ct.buildcraft.lib.gui.slot;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class SlotDisplay extends SlotItemHandler {
-    private static Container emptyInventory = new SimpleContainer(0);
+    //private static Container emptyInventory = new SimpleContainer(0);
+//    private final IntFunction<ItemStack> getter;
 
-    public SlotDisplay(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public SlotDisplay(/*IntFunction<ItemStack> getter,*/IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
+        //this.getter = getter;
     }
-
 
     @Override
 	public boolean mayPlace(ItemStack p_40231_) {
@@ -38,6 +37,7 @@ public class SlotDisplay extends SlotItemHandler {
 
 	@Override
 	public void set(ItemStack p_40240_) {
+		super.set(p_40240_);
 	}
 
 	@Override
@@ -45,6 +45,11 @@ public class SlotDisplay extends SlotItemHandler {
 		return false;
 	}
 	
+/*	@Override
+	public ItemStack getItem() {
+		return getter.apply(getSlotIndex()).copy();
+	}*/
+
 	@Override
 	public ItemStack remove(int p_40227_) {
 		return getItem();

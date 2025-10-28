@@ -31,7 +31,7 @@ public class BlockElectronicLibrary extends BlockBCTile_Neptune implements IBloc
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
     	if (!world.isClientSide && world.getBlockEntity(pos) instanceof TileElectronicLibrary tile) {
-        	NetworkHooks.openScreen((ServerPlayer)player, tile, pos);
+        	NetworkHooks.openScreen((ServerPlayer)player, tile, tile.selected::writeToByteBuf);
         }
         return InteractionResult.SUCCESS;
 	}

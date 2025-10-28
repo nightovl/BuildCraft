@@ -28,7 +28,7 @@ import ct.buildcraft.energy.client.gui.MenuEngineIron_BC8;
 import ct.buildcraft.lib.engine.EngineConnector;
 import ct.buildcraft.lib.engine.TileEngineBase_BC8;
 import ct.buildcraft.lib.fluid.Tank;
-import ct.buildcraft.lib.gui.TankContainer;
+import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.EntityUtil;
 import ct.buildcraft.lib.misc.FluidUtilBC;
@@ -87,7 +87,7 @@ public class TileEngineIron_BC8 extends TileEngineBase_BC8 implements MenuProvid
     private double residueAmount = 0;
     private IFuel currentFuel;
     
-    private final ContainerData container = new TankContainer(tankFuel, tankCoolant, tankResidue);
+    private final ContainerData container = new TankContainerData(tankFuel, tankCoolant, tankResidue);
     
     public TileEngineIron_BC8(BlockPos pos, BlockState state) {
     	super(BCEnergyBlocks.ENGINE_IRON_TILE_BC8.get(), pos, state);

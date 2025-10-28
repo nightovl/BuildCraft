@@ -8,6 +8,7 @@ package ct.buildcraft.builders.client.render;
 
 import java.util.Collections;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
@@ -25,13 +26,16 @@ import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;
 import ct.buildcraft.lib.misc.MathUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,11 +49,11 @@ public class RenderSnapshotBuilder {
             float partialTicks,
             PoseStack matrix,
             MultiBufferSource buffer,
-            VertexConsumer bb,
             ItemRenderer itemRenderer
     ) {
     	Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
+		 matrix.translate( -tilePos.getX(), - tilePos.getY(), -tilePos.getZ());
         for (SnapshotBuilder<T>.PlaceTask placeTask : snapshotBuilder.clientPlaceTasks) {
             Vec3 prevPos = snapshotBuilder.prevClientPlaceTasks.stream()
                 .filter(renderTaskLocal -> renderTaskLocal.pos.equals(placeTask.pos))
@@ -57,10 +61,12 @@ public class RenderSnapshotBuilder {
                 .findFirst()
                 .orElse(snapshotBuilder.getPlaceTaskItemPos(snapshotBuilder.new PlaceTask(tilePos, Collections.emptyList(), 0L)));
             Vec3 pos = prevPos.add(snapshotBuilder.getPlaceTaskItemPos(placeTask).subtract(prevPos).scale(partialTicks));
+            matrix.translate(pos.x, pos.y, pos.z);
+            int i = 0;
             for (ItemStack item : placeTask.items) {
             	itemRenderer.renderStatic(item, TransformType.GROUND,
-            			world.getRawBrightness(new BlockPos(pos), 0), OverlayTexture.NO_OVERLAY,
-            			matrix, buffer, 0);
+            			15728640, OverlayTexture.NO_OVERLAY,
+            			matrix, buffer, i++);
 /*                ItemRenderUtil.renderItemStack(
                      - tilePos.getX() + pos.x,
                      - tilePos.getY() + pos.y,
@@ -72,22 +78,24 @@ public class RenderSnapshotBuilder {
                 );*/
             	
             }
-            ItemRenderUtil.endItemBatch();
+            matrix.translate(-pos.x, -pos.y, -pos.z);
+  //          ItemRenderUtil.endItemBatch();
         }
-
+        VertexConsumer bb = buffer.getBuffer(RenderType.cutoutMipped());
         Vec3 robotPos = snapshotBuilder.robotPos;
+       
         if (robotPos != null) {
             if (snapshotBuilder.prevRobotPos != null) {
                 robotPos = snapshotBuilder.prevRobotPos.add(robotPos.subtract(snapshotBuilder.prevRobotPos).scale(partialTicks));
             }
-
-//            bb.setTranslation(x - tilePos.getX(), y - tilePos.getY(), z - tilePos.getZ());
+            BlockPos robp = new BlockPos(robotPos);
 
             int i = 0;
             for (Direction face : Direction.values()) {
+//            	RenderSystem._setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
                 ModelUtil.createFace(
                     face,
-                    new Vector3f((float) robotPos.x, (float) robotPos.y, (float) robotPos.z),
+                    new Vector3f(robotPos),
                     new Vector3f(4 / 16F, 4 / 16F, 4 / 16F),
                     new ModelUtil.UvFaceData(
                         BCBuildersSprites.ROBOT.getInterpU((i * 8) / 64D),
@@ -96,11 +104,13 @@ public class RenderSnapshotBuilder {
                         BCBuildersSprites.ROBOT.getInterpV(8 / 64D)
                     )
                 )
-                    .lighti(world.getRawBrightness(new BlockPos(robotPos), 0))
+                    .lighti(world.getBrightness(LightLayer.BLOCK, robp), world.getBrightness(LightLayer.SKY, robp))
                     .render(pose, normal, bb);
                 i++;
             }
-
+            
+            matrix.translate(robotPos.x(), robotPos.y() , robotPos.z() );
+            //matrix.translate(0, 0, 0);
             for (SnapshotBuilder.BreakTask breakTask : snapshotBuilder.clientBreakTasks) {
                 LaserRenderer_BC8.renderLaserDynamic(
                     pose, normal,

@@ -37,6 +37,7 @@ import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -339,7 +340,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
             }
             Arrays.stream(blocks)
                 .mapToObj(this::indexToPos)
-                .filter(blockPos -> BlockUtil.getFluidWithFlowing(tile.getWorldBC(), blockPos) == null)
+                .filter(blockPos -> BlockUtil.getFluidWithFlowing(tile.getWorldBC(), blockPos) == Fluids.EMPTY)
                 .map(blockPos ->
                     new BreakTask(
                         blockPos,

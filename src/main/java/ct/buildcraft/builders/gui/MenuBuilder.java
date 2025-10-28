@@ -28,7 +28,7 @@ public class MenuBuilder extends AbstractContainerMenu {
 	}
 	
 	public MenuBuilder(int containerId, Inventory playerInventory, IItemHandler blueprint, IItemHandler resources, ContainerData data, 
-			IItemHandler require, ContainerLevelAccess access) {
+			 IItemHandler require, ContainerLevelAccess access) {
 		super(BCBuildersGuis.MENU_BUILDER.get(), containerId);
 		this.access = access;
 		this.data = data;

@@ -15,11 +15,11 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import buildcraft.lib.gui.ContainerBC_Neptune;
 import ct.buildcraft.api.core.IFluidFilter;
 import ct.buildcraft.api.core.IFluidHandlerAdv;
 import ct.buildcraft.lib.gui.MenuBC_Neptune;
 import ct.buildcraft.lib.gui.elem.ToolTip;
+import ct.buildcraft.lib.gui.help.ElementHelpInfo;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
@@ -28,12 +28,11 @@ import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.NetworkedFluidStackCache;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.ChatFormatting;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -71,6 +70,8 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
 
     protected boolean canFill = true;
     protected boolean canDrain = true;
+    
+    public ElementHelpInfo helpInfo;
 
     protected static Map<Fluid, Integer> fluidColors = new HashMap<>();
     
@@ -93,6 +94,8 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
         this.validator = filter == null ? ((f) -> true) : filter;
         this.name = name;
         this.tile = tile;
+        helpInfo = new ElementHelpInfo("buildcraft.help.tank.title." + name, 0xFF_00_00_00 | name.hashCode(),
+                DEFAULT_HELP_KEY);
     }
 
     @Nonnull
@@ -153,8 +156,8 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
     protected void refreshTooltip() {
         toolTip.clear();
         int amount = clientAmount;
-        FluidStack fluidStack = clientFluid == null ? null : clientFluid.get().copy();
-        if (fluidStack != null && amount > 0) {
+        FluidStack fluidStack = clientFluid == null ? FluidStack.EMPTY : clientFluid.get().copy();
+        if (fluidStack != FluidStack.EMPTY && amount > 0) {
             toolTip.add(fluidStack.getDisplayName());
         }
         toolTip.add(LocaleUtil.localizeFluidStaticAmount(amount, getCapacity()).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
@@ -342,17 +345,18 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
     }
     
     public void onGuiClicked(MenuBC_Neptune container) {
-        EntityPlayer player = container.player;
-        ItemStack held = player.inventory.getItemStack();
+        Inventory inv = container.playerInventory;
+        Player player = container.playerInventory.player;
+        ItemStack held = inv.getSelected();
         if (held.isEmpty()) {
             return;
         }
-        ItemStack stack = transferStackToTank(container, held);
-        player.inventory.setItemStack(stack);
-        ((EntityPlayerMP) player).updateHeldItem();
-        player.inventoryContainer.detectAndSendChanges();
-        if (player.openContainer != null) {
-            player.openContainer.detectAndSendChanges();
+        ItemStack stack = transferStackToTank(player, held);
+        inv.add(stack);
+        //((ServerPlayer) player).updatingUsingItem();
+        player.inventoryMenu.broadcastChanges();
+        if (player.hasContainerOpen()) {
+            player.containerMenu.broadcastChanges();
         }
     }
 
