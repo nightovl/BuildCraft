@@ -7,11 +7,14 @@ package ct.buildcraft.lib;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.block.VanillaRotationHandlers;
+import ct.buildcraft.lib.expression.ExpressionDebugManager;
 import ct.buildcraft.lib.marker.MarkerCache;
+import ct.buildcraft.lib.misc.ExpressionCompat;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -67,8 +70,8 @@ public class BCLib {
             }
         }
 
-//        ExpressionDebugManager.logger = BCLog.logger::info;
-//        ExpressionCompat.setup();
+        ExpressionDebugManager.logger = BCLog.logger::info;
+        ExpressionCompat.setup();
         BCLibRegistries.fmlPreInit();
         
         
@@ -79,12 +82,12 @@ public class BCLib {
 //        NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, BCLibProxy.getProxy());
 
 //        MinecraftForge.EVENT_BUS.register(MigrationManager.INSTANCE);
-  //      MinecraftForge.EVENT_BUS.register(FluidManager);
+//        MinecraftForge.EVENT_BUS.register(FluidManager);
         //TODO
         // Set max chunk limit for quarries: 1 chunk for quarry itself and 5 * 5 chunks square for working area
 //        ForgeChunkManager.getConfig().get(MODID, "maximumChunksPerTicket", 26);
  //       ForgeChunkManager.syncConfigDefaults();
- //      ForgeChunkManager.setForcedChunkLoadingCallback(BCLib.MODID, ChunkLoaderManager::rebindTickets);
+       ForgeChunkManager.setForcedChunkLoadingCallback(BCLib.MODID, ChunkLoaderManager::rebindTickets);
 
 
         MinecraftForge.EVENT_BUS.register(this);
