@@ -4,18 +4,13 @@ import java.util.EnumMap;
 
 import javax.annotation.Nullable;
 
-import ct.buildcraft.transport.BCTransportItems;
-import ct.buildcraft.transport.tile.TilePipeHolder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class MultiBlockItem<E extends Enum<E> & StringRepresentable> extends BlockItem{
 

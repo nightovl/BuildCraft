@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.IStatementParameter.DrawType;
@@ -15,8 +17,8 @@ import net.minecraft.world.item.ItemStack;
 /** Specialised class for rendering {@link IStatementParameter}. */
 public class ParameterRenderer {
 
-    private static final ISimpleDrawable BACKGROUND_DRAWABLE = (x, y) -> {
-        GuiElementStatement.SLOT_COLOUR.drawAt(x, y);
+    private static final ISimpleDrawable BACKGROUND_DRAWABLE = (p, x, y) -> {
+        GuiElementStatement.SLOT_COLOUR.drawAt(p, x, y);
     };
     private static final Map<DrawType, Function<IStatementParameter, ISimpleDrawable>> drawTypes;
 
@@ -36,21 +38,21 @@ public class ParameterRenderer {
     }
 
     public static ISimpleDrawable getSpriteDrawable(IStatementParameter param) {
-        return (x, y) -> {
+        return (p, x, y) -> {
             ISprite sprite = param.getSprite();
             if (sprite != null) {
-                GuiIcon.drawAt(sprite, x + 1, y + 1, 16);
+                GuiIcon.drawAt(p, sprite, x + 1, y + 1, 16);
             }
         };
     }
 
     public static ISimpleDrawable getStackDrawable(IStatementParameter param, boolean orQuestionMark) {
-        return (x, y) -> {
+        return (p, x, y) -> {
             ItemStack stack = param.getItemStack();
             if (!stack.isEmpty()) {
                 GuiUtil.drawItemStackAt(stack, (int) x + 1, (int) y + 1);
             } else if (orQuestionMark) {
-                GuiElementStatement.ICON_SLOT_NOT_SET.drawAt(x + 1, y + 1);
+                GuiElementStatement.ICON_SLOT_NOT_SET.drawAt(p, x + 1, y + 1);
             }
         };
     }
@@ -63,7 +65,7 @@ public class ParameterRenderer {
         return BACKGROUND_DRAWABLE.andThen(drawTypes.get(type).apply(param));
     }
 
-    public static void draw(IStatementParameter param, double x, double y) {
-        getDrawable(param).drawAt(x, y);
+    public static void draw(PoseStack pose, IStatementParameter param, double x, double y) {
+        getDrawable(param).drawAt(pose, x, y);
     }
 }

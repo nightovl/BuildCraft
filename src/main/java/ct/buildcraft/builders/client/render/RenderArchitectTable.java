@@ -31,8 +31,8 @@ public class RenderArchitectTable implements BlockEntityRenderer<TileArchitectTa
             return;
         }
 		
-//        Minecraft.getMinecraft().mcProfiler.startSection("bc");
-//        Minecraft.getMinecraft().mcProfiler.startSection("architect_table");
+//        Minecraft.getInstance().getProfiler().push("bc");
+//        Minecraft.getInstance().getProfiler().push("architect_table");
 
         matrix.pushPose();
 		VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
@@ -40,14 +40,14 @@ public class RenderArchitectTable implements BlockEntityRenderer<TileArchitectTa
 		Matrix3f normal = matrix.last().normal();
 		BlockPos pos = tile.getBlockPos();
 		matrix.translate(-pos.getX(), -pos.getY(), -pos.getZ());
-//        Minecraft.getMinecraft().mcProfiler.startSection("box");
+//        Minecraft.getInstance().getProfiler().push("box");
         LaserBoxRenderer.renderLaserBoxDynamic(tile.box, BuildCraftLaserManager.STRIPES_READ, pose, normal, bb, true);
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
 
         matrix.popPose();
 
-//        Minecraft.getMinecraft().mcProfiler.endSection();
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
+//        Minecraft.getInstance().getProfiler().pop();
     }
 
     

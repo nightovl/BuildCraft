@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -35,7 +34,6 @@ import ct.buildcraft.lib.gui.pos.IGuiPosition;
 import ct.buildcraft.lib.misc.GuiUtil;
 import ct.buildcraft.lib.misc.GuiUtil.AutoGlScissor;
 import ct.buildcraft.lib.misc.RenderUtil;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -266,7 +264,7 @@ public class Ledger_Neptune implements IInteractionElement, IContainingElement {
         }
 
         RenderUtil.setGLColorFromIntPlusAlpha(colour);
-        split.draw(startX, startY, interpWidth, interpHeight);
+        split.draw(pose, startX, startY, interpWidth, interpHeight);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         IGuiPosition pos2;
@@ -277,6 +275,7 @@ public class Ledger_Neptune implements IInteractionElement, IContainingElement {
             pos2 = positionLedgerIconStart;
         }
 
+        
         try (AutoGlScissor a = GuiUtil.scissor(pos2.getX(), pos2.getY(), interpWidth - 4, interpHeight - 8)) {
 
             for (IGuiElement element : closedElements) {
@@ -366,7 +365,7 @@ public class Ledger_Neptune implements IInteractionElement, IContainingElement {
         }
     }
 
-    protected void drawIcon(double x, double y) {
+    protected void drawIcon(PoseStack pose, double x, double y) {
 
     }
 

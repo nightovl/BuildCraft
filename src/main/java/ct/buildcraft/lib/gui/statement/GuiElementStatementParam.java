@@ -82,12 +82,12 @@ public class GuiElementStatementParam extends GuiElementSimple
             double x = getX();
             double y = getY();
             if (paramIndex >= max) {
-                GuiElementStatement.SLOT_COLOUR.drawAt(x, y);
-                GuiElementStatement.ICON_SLOT_BLOCKED.drawAt(x, y);
+                GuiElementStatement.SLOT_COLOUR.drawAt(pose, x, y);
+                GuiElementStatement.ICON_SLOT_BLOCKED.drawAt(pose, x, y);
                 return;
             }
             IStatementParameter statementParameter = get();
-            GuiElementStatementSource.drawGuiSlot(statementParameter, x, y);
+            GuiElementStatementSource.drawGuiSlot(pose, statementParameter, x, y);
         }
     }
 

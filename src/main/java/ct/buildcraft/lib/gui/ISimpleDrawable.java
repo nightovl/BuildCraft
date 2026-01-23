@@ -6,21 +6,23 @@
 
 package ct.buildcraft.lib.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import ct.buildcraft.lib.gui.pos.IGuiPosition;
 
 @FunctionalInterface
 public interface ISimpleDrawable {
-    void drawAt(double x, double y);
+    void drawAt(PoseStack pose, double x, double y);
 
-    default void drawAt(IGuiPosition element) {
-        drawAt(element.getX(), element.getY());
+    default void drawAt(PoseStack pose, IGuiPosition element) {
+        drawAt(pose, element.getX(), element.getY());
     }
 
     default ISimpleDrawable andThen(ISimpleDrawable after) {
         ISimpleDrawable t = this;
-        return (x, y) -> {
-            t.drawAt(x, y);
-            after.drawAt(x, y);
+        return (p, x, y) -> {
+            t.drawAt(p, x, y);
+            after.drawAt(p, x, y);
         };
     }
 }

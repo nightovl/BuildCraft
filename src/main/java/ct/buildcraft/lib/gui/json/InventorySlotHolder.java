@@ -7,7 +7,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class InventorySlotHolder {
 
@@ -26,10 +25,10 @@ public class InventorySlotHolder {
     public InventorySlotHolder(AbstractContainerMenu container, IItemHandler inventory) {
         List<Slot> list = new ArrayList<>();
         for (Slot s : container.slots) {
-            if (s instanceof SlotItemHandler && ((SlotItemHandler) s).getItemHandler() == inventory) {
+//            if (s instanceof SlotItemHandler && ((SlotItemHandler) s).getItemHandler() == inventory) {//TODO
                 list.add(s);
             }
-        }
+ //       }
         slots = list.toArray(new Slot[0]);
     }
 }

@@ -10,6 +10,7 @@ import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.api.statements.IGuiSlot;
 import ct.buildcraft.api.statements.IStatementParameter;
+import ct.buildcraft.builders.filler.FillerStatementContext;
 import ct.buildcraft.lib.gui.BuildCraftGui;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.IGuiElement;
@@ -119,17 +120,17 @@ public class GuiElementStatementSource<S extends IGuiSlot> implements IInteracti
     public void drawBackground(PoseStack pose, float partialTicks) {
         iterateSlots((s, area) -> {
             // ...oh. We need a way of drawing arbitrary slots from the API. Great :/
-            drawAt(s, area.x, area.y);
+            drawAt(pose, s, area.x, area.y);
         });
     }
 
-    private void drawAt(@Nullable S slot, double x, double y) {
-        drawGuiSlot(slot, x, y);
+    private void drawAt(PoseStack pose, @Nullable S slot, double x, double y) {
+        drawGuiSlot(pose, slot, x, y);
     }
 
-    public static void drawGuiSlot(@Nullable IGuiSlot guiSlot, double x, double y) {
+    public static void drawGuiSlot(PoseStack pose, @Nullable IGuiSlot guiSlot, double x, double y) {
         if (guiSlot instanceof IStatementParameter) {
-            ParameterRenderer.draw((IStatementParameter) guiSlot, x, y);
+            ParameterRenderer.draw(pose, (IStatementParameter) guiSlot, x, y);
             return;
         }
         GuiIcon background = GuiElementStatement.SLOT_COLOUR;
@@ -139,11 +140,11 @@ public class GuiElementStatementSource<S extends IGuiSlot> implements IInteracti
                 background = background.offset(0, (1 + part.getIndex()) * 18);
             }
         }
-        background.drawAt(x, y);
+        background.drawAt(pose, x, y);
         if (guiSlot != null) {
             ISprite sprite = guiSlot.getSprite();
             if (sprite != null) {
-                GuiIcon.drawAt(sprite, x + 1, y + 1, 16);
+                GuiIcon.drawAt(pose, sprite, x + 1, y + 1, 16);
             }
         }
     }

@@ -9,7 +9,6 @@ package ct.buildcraft.lib.gui.ledger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -70,7 +69,7 @@ public class LedgerHelp extends Ledger_Neptune {
     }
 
     @Override
-    protected void drawIcon(double x, double y) {
+    protected void drawIcon(PoseStack pose, double x, double y) {
         if (!init) {
             init = true;
             List<HelpPosition> elements = new ArrayList<>();
@@ -80,12 +79,13 @@ public class LedgerHelp extends Ledger_Neptune {
             foundAny = elements.size() > 0;
         }
         ISprite sprite = foundAny ? BCLibSprites.HELP : BCLibSprites.WARNING_MINOR;
-        GuiIcon.draw(sprite, x, y, x + 16, y + 16);
+        GuiIcon.draw(pose, sprite, x, y, x + 16, y + 16);
     }
 
     @Override
     public void drawForeground(PoseStack pose, float partialTicks) {
         super.drawForeground(pose, partialTicks);
+        RenderSystem.enableBlend();
         if (!shouldDrawOpen()) {
             return;
         }
@@ -106,7 +106,7 @@ public class LedgerHelp extends Ledger_Neptune {
                             openElements.remove(1);
                         }
                         openElements.add(container);
-                        title = Component.literal(LocaleUtil.localize("gui.ledger.help") + ": " + LocaleUtil.localize(info.info.title));
+                        title = Component.literal(LocaleUtil.localize("gui.ledger.help") + ": " + LocaleUtil.localize(info.info.title));//TODO
                         calculateMaxSize();
                         set = true;
                     }
@@ -114,10 +114,11 @@ public class LedgerHelp extends Ledger_Neptune {
                 boolean isSelected = selected == element;
                 SpriteNineSliced split = SPRITE_HELP_SPLIT[isHovered ? 1 : 0][isSelected ? 1 : 0];
                 RenderUtil.setGLColorFromInt(info.info.colour);
-                split.draw(rect);
+                split.draw(pose, rect);
             }
             elements.clear();
         }
         RenderSystem.setShaderColor(1, 1, 1, 1);
+        //RenderSystem.disableBlend();
     }
 }

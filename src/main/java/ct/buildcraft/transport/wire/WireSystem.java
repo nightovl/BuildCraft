@@ -214,7 +214,7 @@ public final class WireSystem {
         CompoundTag nbt = new CompoundTag();
         ListTag elementsList = new ListTag();
         int counter = 0;
-        for(CompoundTag tag : (CompoundTag[])elements.stream().map(WireElement::writeToNBT).toArray())
+        for(CompoundTag tag : elements.stream().map(WireElement::writeToNBT).toArray(CompoundTag[]::new))
         	elementsList.addTag(counter, tag);
         nbt.put("elements", elementsList);
         nbt.putInt("color", color.getId());

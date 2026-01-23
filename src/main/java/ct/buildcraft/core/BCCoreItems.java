@@ -8,6 +8,7 @@ import ct.buildcraft.core.item.ItemMarkerConnector;
 import ct.buildcraft.core.item.ItemPaintbrush_BC8;
 import ct.buildcraft.core.item.ItemVolumeBox;
 import ct.buildcraft.core.item.ItemWrench;
+import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.item.MultiBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -25,7 +26,7 @@ public class BCCoreItems {
     public static final RegistryObject<Item> GEAR_IRON = ITEMS.register("gears/gear_iron", () -> new Item(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB))); 
     public static final RegistryObject<Item> GEAR_GOLD = ITEMS.register("gears/gear_gold", () -> new Item(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB))); 
     public static final RegistryObject<Item> GEAR_DIAMOND = ITEMS.register("gears/gear_diamond", () -> new Item(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB))); 
-    public static final RegistryObject<ItemPaintbrush_BC8> PAINT_BRUSH = ITEMS.register("paintbrush/clean", () -> new ItemPaintbrush_BC8(null, new Item.Properties().tab(BCCore.BUILDCRAFT_TAB), null));
+    public static final RegistryObject<ItemPaintbrush_BC8> PAINT_BRUSH = ITEMS.register("paintbrush/clean", () -> new ItemPaintbrush_BC8(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB), null, null));
     public static final RegistryObject<Item> MARKER_CONNECTOR = ITEMS.register("marker_connector", () -> new ItemMarkerConnector(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
     public static final RegistryObject<Item> VOLUME_BOX = ITEMS.register("volume_box", () -> new ItemVolumeBox(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
 
@@ -33,7 +34,8 @@ public class BCCoreItems {
     
     
     
-    public static final EnumMap<DyeColor, ItemPaintbrush_BC8> PAINT_BRUSHS = new EnumMap<>(DyeColor.class);
+    public static final EnumMap<DyeColor, ItemPaintbrush_BC8> PAINT_BRUSHS = ItemByEnum.creatItems(ItemPaintbrush_BC8::new, new Item.Properties().durability(64).tab(BCCore.BUILDCRAFT_TAB),
+    		DyeColor.values(), DyeColor.class, "paintbrush", ITEMS);;
     public static final EnumMap<EnumEngineType, MultiBlockItem<EnumEngineType>> ENGINE_ITEM_MAP = new EnumMap<EnumEngineType, MultiBlockItem<EnumEngineType>>(EnumEngineType.class);
     public static final EnumMap<EnumSpring, MultiBlockItem<EnumSpring>> SPRING_ITEM_MAP = new EnumMap<EnumSpring, MultiBlockItem<EnumSpring>>(EnumSpring.class);
     
@@ -48,12 +50,5 @@ public class BCCoreItems {
 
     static void registry(IEventBus m) {
         ITEMS.register(m);
-        for(DyeColor color : DyeColor.values()) 
-        	creatBrush(color);
-    }
-    
-    private static void creatBrush(DyeColor color) {
-    	ITEMS.register("paintbrush/"+color.getName(), () -> new ItemPaintbrush_BC8(color, (new Item.Properties()).durability(64).tab(BCCore.BUILDCRAFT_TAB), PAINT_BRUSHS));
-//    	System.out.println("\"item.buildcraftcore."+"paintbrush/"+color.getName().replace('/', '.')+"\":\"\",");
     }
 }

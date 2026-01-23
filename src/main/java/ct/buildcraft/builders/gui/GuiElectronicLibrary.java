@@ -4,10 +4,10 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.builders.gui;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.builders.menu.ContainerElectronicLibrary;
@@ -21,8 +21,6 @@ import ct.buildcraft.lib.gui.button.IButtonClickEventTrigger;
 import ct.buildcraft.lib.gui.button.StandardSpriteButtons;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
 import ct.buildcraft.lib.gui.pos.IGuiPosition;
-import ct.buildcraft.lib.misc.LocaleUtil;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -63,9 +61,10 @@ public class GuiElectronicLibrary extends GuiBC8<ContainerElectronicLibrary> {
 
     @Override
     protected void drawBackgroundLayer(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
-        ICON_GUI.drawAt(mainGui.rootElement);
-        drawProgress(RECT_PROGRESS_DOWN, ICON_PROGRESS_DOWN, -container.tile.deltaProgressDown.getDynamic(partialTicks), 1);
-        drawProgress(RECT_PROGRESS_UP, ICON_PROGRESS_UP, container.tile.deltaProgressUp.getDynamic(partialTicks), 1);
+    	RenderSystem._setShaderTexture(0, TEXTURE_BASE);
+        ICON_GUI.drawAt(pose, mainGui.rootElement);
+        drawProgress(pose, RECT_PROGRESS_DOWN, ICON_PROGRESS_DOWN, -container.tile.deltaProgressDown.getDynamic(partialTicks), 1);
+        drawProgress(pose, RECT_PROGRESS_UP, ICON_PROGRESS_UP, container.tile.deltaProgressUp.getDynamic(partialTicks), 1);
         iterateSnapshots((i, rect, key) -> {
             boolean isSelected = key.equals(container.tile.selected);
             if (isSelected) {
@@ -80,7 +79,7 @@ public class GuiElectronicLibrary extends GuiBC8<ContainerElectronicLibrary> {
     }
 
     private GlobalSavedDataSnapshots getSnapshots() {
-        return GlobalSavedDataSnapshots.get(container.tile.getWorld());
+        return GlobalSavedDataSnapshots.get(container.tile.getLevel());
     }
 
     private void iterateSnapshots(ISnapshotIterator iterator) {
@@ -104,8 +103,9 @@ public class GuiElectronicLibrary extends GuiBC8<ContainerElectronicLibrary> {
             }
         });
         if (!found.get()) {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
+        return true;
     }
 
     @FunctionalInterface

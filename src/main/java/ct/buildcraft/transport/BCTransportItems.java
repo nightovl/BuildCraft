@@ -6,16 +6,17 @@
 
 package ct.buildcraft.transport;
 
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 
 import ct.buildcraft.api.transport.pipe.PipeDefinition;
-import ct.buildcraft.core.BCCore;
 import ct.buildcraft.lib.item.ItemBC_Neptune;
+import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.item.ItemPluggableSimple;
 import ct.buildcraft.transport.item.ItemPipeHolder;
 import ct.buildcraft.transport.item.ItemWire;
 import ct.buildcraft.transport.pipe.PipeRegistry;
-
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -88,10 +89,10 @@ public class BCTransportItems {
 
     public static final RegistryObject<ItemPluggableSimple> plugBlocker;
     public static final RegistryObject<ItemPluggableSimple> plugPowerAdaptor;
-    public static final RegistryObject<ItemWire> wire;
+    public static final EnumMap<DyeColor, ItemByEnum<DyeColor>> wires = ItemByEnum.creatItems(ItemWire::new, new Properties().tab(BCTransport.tabPlugs), DyeColor.values(), DyeColor.class, "wire", ITEMS);;
 
     static {
-        WATER_PROOF = ITEMS.register("waterproof",() -> new ItemBC_Neptune("waterproof", new Properties().tab(BCCore.tabPipes)));
+        WATER_PROOF = ITEMS.register("waterproof",() -> new ItemBC_Neptune("waterproof", new Properties().tab(BCTransport.tabPipes)));
         PIPE_STRUCTURE = makePipeItem(BCTransportPipes.structure);
 
         // Register them in order of type -- item, fluid, power
@@ -133,11 +134,11 @@ public class BCTransportItems {
         // pipePowerIron = makePipeItem(BCTransportPipes.ironPower);
         PIPE_POWER_SAND_STONE = makePipeItem(BCTransportPipes.sandstonePower);
 
-        plugBlocker = ITEMS.register("plug_blocker",() -> new ItemPluggableSimple(BCTransportPlugs.blocker, new Properties().tab(BCCore.tabPlugs)));
+        plugBlocker = ITEMS.register("plug_blocker",() -> new ItemPluggableSimple(BCTransportPlugs.blocker, new Properties().tab(BCTransport.tabPlugs)));
         plugPowerAdaptor = ITEMS.register("plug_power_adaptor", () -> new ItemPluggableSimple(
-            BCTransportPlugs.powerAdaptor, ItemPluggableSimple.PIPE_BEHAVIOUR_ACCEPTS_RS_POWER, new Properties().tab(BCCore.tabPlugs)));
+            BCTransportPlugs.powerAdaptor, ItemPluggableSimple.PIPE_BEHAVIOUR_ACCEPTS_RS_POWER, new Properties().tab(BCTransport.tabPlugs)));
 
-        wire = ITEMS.register("wire", () -> new ItemWire("wire", new Properties().tab(BCCore.tabPlugs)));
+
     }
     
     

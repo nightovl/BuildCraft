@@ -27,15 +27,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
     
-    protected final DyeColor color;
-
-    public ItemPaintbrush_BC8(DyeColor color, Properties pro, EnumMap<DyeColor, ItemPaintbrush_BC8> map) {
+    public ItemPaintbrush_BC8(Properties pro, DyeColor color, EnumMap<DyeColor, ItemPaintbrush_BC8> map) {
 		super(pro, color, null);
 		if(color != null)
 			map.put(color, this);
-		this.color = color;
-	}
-    
+    }
+		
     @Override
 	public InteractionResult useOn(UseOnContext ctx) {
         Player player = ctx.getPlayer();
@@ -44,7 +41,7 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
         BlockPos pos = ctx.getClickedPos();
     	ItemStack stack = StackUtil.asNonNull(player.getItemInHand(hand));
         Vec3 hitPos = ctx.getClickLocation();
-        if (CustomPaintHelper.INSTANCE.attemptPaintBlock(world, pos, world.getBlockState(pos), hitPos, ctx.getClickedFace(), color) == InteractionResult.SUCCESS) {
+        if (CustomPaintHelper.INSTANCE.attemptPaintBlock(world, pos, world.getBlockState(pos), hitPos, ctx.getClickedFace(), type) == InteractionResult.SUCCESS) {
             CompoundTag tag = stack.getTag();
 //            BCLog.logger.debug("" + tag.getAsString());
             if (player != null) {
@@ -71,15 +68,15 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
     }
 
     public boolean tryBrush(ItemStack stack, Level world, BlockPos pos, BlockState state, Vec3 hitPos, Direction side, Player player) {
-        if (color != null && stack.getDamageValue() > 64) {
+        if (type != null && stack.getDamageValue() > 64) {
             return false;
         }
 
-        InteractionResult result = CustomPaintHelper.INSTANCE.attemptPaintBlock(world, pos, state, hitPos, side, color);
+        InteractionResult result = CustomPaintHelper.INSTANCE.attemptPaintBlock(world, pos, state, hitPos, side, type);
 
         if (result == InteractionResult.SUCCESS) {
 //            ParticleUtil.showChangeColour(world, hitPos, colour);
-            SoundUtil.playChangeColour(world, pos, color);
+            SoundUtil.playChangeColour(world, pos, type);
             return true;
         }
         return false;

@@ -26,6 +26,7 @@ import ct.buildcraft.lib.net.MessageContainer;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,9 +34,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -345,6 +349,11 @@ public abstract class MenuBC_Neptune extends AbstractContainerMenu {
         });
     }
     
-	public void clientInit(FriendlyByteBuf data) {
+	@OnlyIn(Dist.CLIENT)
+	private static Minecraft mc = Minecraft.getInstance();
+	
+	@OnlyIn(Dist.CLIENT)
+	public static ContainerLevelAccess CreateClientLevelAccess(FriendlyByteBuf buf) {
+		return ContainerLevelAccess.create(mc.level, buf.readBlockPos());
 	}
 }

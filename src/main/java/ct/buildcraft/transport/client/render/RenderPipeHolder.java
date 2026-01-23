@@ -14,6 +14,8 @@ import ct.buildcraft.transport.client.PipeRegistryClient;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.tile.TilePipeHolder;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -42,11 +44,23 @@ public class RenderPipeHolder implements BlockEntityRenderer<TilePipeHolder> {
 			int combinedLight, int combinedOverlay) {
 		Pipe p = pipe.getPipe();
 		if(p == Pipe.EMPTY) return;
+        Minecraft.getInstance().getProfiler().push("bc");
 		matrix.pushPose();
         float conSize = 0;
+        Minecraft.getInstance().getProfiler().push("pipe");
+        Minecraft.getInstance().getProfiler().push("wire");
+        PipeWireRenderer.renderWires(pipe, conSize, matrix, buffer, combinedLight, combinedOverlay);
+        
+        Minecraft.getInstance().getProfiler().popPush("pluggable");
+        renderPluggables(pipe, conSize, matrix, buffer, combinedLight, combinedOverlay);
+        
+        Minecraft.getInstance().getProfiler().popPush("contents");
         renderContents(pipe, partialTicks, matrix, buffer, combinedLight, combinedOverlay);
-        renderPluggables(pipe, conSize, matrix, buffer, combinedOverlay, combinedOverlay);
+
 		matrix.popPose();
+        Minecraft.getInstance().getProfiler().pop();
+        Minecraft.getInstance().getProfiler().pop();
+        Minecraft.getInstance().getProfiler().pop();
 		
 	}
     private static void renderPluggables(TilePipeHolder pipe,  float partialTicks, PoseStack matrix, MultiBufferSource buffer,
@@ -94,9 +108,9 @@ public class RenderPipeHolder implements BlockEntityRenderer<TilePipeHolder> {
         float partialTicks, BufferBuilder bb) {
         IPipeBehaviourRenderer<B> renderer = PipeRegistryClient.getBehaviourRenderer(behaviour);
         if (renderer != null) {
-            Minecraft.getMinecraft().mcProfiler.startSection(behaviour.getClass());
+            Minecraft.getInstance().getProfiler().push(behaviour.getClass());
             renderer.render(behaviour, x, y, z, partialTicks, bb);
-            Minecraft.getMinecraft().mcProfiler.endSection();
+            Minecraft.getInstance().getProfiler().pop();
         }
     }
 

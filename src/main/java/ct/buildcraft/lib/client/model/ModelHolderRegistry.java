@@ -16,16 +16,19 @@ import ct.buildcraft.api.core.BCDebugging;
 import ct.buildcraft.api.core.BCLog;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;
 
 public class ModelHolderRegistry {
     public static final boolean DEBUG = BCDebugging.shouldDebugLog("lib.model.holder");
 
-    static final List<ModelHolder> HOLDERS = new ArrayList<>();
+    static final List<ModelHolder> HOLDERS_JSONBAKE = new ArrayList<>();
+    static final List<ModelHolder> HOLDERS_VANILLABAKE = new ArrayList<>();
 
     public static void onTextureStitchPre(Pre event) {
         Set<ResourceLocation> toStitch = new HashSet<>();
-        for (ModelHolder holder : HOLDERS) {
+        for (ModelHolder holder : HOLDERS_JSONBAKE) {
             holder.onTextureStitchPre(toStitch);
         }
 
@@ -33,15 +36,23 @@ public class ModelHolderRegistry {
         	event.addSprite(res);
         }
     }
-
-    public static void onModelBake() {
-        for (ModelHolder holder : HOLDERS) {
-            holder.onModelBake();
+	public static void preModelBake(RegisterAdditional event) {
+        for (ModelHolder holder : HOLDERS_VANILLABAKE) {
+            holder.onModelBakePre(event);
+        }
+	}
+    
+    public static void onModelBake(BakingCompleted event) {
+        for (ModelHolder holder : HOLDERS_JSONBAKE) {
+            holder.onModelBake(event);
+        }
+        for (ModelHolder holder : HOLDERS_VANILLABAKE) {
+            holder.onModelBake(event);
         }
         if (DEBUG) {
             BCLog.logger.info("[lib.model.holder] List of registered Models:");
             List<ModelHolder> holders = new ArrayList<>();
-            holders.addAll(HOLDERS);
+            holders.addAll(HOLDERS_JSONBAKE);
             holders.sort(Comparator.comparing(a -> a.modelLocation.toString()));
 
             for (ModelHolder holder : holders) {
@@ -54,7 +65,7 @@ public class ModelHolderRegistry {
 
                 BCLog.logger.info("  - " + holder.modelLocation + status);
             }
-            BCLog.logger.info("[lib.model.holder] Total of " + HOLDERS.size() + " models");
+            BCLog.logger.info("[lib.model.holder] Total of " + HOLDERS_JSONBAKE.size() + " models");
         }
     }
 }

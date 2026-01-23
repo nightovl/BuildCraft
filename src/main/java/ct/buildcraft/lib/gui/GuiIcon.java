@@ -5,8 +5,10 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.client.sprite.SpriteRaw;
@@ -53,16 +55,16 @@ public class GuiIcon implements ISimpleDrawable{
     }
 
     @Override
-    public void drawAt(double x, double y) {
-        this.drawScaledInside(x, y, this.width, this.height);
+    public void drawAt(PoseStack pose, double x, double y) {
+        this.drawScaledInside(pose, x, y, this.width, this.height);
     }
 
-    public void drawScaledInside(IGuiArea element) {
-        drawScaledInside(element.getX(), element.getY(), element.getWidth(), element.getHeight());
+    public void drawScaledInside(PoseStack pose, IGuiArea element) {
+        drawScaledInside(pose, element.getX(), element.getY(), element.getWidth(), element.getHeight());
     }
 
-    public void drawScaledInside(double x, double y, double drawnWidth, double drawnHeight) {
-        draw(sprite, x, y, x + drawnWidth, y + drawnHeight);
+    public void drawScaledInside(PoseStack pose, double x, double y, double drawnWidth, double drawnHeight) {
+        draw(pose, sprite, x, y, x + drawnWidth, y + drawnHeight);
     }
 
     public void drawCustomQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
@@ -127,11 +129,12 @@ public class GuiIcon implements ISimpleDrawable{
         GL11.glVertex2d(x, y);
     }
 
-    public void drawCutInside(IGuiArea element) {
-        drawCutInside(element.getX(), element.getY(), element.getWidth(), element.getHeight());
+    public void drawCutInside(PoseStack pose, IGuiArea element) {
+        drawCutInside(pose, element.getX(), element.getY(), element.getWidth(), element.getHeight());
     }
 
-    public void drawCutInside(double x, double y, double displayWidth, double displayHeight) {
+    public void drawCutInside(PoseStack pose, double x, double y, double displayWidth, double displayHeight) {
+    	Matrix4f matrix4f = pose.last().pose();
         sprite.bindTexture();
 
         displayWidth = Math.min(this.width, displayWidth);
@@ -153,23 +156,24 @@ public class GuiIcon implements ISimpleDrawable{
         BufferBuilder vb = tess.getBuilder();
         vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        vertex(vb, xMin, yMax, uMin, vMax);
-        vertex(vb, xMax, yMax, uMax, vMax);
-        vertex(vb, xMax, yMin, uMax, vMin);
-        vertex(vb, xMin, yMin, uMin, vMin);
+        vertex(matrix4f, vb, xMin, yMax, uMin, vMax);
+        vertex(matrix4f, vb, xMax, yMax, uMax, vMax);
+        vertex(matrix4f, vb, xMax, yMin, uMax, vMin);
+        vertex(matrix4f, vb, xMin, yMin, uMin, vMin);
 
         tess.end();
     }
 
-    public static void drawAt(ISprite sprite, double x, double y, double size) {
-        drawAt(sprite, x, y, size, size);
+    public static void drawAt(PoseStack pose, ISprite sprite, double x, double y, double size) {
+        drawAt(pose, sprite, x, y, size, size);
     }
 
-    public static void drawAt(ISprite sprite, double x, double y, double width, double height) {
-        draw(sprite, x, y, x + width, y + height);
+    public static void drawAt(PoseStack pose, ISprite sprite, double x, double y, double width, double height) {
+        draw(pose, sprite, x, y, x + width, y + height);
     }
 
-    public static void draw(ISprite sprite, double xMin, double yMin, double xMax, double yMax) {
+    public static void draw(PoseStack pose, ISprite sprite, double xMin, double yMin, double xMax, double yMax) {
+    	Matrix4f matrix4f = pose.last().pose();
         sprite.bindTexture();
 
         float uMin = sprite.getInterpU(0);
@@ -183,16 +187,16 @@ public class GuiIcon implements ISimpleDrawable{
         BufferBuilder vb = tess.getBuilder();
         vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        vertex(vb, xMin, yMax, uMin, vMax);
-        vertex(vb, xMax, yMax, uMax, vMax);
-        vertex(vb, xMax, yMin, uMax, vMin);
-        vertex(vb, xMin, yMin, uMin, vMin);
+        vertex(matrix4f, vb, xMin, yMax, uMin, vMax);
+        vertex(matrix4f, vb, xMax, yMax, uMax, vMax);
+        vertex(matrix4f, vb, xMax, yMin, uMax, vMin);
+        vertex(matrix4f, vb, xMin, yMin, uMin, vMin);
 
         tess.end();
     }
 
-    private static void vertex(BufferBuilder vb, double x, double y, float u, float v) {
-        vb.vertex(x, y, 0);
+    private static void vertex(Matrix4f m, BufferBuilder vb, double x, double y, float u, float v) {
+        vb.vertex(m, (float)x, (float)y, 0);
         vb.uv(u, v);
         vb.endVertex();
     }

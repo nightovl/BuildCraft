@@ -176,7 +176,6 @@ public class ModelItemSimple implements BakedModel {
 
 	@Override
 	public boolean usesBlockLight() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

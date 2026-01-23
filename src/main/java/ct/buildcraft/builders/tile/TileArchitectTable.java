@@ -404,7 +404,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new ContainerArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut, deltaProgress.getContainerData(), ContainerLevelAccess.create(getLevel(), worldPosition));
+		return new ContainerArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut,/* deltaProgress.getContainerData(), */ContainerLevelAccess.create(getLevel(), worldPosition));
 	}
 
 	@Override

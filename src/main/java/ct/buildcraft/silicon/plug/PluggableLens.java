@@ -16,7 +16,7 @@ import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.silicon.BCSiliconItems;
-import ct.buildcraft.silicon.model.KeyPlugLens;
+import ct.buildcraft.silicon.client.model.key.KeyPlugLens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

@@ -6,10 +6,15 @@
 
 package ct.buildcraft.lib.client.sprite;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
+
+import net.minecraft.client.renderer.GameRenderer;
 
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
@@ -54,13 +59,16 @@ public class SpriteNineSliced {
         this.yScale = yScale;
     }
 
-    public void draw(IGuiArea element) {
-        draw(element.getX(), element.getY(), element.getWidth(), element.getHeight());
+    public void draw(PoseStack pose, IGuiArea element) {
+        draw(pose, element.getX(), element.getY(), element.getWidth(), element.getHeight());
     }
 
-    public void draw(double x, double y, double width, double height) {
+    public void draw(PoseStack pose, double x, double y, double width, double height) {
+    	Matrix4f matrix4f = pose.last().pose();
+    	RenderSystem.setShader(GameRenderer::getPositionTexShader);
         sprite.bindTexture();
         Tesselator tess = Tesselator.getInstance();
+        
         BufferBuilder vb = tess.getBuilder();
         vb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         transX = x;
@@ -74,38 +82,38 @@ public class SpriteNineSliced {
         double[] ua = { 0, xMin, xMax, 1 };
         double[] va = { 0, yMin, yMax, 1 };
 
-        quad(vb, xa, ya, ua, va, 0, 0);
-        quad(vb, xa, ya, ua, va, 0, 1);
-        quad(vb, xa, ya, ua, va, 0, 2);
+        quad(matrix4f, vb, xa, ya, ua, va, 0, 0);
+        quad(matrix4f, vb, xa, ya, ua, va, 0, 1);
+        quad(matrix4f, vb, xa, ya, ua, va, 0, 2);
 
-        quad(vb, xa, ya, ua, va, 1, 0);
-        quad(vb, xa, ya, ua, va, 1, 1);
-        quad(vb, xa, ya, ua, va, 1, 2);
+        quad(matrix4f, vb, xa, ya, ua, va, 1, 0);
+        quad(matrix4f, vb, xa, ya, ua, va, 1, 1);
+        quad(matrix4f, vb, xa, ya, ua, va, 1, 2);
 
-        quad(vb, xa, ya, ua, va, 2, 0);
-        quad(vb, xa, ya, ua, va, 2, 1);
-        quad(vb, xa, ya, ua, va, 2, 2);
+        quad(matrix4f, vb, xa, ya, ua, va, 2, 0);
+        quad(matrix4f, vb, xa, ya, ua, va, 2, 1);
+        quad(matrix4f, vb, xa, ya, ua, va, 2, 2);
 
         tess.end();
         transX = 0;
         transY = 0;
     }
 
-    private void quad(BufferBuilder vb, double[] x, double[] y, double[] u, double[] v, int xIndex, int yIndex) {
+    private void quad(Matrix4f matrix4f, BufferBuilder vb, double[] x, double[] y, double[] u, double[] v, int xIndex, int yIndex) {
         int xis = xIndex;
         int xIB = xIndex + 1;
 
         int yis = yIndex;
         int yIB = yIndex + 1;
 
-        vertex(vb, x[xis], y[yis], u[xis], v[yis]);
-        vertex(vb, x[xis], y[yIB], u[xis], v[yIB]);
-        vertex(vb, x[xIB], y[yIB], u[xIB], v[yIB]);
-        vertex(vb, x[xIB], y[yis], u[xIB], v[yis]);
+        vertex(matrix4f, vb, x[xis], y[yis], u[xis], v[yis]);
+        vertex(matrix4f, vb, x[xis], y[yIB], u[xis], v[yIB]);
+        vertex(matrix4f, vb, x[xIB], y[yIB], u[xIB], v[yIB]);
+        vertex(matrix4f, vb, x[xIB], y[yis], u[xIB], v[yis]);
     }
 
-    private void vertex(BufferBuilder vb, double x, double y, double texU, double texV) {
-        vb.vertex(x+transX, y+transY, 0);
+    private void vertex(Matrix4f matrix4f, BufferBuilder vb, double x, double y, double texU, double texV) {
+        vb.vertex(matrix4f, (float)(x+transX), (float)(y+transY), 0);//TODO change all double to float
         vb.uv(sprite.getInterpU(texU), sprite.getInterpV(texV));
         vb.endVertex();
     }

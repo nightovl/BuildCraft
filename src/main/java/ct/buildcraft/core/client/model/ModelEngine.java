@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.client.model.MutableQuad;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -17,10 +16,11 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public class ModelEngine implements BakedModel{
+public class ModelEngine implements IDynamicBakedModel{
 	
 //	protected static final List<MutableQuad> STATIC = new ArrayList<MutableQuad>();
 
@@ -72,11 +72,6 @@ public class ModelEngine implements BakedModel{
 		Direction dir = data.get(EngineModelFacingKey);
 		return faces.get(dir == null ? Direction.UP : dir);
 //		return BakedModel.super.getQuads(state, side, rand, data, renderType);
-	}
-
-	@Override
-	public List<BakedQuad> getQuads(BlockState p_235039_, Direction p_235040_, RandomSource p_235041_) {
-		return ImmutableList.of();
 	}
 
 	@Override

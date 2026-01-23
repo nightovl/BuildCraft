@@ -6,19 +6,19 @@
 
 package ct.buildcraft.builders.menu;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ct.buildcraft.builders.BCBuildersGuis;
 import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.lib.gui.ContainerBCTile;
-import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.gui.slot.SlotBase;
 import ct.buildcraft.lib.gui.slot.SlotDisplay;
 import ct.buildcraft.lib.gui.widget.WidgetFluidTank;
 import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -26,12 +26,12 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.items.IItemHandler;
 
 public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
-    public final List<WidgetFluidTank> widgetTanks = new ArrayList<WidgetFluidTank>(4);
+    public final List<WidgetFluidTank> widgetTanks;// = new ArrayList<WidgetFluidTank>(4);
 //    public final ContainerData remainingDisplayRequiredData;
     
-	public ContainerBuilder(int containerId, Inventory playerInventory) {
+	public ContainerBuilder(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
 		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(27),
-				new SimpleContainerData(4 * TankContainerData.LEN), new ItemHandlerSimple(24), ContainerLevelAccess.NULL);
+				new SimpleContainerData(4 * TankContainerData.LEN), new ItemHandlerSimple(24), CreateClientLevelAccess(buf));
 	}
 
 
@@ -49,13 +49,16 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
             	addSlot(new SlotBase(invResources, sx + sy * 9, 8 + sx * 18, 72 + sy * 18));
             }
         }
-        
-        addDataSlots(tanks);
+        widgetTanks = tile.getTankManager().stream()
+                .map(tank -> new WidgetFluidTank(this, tank))
+                .map(this::addWidget)
+                .collect(Collectors.toList());
+/*        addDataSlots(tanks);
         for(int point =0;point * TankContainerData.LEN < tanks.getCount();point++) {
         	WidgetFluidTank widgetFluidTank = new WidgetFluidTank(this, tanks, point);
         	widgetTanks.add(widgetFluidTank);
         	addWidget(widgetFluidTank);
-        }
+        }*/
         
 
         for(int y = 0; y < 6; y++) {

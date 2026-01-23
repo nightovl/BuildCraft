@@ -15,6 +15,9 @@ public class SlotDisplay extends SlotItemHandler {
     //private static Container emptyInventory = new SimpleContainer(0);
 //    private final IntFunction<ItemStack> getter;
 
+	/**
+	 * @see ct.buildcraft.lib.gui.ItemProvider
+	 * */
     public SlotDisplay(/*IntFunction<ItemStack> getter,*/IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
         //this.getter = getter;

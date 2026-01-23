@@ -42,6 +42,9 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     private final Map<BlockPos, C> posToConnection = new ConcurrentHashMap<>();
     private final Map<C, Set<BlockPos>> connectionToPos = new ConcurrentHashMap<>();
     private final Map<BlockPos, Optional<TileMarker<C>>> tileCache = new ConcurrentHashMap<>();
+    
+    private boolean isDirty = false;
+    private boolean isUnload = false;
 
     public MarkerSubCache(Level world, int cacheId) {
         this.isServer = !world.isClientSide;
@@ -87,6 +90,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     public void loadMarker(BlockPos pos, @Nullable TileMarker<C> marker) {
+    	setDirty(true);
         boolean did = tileCache.containsKey(pos);
         tileCache.put(pos, Optional.ofNullable(marker));
         if (DEBUG_FULL) {
@@ -106,9 +110,13 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
 
     public void unloadMarker(BlockPos pos) {
         loadMarker(pos, null);
+        setDirty(false);
+        BCLog.d("unload");
+        isUnload = true;
     }
 
     public void removeMarker(BlockPos pos) {
+    	setDirty(true);
         if (DEBUG_FULL) {
             BCLog.logger.info("[lib.marker.full] Removed a marker at " + pos);
         }
@@ -140,6 +148,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     public void destroyConnection(@Nullable C connection) {
+    	setDirty(true);
         if (connection == null) {
             return;
         }
@@ -154,6 +163,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     public void addConnection(@Nonnull C connection) {
+    	setDirty(true);
         Set<BlockPos> lastSeen = new HashSet<>(connection.getMarkerPositions());
         initConnection(connection, lastSeen);
         if (DEBUG_FULL) {
@@ -162,6 +172,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     public void refreshConnection(@Nonnull C connection) {
+    	setDirty(true);
         Set<BlockPos> lastSeen = connectionToPos.get(connection);
         if (DEBUG_FULL) {
             BCLog.logger.info("[lib.marker.full] Refreshing a connection");
@@ -188,6 +199,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     private void validateAllConnections() {
+    	setDirty(true);
         final String logStart = "[lib.marker.full][" + cacheId + "]";
 
         Set<C> visited = new HashSet<>();
@@ -231,6 +243,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     private void deinitConnection(Set<BlockPos> set) {
+    	setDirty(true);
         if (DEBUG_FULL) {
             BCLog.logger.info("[lib.marker.full] Tearing down all connections in " + set);
         }
@@ -251,6 +264,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
     }
 
     private void initConnection(C connection, Set<BlockPos> lastSeen) {
+    	setDirty(true);
         if (DEBUG_FULL) {
             BCLog.logger.info("[lib.marker.full] Setting up a connection with " + lastSeen);
         }
@@ -294,6 +308,7 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
 
     @OnlyIn(Dist.CLIENT)
     public final void handleMessageMain(MessageMarker message) {
+    	setDirty(true);
         if (handleMessage(message)) {
             return;
         }
@@ -315,4 +330,13 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
 
     @OnlyIn(Dist.CLIENT)
     protected abstract boolean handleMessage(MessageMarker message);
+
+	public boolean isDirty() {
+		return isDirty&&(!isUnload);
+	}
+
+	public void setDirty(boolean isDirty) {
+		this.isDirty = isDirty;
+		BCLog.d(""+isDirty);
+	}
 }

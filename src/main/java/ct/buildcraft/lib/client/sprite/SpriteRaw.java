@@ -6,9 +6,10 @@
 
 package ct.buildcraft.lib.client.sprite;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import ct.buildcraft.api.core.render.ISprite;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 /** Defines a sprite that is taken directly from the given resource location. */
@@ -34,7 +35,7 @@ public class SpriteRaw implements ISprite {
 
     @Override
     public void bindTexture() {
-        Minecraft.getInstance().textureManager.bindForSetup(location);
+    	RenderSystem.setShaderTexture(0, location);//TODO use TextureAtlas
     }
 
     @Override

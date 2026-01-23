@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
@@ -59,9 +60,12 @@ public class MessageWireSystems  {
         }
     }
 
-    public static final BiConsumer<MessageWireSystems, NetworkEvent.Context> HANDLER = (message, ctx) -> {
-        ClientWireSystems.INSTANCE.wireSystems.clear();
-        ClientWireSystems.INSTANCE.wireSystems.putAll(message.wireSystems);
-        return;
+    public static final BiConsumer<MessageWireSystems, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
+    	ctx.get().enqueueWork(() -> {  
+	        ClientWireSystems.INSTANCE.wireSystems.clear();
+	        ClientWireSystems.INSTANCE.wireSystems.putAll(message.wireSystems);
+	        return;
+	    });
+    	ctx.get().setPacketHandled(true);
     };
 }

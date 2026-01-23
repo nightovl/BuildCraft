@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import ct.buildcraft.api.core.BCLog;
@@ -21,12 +22,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.model.data.ModelData;
 
 /** Holds a model that will never change except if the json file it is defined from is changed.
  * 
@@ -34,6 +41,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @Deprecated
 @OnlyIn(Dist.CLIENT)
 public class ModelHolderStatic extends ModelHolder {
+	private final static RandomSource random = RandomSource.create();
+	
     private final ImmutableMap<String, String> textureLookup;
     private final boolean allowTextureFallthrough;
     private MutableQuad[][] quads;
@@ -79,7 +88,7 @@ public class ModelHolderStatic extends ModelHolder {
     
     @Override
     protected void onTextureStitchPre(Set<ResourceLocation> toRegisterSprites) {
-        rawModel = null;
+/*        rawModel = null;
         quads = null;
         failReason = null;
         try {
@@ -119,13 +128,20 @@ public class ModelHolderStatic extends ModelHolder {
                     BCLog.logger.info("[lib.model.holder]  - " + lookup);
                 }
             }
-        }
+        }*/
     }
 
     @Override
-    protected void onModelBake() {
+    protected void onModelBake(BakingCompleted event) {
         if (rawModel == null) {
-            quads = null;
+        	BakedModel model = event.getModels().get(modelLocation);
+        	if(model == null)
+        		quads = null;
+        	else {
+        		MutableQuad[] cut = model.getQuads(null, null, random, ModelData.EMPTY, RenderType.cutout()).stream().map(MutableQuad::new).toArray(MutableQuad[]::new);
+        		MutableQuad[] trans = model.getQuads(null, null, random, ModelData.EMPTY, RenderType.translucent()).stream().map(MutableQuad::new).toArray(MutableQuad[]::new);
+        		quads = new MutableQuad[][] { cut, trans };
+        	}
         } else {
             MutableQuad[] cut = bakePart(rawModel.cutoutElements);
             MutableQuad[] trans = bakePart(rawModel.translucentElements);
@@ -189,4 +205,5 @@ public class ModelHolderStatic extends ModelHolder {
     public MutableQuad[] getTranslucentQuads() {
         return getQuadsChecking()[1];
     }
+
 }

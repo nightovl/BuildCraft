@@ -9,8 +9,6 @@ package ct.buildcraft.lib.gui.widget;
 import java.io.IOException;
 import java.util.List;
 
-import org.antlr.v4.parse.ANTLRParser.finallyClause_return;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.lib.fluid.Tank;
@@ -20,15 +18,12 @@ import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.IGuiElement;
 import ct.buildcraft.lib.gui.IInteractionElement;
 import ct.buildcraft.lib.gui.MenuBC_Neptune;
-import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.gui.Widget_Neptune;
 import ct.buildcraft.lib.gui.elem.ToolTip;
 import ct.buildcraft.lib.gui.help.ElementHelpInfo.HelpPosition;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
 import ct.buildcraft.lib.misc.GuiUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
@@ -37,23 +32,12 @@ public class WidgetFluidTank extends Widget_Neptune<MenuBC_Neptune> {
     private static final byte NET_CLICK = 0;
 
     private final Tank tank;
-    private final ContainerData tankData;
-    private int dataPoint = 0;
     public final boolean isClientSide;
 
     public WidgetFluidTank(MenuBC_Neptune container, Tank tank) {
         super(container);
         this.tank = tank;
-        tankData = null;
         isClientSide = false;
-    }
-    
-    public WidgetFluidTank(MenuBC_Neptune container, ContainerData data, int point) {
-        super(container);
-        this.tank = null;
-        tankData = data;
-        isClientSide = true;
-        dataPoint = point;
     }
     
 
@@ -80,9 +64,9 @@ public class WidgetFluidTank extends Widget_Neptune<MenuBC_Neptune> {
 
         @Override
         public void drawBackground(PoseStack pose, float partialTicks) {
-            GuiUtil.drawFluid(pose, this, TankContainerData.getRenderFluidStack(tankData, dataPoint), TankContainerData.getTankCapacity(tankData, dataPoint));
+        		GuiUtil.drawFluid(pose, this, tank);
             if (overlay != null) {
-                overlay.drawCutInside(this);
+                overlay.drawCutInside(pose, this);
             }
         }
 
@@ -96,7 +80,7 @@ public class WidgetFluidTank extends Widget_Neptune<MenuBC_Neptune> {
         @Override
         public void addToolTips(List<ToolTip> tooltips) {
             if (contains(gui.mouse)) {
-                ToolTip tooltip = TankContainerData.getTankToopTip(tankData, dataPoint);
+                ToolTip tooltip = tank.getToolTip();
                 tooltip.refresh();
                 tooltips.add(tooltip);
             }
@@ -104,7 +88,7 @@ public class WidgetFluidTank extends Widget_Neptune<MenuBC_Neptune> {
 
         @Override
         public void addHelpElements(List<HelpPosition> elements) {
-//            elements.add(tank.helpInfo.target(this.expand(4)));
+        	elements.add(tank.helpInfo.target(this.expand(4)));
         }
     }
 }

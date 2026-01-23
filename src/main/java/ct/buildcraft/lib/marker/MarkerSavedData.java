@@ -10,17 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.lib.misc.NBTUtilBC;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.world.level.saveddata.SavedData;
 
 public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends MarkerConnection<C>> extends SavedData {
     protected static final boolean DEBUG_FULL = MarkerSubCache.DEBUG_FULL;
     
     public final String mapName;
-
+    
     protected final List<BlockPos> markerPositions = new ArrayList<>();
     protected final List<List<BlockPos>> markerConnections = new ArrayList<>();
     private S subCache;
@@ -34,21 +35,21 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
     	markerPositions.clear();
         markerConnections.clear();
 
-        LongArrayTag positionList = (LongArrayTag) nbt.get("positions");
+        ListTag positionList = (ListTag) nbt.get("positions");
         int s = positionList.size();
         for (int i = 0; i < s; i++) {
-            markerPositions.add(BlockPos.of(positionList.get(i).getAsLong()));
+            markerPositions.add(NBTUtilBC.readBlockPos(positionList.get(i)));
         }
 
         ListTag connectionList = (ListTag) nbt.get("connections");
         int s1 = connectionList.size();
         for (int i = 0; i < s1; i++) {
-            positionList = (LongArrayTag) connectionList.get(i);
+            positionList = (ListTag) connectionList.get(i);
             List<BlockPos> inner = new ArrayList<>();
             markerConnections.add(inner);
             s = positionList.size();
             for (int j = 0; j < s; j++) {
-                inner.add(BlockPos.of(positionList.get(j).getAsLong()));
+                inner.add(NBTUtilBC.readBlockPos(positionList.get(j)));
             }
         }
 
@@ -77,26 +78,22 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
         for (C connection : subCache.getConnections()) {
             markerConnections.add(new ArrayList<>(connection.getMarkerPositions()));
         }
-
-        int len = markerPositions.size();
-        long[] positionList = new long[len];
-        for(int i=0;i<len;i++)
-        	positionList[i] = (markerPositions.get(i).asLong());
-        nbt.put("positions", new LongArrayTag(positionList));
+        ListTag positionList = new ListTag();
+        for (BlockPos p : markerPositions) {
+            positionList.add(new IntArrayTag(NBTUtilBC.writeBlockPos(p)));
+        }
+        nbt.put("positions", positionList);
 
         ListTag connectionList = new ListTag();
-        len = markerConnections.size();
-        for (int counter=0;counter<len;counter++) {
-        	List<BlockPos> connection = markerConnections.get(counter);
-            int size = connection.size();
-            long[] inner = new long[size];
-            for(int j=0;j<size;j++) {
-            	inner[j] = connection.get(j).asLong();
+        for (List<BlockPos> connection : markerConnections) {
+        	ListTag inner = new ListTag();
+            for (BlockPos p : connection) {
+                inner.add(new IntArrayTag(NBTUtilBC.writeBlockPos(p)));
             }
-            connectionList.addTag(counter, new LongArrayTag(inner));
+            connectionList.add(inner);
         }
         nbt.put("connections", connectionList);
-
+        
         if (DEBUG_FULL) {
             BCLog.logger.info("[lib.marker.full] Writing to NBT (" + mapName + ")");
             BCLog.logger.info("[lib.marker.full]  - Positions:");
@@ -117,10 +114,21 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
 
     @Override
     public boolean isDirty() {
-        return true;
+    	return subCache.isDirty();
+ //       return true;
     }
 
-    public final void setCache(S subCache) {
+    @Override
+	public void setDirty() {
+    	subCache.setDirty(true);
+	}
+
+	@Override
+	public void setDirty(boolean p_77761_) {
+		subCache.setDirty(p_77761_);
+	}
+
+	public final void setCache(S subCache) {
         this.subCache = subCache;
     }
 }

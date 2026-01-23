@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.lib.client.model.ModelHolderRegistry;
+import ct.buildcraft.lib.client.model.json.VariablePartLed;
 import ct.buildcraft.lib.client.reload.ReloadManager;
 import ct.buildcraft.lib.client.render.DetachedRenderer;
 import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
@@ -29,6 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import net.minecraftforge.client.event.RegisterTextureAtlasSpriteLoadersEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -92,13 +94,19 @@ public class BCLibEventDist {
 	    public static void textureStitchPost(TextureStitchEvent.Post event) {
 	    	if("textures/atlas/blocks.png".equals(event.getAtlas().location().getPath()))
 	        SpriteHolderRegistry.onTextureStitchPost(event);
+	    	VariablePartLed.onTextureStitchPost(event);
+	    }
+	    
+	    @SubscribeEvent
+	    public static void preModelBake(RegisterAdditional event) {
+	    	ModelHolderRegistry.preModelBake(event);
 	    }
 	
 	    @SubscribeEvent
-	    public static void modelBake(BakingCompleted event) {
+	    public static void onModelBake(BakingCompleted event) {
 	        SpriteHolderRegistry.exportTextureMap();
 	        LaserRenderer_BC8.clearModels();
-	        ModelHolderRegistry.onModelBake();
+	        ModelHolderRegistry.onModelBake(event);
 	    }
 
 	    

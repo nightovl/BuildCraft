@@ -54,8 +54,9 @@ public class WireManager implements IWireManager {
     }
 
     public void invalidate() {
-        if (!holder.getPipeWorld().isClientSide()) {
+        if (!holder.getPipeWorld().isClientSide()&&initialised) {
             removePartsFromSystem(parts.keySet());
+            initialised = false;
         }
     }
 

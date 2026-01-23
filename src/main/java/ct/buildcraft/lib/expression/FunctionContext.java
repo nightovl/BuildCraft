@@ -297,7 +297,8 @@ public class FunctionContext extends FunctionContextBase {
 
     private void getFunctions0(String name, Map<List<Class<?>>, INodeFunc> map) {
         for (FunctionContext parent : parents) {
-            parent.getFunctions0(name, map);
+        	if(parent != null)//DEBUG
+        		parent.getFunctions0(name, map);
         }
         Map<List<Class<?>>, INodeFunc> all = functions.get(name);
         if (all != null) {

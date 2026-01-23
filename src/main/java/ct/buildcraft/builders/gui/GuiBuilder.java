@@ -72,8 +72,8 @@ public class GuiBuilder extends GuiBC8<ContainerBuilder> {
     @Override
     protected void drawBackgroundLayer(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
     	RenderSystem._setShaderTexture(0, TEXTURE_BASE);
-        ICON_GUI.drawAt(mainGui.rootElement);
+        ICON_GUI.drawAt(pose, mainGui.rootElement);
         RenderSystem._setShaderTexture(0, TEXTURE_BLUEPRINT);
-        ICON_BLUEPRINT_GUI.drawAt(mainGui.rootElement.offset(SIZE_BLUEPRINT_X - BLUEPRINT_WIDTH, 0));
+        ICON_BLUEPRINT_GUI.drawAt(pose, mainGui.rootElement.offset(SIZE_BLUEPRINT_X - BLUEPRINT_WIDTH, 0));
     }
 }

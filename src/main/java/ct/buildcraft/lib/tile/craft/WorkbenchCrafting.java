@@ -19,11 +19,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,8 +39,18 @@ public class WorkbenchCrafting extends CraftingContainer {
         INGREDIENTS,
         EXACT_STACKS;
     }
-    protected static final int ID_OFFSET = 128;
-    public static final AbstractContainerMenu CONTAINER_EVENT_HANDLER = new ContainerNullEventHandler();
+    
+    public static final AbstractContainerMenu CONTAINER_EVENT_HANDLER = new AbstractContainerMenu(null, -1) {
+		@Override
+		public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+			return ItemStack.EMPTY;
+		}
+		@Override
+		public boolean stillValid(Player p_38874_) {
+			return false;
+		}
+    	
+    };
 
     private final BlockEntity tile;
     private final ItemHandlerSimple invBlueprint;
@@ -50,12 +65,13 @@ public class WorkbenchCrafting extends CraftingContainer {
     private final int MTsize;
     private final int REsize;
     private final int craftTableSize;
+    private final int width;
+    private final int height;
 
     @Nullable
     private CraftingRecipe currentRecipe;
     private ItemStack assumedResult = ItemStack.EMPTY;
-/*    @Nullable
-    protected AbstractContainerMenu menu;*/
+//    protected final RecipeBookMenu<WorkbenchCrafting> menu = new InnerRecipeBookMenu();
 
     private EnumRecipeType recipeType = null;
 
@@ -74,6 +90,8 @@ public class WorkbenchCrafting extends CraftingContainer {
         }
         this.invMaterials = invMaterials;
         this.invResult = invResult;
+		this.width = width;
+		this.height = height;
         
     }
 
@@ -363,13 +381,15 @@ public class WorkbenchCrafting extends CraftingContainer {
         return true;
     }
     
-/*    public void setMenu(AbstractContainerMenu menu) {
-    	this.menu = menu;
-    }*/
+    public RecipeBookMenu<WorkbenchCrafting> getCraftingMenu(AbstractContainerMenu menu) {
+    	return new InnerRecipeBookMenu(menu);
+    }
 
-    static class ContainerNullEventHandler extends AbstractContainerMenu {
-        protected ContainerNullEventHandler() {
-			super(null, -1);
+    protected class InnerRecipeBookMenu extends RecipeBookMenu<WorkbenchCrafting> {
+    	public final AbstractContainerMenu menu;
+        protected InnerRecipeBookMenu(AbstractContainerMenu menu) {
+			super(menu.getType(), menu.containerId);
+			this.menu = menu;
 		}
         
 		@Override
@@ -379,7 +399,60 @@ public class WorkbenchCrafting extends CraftingContainer {
 
 		@Override
 		public boolean stillValid(Player p_38874_) {
+			return menu.stillValid(p_38874_);
+		}
+
+		@Override
+		public void fillCraftSlotsStackedContents(StackedContents stackedContents) {
+			WorkbenchCrafting.this.fillStackedContents(stackedContents);
+		}
+
+		@Override
+		public void clearCraftingContent() {
+			WorkbenchCrafting.this.clearContent();
+		}
+
+		@Override
+		public boolean recipeMatches(Recipe<? super WorkbenchCrafting> p_40118_) {
+			return p_40118_.matches(WorkbenchCrafting.this, WorkbenchCrafting.this.tile.getLevel());
+		}
+
+		@Override
+		public int getResultSlotIndex() {
+			return 0;
+		}
+
+		@Override
+		public int getGridWidth() {
+			return WorkbenchCrafting.this.width;
+		}
+
+		@Override
+		public int getGridHeight() {
+			return WorkbenchCrafting.this.height;
+		}
+
+		@Override
+		public int getSize() {
+			return WorkbenchCrafting.this.width * WorkbenchCrafting.this.height + 1;
+		}
+
+		@Override
+		public RecipeBookType getRecipeBookType() {
+			return RecipeBookType.CRAFTING;
+		}
+
+		@Override
+		public boolean shouldMoveToInventory(int p_150635_) {
 			return false;
 		}
+
+		@Override
+		public Slot getSlot(int p_38854_) {
+			return menu.getSlot(p_38854_);
+		//	return super.getSlot(p_38854_);
+		}
+		
+		
     }
 }

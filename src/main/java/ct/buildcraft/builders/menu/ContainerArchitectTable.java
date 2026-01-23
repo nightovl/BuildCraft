@@ -22,9 +22,7 @@ import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -32,21 +30,21 @@ public class ContainerArchitectTable extends ContainerBCTile<TileArchitectTable>
     private static final IdAllocator IDS = MenuBC_Neptune.IDS.makeChild("architect_table");
     private static final int ID_NAME = IDS.allocId("NAME");
     public String name = "";
-    public final ContainerData deltaProgress;
+   // public final ContainerData deltaProgress;
     
-	public ContainerArchitectTable(int containerId, Inventory playerInventory) {
-		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(1), new SimpleContainerData(2), ContainerLevelAccess.NULL);
+	public ContainerArchitectTable(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
+		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(1),/* new SimpleContainerData(2),*/ CreateClientLevelAccess(buf));
 	}
 
-    public ContainerArchitectTable(int containerId, Inventory playerInventory, IItemHandlerAdv in, IItemHandlerAdv out, ContainerData containerData, ContainerLevelAccess access) {
+    public ContainerArchitectTable(int containerId, Inventory playerInventory, IItemHandlerAdv in, IItemHandlerAdv out,/* ContainerData containerData, */ContainerLevelAccess access) {
 		super(BCBuildersGuis.MENU_ARCHITECT_TABLE.get(), playerInventory, containerId, access);
         addFullPlayerInventory(88, 84);
 
         addSlot(new SlotBase(in, 0, 135, 35));
         addSlot(new SlotOutput(out, 0, 194, 35));
         
-        this.deltaProgress = containerData;
-        addDataSlots(containerData);
+//        this.deltaProgress = containerData;
+       // addDataSlots(containerData);
         
     }
     
@@ -56,7 +54,10 @@ public class ContainerArchitectTable extends ContainerBCTile<TileArchitectTable>
     }
 
     public void sendNameToServer(String name) {
-        sendMessage(ID_NAME, buffer -> buffer.writeUtf(name));
+    	if(!this.name.equals(name)) {
+    		sendMessage(ID_NAME, buffer -> buffer.writeUtf(name));
+    		this.name = name;
+    	}
     }
 
     @Override
@@ -68,11 +69,11 @@ public class ContainerArchitectTable extends ContainerBCTile<TileArchitectTable>
                 tile.sendNetworkUpdate(TileBC_Neptune.NET_RENDER_DATA);
             }
         }
-        if (side == LogicalSide.CLIENT) {
+ /*       if (side == LogicalSide.CLIENT) {
             if (id == ID_NAME) {
                 name = buffer.readUtf();
             }
-        }
+        }*/
     }
 
 	@Override
@@ -80,8 +81,8 @@ public class ContainerArchitectTable extends ContainerBCTile<TileArchitectTable>
 		return super.stillValid(access, player, BCBuildersBlocks.ARCHITECT.get());
 	}
 
-	@Override
+/*	@Override
 	public void clientInit(FriendlyByteBuf data) {
 		name = data.readUtf();
-	}
+	}*/
 }

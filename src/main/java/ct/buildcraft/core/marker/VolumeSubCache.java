@@ -10,7 +10,6 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreConfig;
 import ct.buildcraft.core.client.BuildCraftLaserManager;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8.LaserType;
@@ -29,16 +28,12 @@ public class VolumeSubCache extends MarkerSubCache<VolumeConnection> {
     public VolumeSubCache(Level world) {
         super(world, MarkerCache.CACHES.indexOf(VolumeCache.INSTANCE));
         if(world instanceof ServerLevel serverlevel) {
-        VolumeSavedData data = serverlevel.getDataStorage().get(VolumeSavedData::new, VolumeSavedData.NAME);
-        if (data == null) {
-        	data = new VolumeSavedData();
-        	serverlevel.getDataStorage().set(VolumeSavedData.NAME, data);
-        	BCLog.logger.debug("VolumeSubCache:exception to load VolumeSavedData");
-        }
-        data.loadInto(this);
-        }
-        else {
-        	BCLog.logger.debug("VolumeSubCache:breakPoint!");
+	        VolumeSavedData data = serverlevel.getDataStorage().get(VolumeSavedData::new, VolumeSavedData.NAME);
+	        if (data == null) {
+	        	data = new VolumeSavedData();
+	        	serverlevel.getDataStorage().set(VolumeSavedData.NAME, data);
+	        }
+	        data.loadInto(this);
         }
     }
 

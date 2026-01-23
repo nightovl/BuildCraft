@@ -6,20 +6,18 @@
 
 package ct.buildcraft.transport.item;
 
-import ct.buildcraft.lib.item.ItemBC_Neptune;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import java.util.EnumMap;
 
-public class ItemWire extends ItemBC_Neptune {
-    public ItemWire(String id, Item.Properties p) {
-        super(id, p);
+import ct.buildcraft.lib.item.ItemByEnum;
+import net.minecraft.world.item.DyeColor;
+
+public class ItemWire extends ItemByEnum<DyeColor> {
+	
+	
+    public ItemWire(Properties pro, DyeColor color, EnumMap<DyeColor, ItemByEnum<DyeColor>> map) {
+        super(pro, color, map);
     }
+    
 /*
     @Override
     public void addSubItems(CreativeModeTab tab, NonNullList<ItemStack> subItems) {

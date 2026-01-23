@@ -8,41 +8,34 @@ package ct.buildcraft.builders.menu;
 
 import java.io.IOException;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Side;
-
+import ct.buildcraft.builders.BCBuildersGuis;
 import ct.buildcraft.builders.snapshot.Snapshot;
 import ct.buildcraft.builders.tile.TileElectronicLibrary;
 import ct.buildcraft.lib.gui.ContainerBCTile;
 import ct.buildcraft.lib.gui.MenuBC_Neptune;
-import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.gui.slot.SlotBase;
 import ct.buildcraft.lib.gui.slot.SlotOutput;
 import ct.buildcraft.lib.misc.data.IdAllocator;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
-import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkEvent;
 
 public class ContainerElectronicLibrary extends ContainerBCTile<TileElectronicLibrary> {
     private static final IdAllocator IDS = MenuBC_Neptune.IDS.makeChild("electronic_library");
     private static final int ID_SELECTED = IDS.allocId("SELECTED");
     
-	public ContainerElectronicLibrary(int containerId, Inventory playerInventory) {
+	public ContainerElectronicLibrary(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
 		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(1), 
-				new ItemHandlerSimple(1), new ItemHandlerSimple(1), ContainerLevelAccess.NULL);
+				new ItemHandlerSimple(1), new ItemHandlerSimple(1), CreateClientLevelAccess(buf));
 	}
 
     public ContainerElectronicLibrary(int containerId, Inventory playerInventory, ItemHandlerSimple invDownOut,
     		ItemHandlerSimple invDownIn, ItemHandlerSimple invUpIn, ItemHandlerSimple invUpOut, ContainerLevelAccess access) {
-        super(menuType, playerInventory, containerId, access);
+        super(BCBuildersGuis.MENU_ELIBRARY.get(), playerInventory, containerId, access);
         addFullPlayerInventory(138);
 
         addSlot(new SlotOutput(invDownOut, 0, 175, 57));
@@ -81,11 +74,6 @@ public class ContainerElectronicLibrary extends ContainerBCTile<TileElectronicLi
         }
     }
 
-	@Override
-	public void clientInit(FriendlyByteBuf data) {
-		// TODO Auto-generated method stub
-		super.clientInit(data);
-	}
     
     
 }

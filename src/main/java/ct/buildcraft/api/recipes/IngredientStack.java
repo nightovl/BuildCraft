@@ -6,9 +6,15 @@
 
 package ct.buildcraft.api.recipes;
 
+import java.util.stream.Stream;
+
 import com.google.gson.JsonElement;
 
+import ct.buildcraft.api.core.BCLog;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 public final class IngredientStack {
@@ -26,5 +32,23 @@ public final class IngredientStack {
 
     public static IngredientStack of(JsonElement o) {
         return new IngredientStack(CraftingHelper.getIngredient(o));
+    }
+    
+    public static IngredientStack of(Object o) {
+    	if(o instanceof ItemLike item) {
+    		return new IngredientStack(Ingredient.of(item));
+    	}
+    	if(o instanceof ItemStack item) {
+    		return new IngredientStack(Ingredient.of(item));
+    	}
+    	if(o instanceof Stream item) {
+    		return new IngredientStack(Ingredient.of(item));
+    	}
+    	if(o instanceof TagKey item) {
+    		return new IngredientStack(Ingredient.of(item));
+    	}
+    	BCLog.logger.error("IngredientStack:not a valid Ingredient parm "+o.getClass().descriptorString());
+    	return null;
+    	
     }
 }

@@ -205,7 +205,7 @@ public class MutableVertex {
     }
 
     public void renderLightMap(VertexConsumer bb) {
-        bb.uv2(light_sky<<4, light_block<<4);
+        bb.uv2(light_block<<4, light_sky<<4);
     }
 
     // Mutating

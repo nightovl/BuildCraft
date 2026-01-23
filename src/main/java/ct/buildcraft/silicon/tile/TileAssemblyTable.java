@@ -7,6 +7,7 @@
 package ct.buildcraft.silicon.tile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import ct.buildcraft.api.core.EnumPipePart;
+import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
@@ -31,19 +33,31 @@ import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.silicon.BCSiliconBlocks;
 import ct.buildcraft.silicon.EnumAssemblyRecipeState;
+import ct.buildcraft.silicon.container.ContainerAssemblyTable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
-public class TileAssemblyTable extends TileLaserTableBase {
+public class TileAssemblyTable extends TileLaserTableBase implements MenuProvider{
     public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("assembly_table");
     public static final int NET_RECIPE_STATE = IDS.allocId("RECIPE_STATE");
 
@@ -54,6 +68,8 @@ public class TileAssemblyTable extends TileLaserTableBase {
         EnumPipePart.VALUES
     );
     public SortedMap<AssemblyInstruction, EnumAssemblyRecipeState> recipesStates = new TreeMap<>();
+    public final ItemProvider display = new ItemProvider((i) -> {
+    	return i < recipesStates.size() ? new ArrayList<>(recipesStates.keySet()).get(i).output : ItemStack.EMPTY;}, 3 * 4);
 
     private static final ResourceLocation ADVANCEMENT = new ResourceLocation("buildcraftsilicon:precision_crafting");
 
@@ -272,6 +288,24 @@ public class TileAssemblyTable extends TileLaserTableBase {
         });
         MessageManager.sendToServer(message);
     }
+    
+	@Override
+	public InteractionResult onActivated(Player player, InteractionHand hand, BlockHitResult hit) {
+		if(player instanceof ServerPlayer splayer&&!player.level.isClientSide) {
+			NetworkHooks.openScreen(splayer, this, worldPosition);
+		}
+		return super.onActivated(player, hand, hit);
+	}
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player p_39956_) {
+		return new ContainerAssemblyTable(id, inventory, inv, display, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return Component.literal("TileAssemblyTable:TODO");//TODO
+	}
 
     @Override
     public void getDebugInfo(List<String> left, List<String> right, Direction side) {
@@ -279,7 +313,7 @@ public class TileAssemblyTable extends TileLaserTableBase {
         left.add("recipes - " + recipesStates.size());
         left.add("target - " + LocaleUtil.localizeMj(getTarget()));
     }
-
+    
     @Nullable
     private AssemblyInstruction lookupRecipe(String name, ItemStack output) {
         AssemblyRecipe recipe = AssemblyRecipeRegistry.REGISTRY.get(new ResourceLocation(name));
@@ -307,4 +341,5 @@ public class TileAssemblyTable extends TileLaserTableBase {
             return recipe.getRegistryName().equals(instruction.recipe.getRegistryName()) && ItemStack.isSame(output, instruction.output);
         }
     }
+
 }

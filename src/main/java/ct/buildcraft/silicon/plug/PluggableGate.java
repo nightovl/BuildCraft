@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.api.transport.IWireEmitter;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
@@ -30,16 +29,19 @@ import ct.buildcraft.lib.expression.info.VariableInfo.VariableInfoObject;
 import ct.buildcraft.lib.expression.node.value.NodeVariableBoolean;
 import ct.buildcraft.lib.expression.node.value.NodeVariableObject;
 import ct.buildcraft.lib.misc.AdvancementUtil;
+import ct.buildcraft.lib.misc.MessageUtil;
+import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.lib.net.IPayloadWriter;
 import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.silicon.BCSiliconItems;
+import ct.buildcraft.silicon.client.model.key.KeyPlugGate;
+import ct.buildcraft.silicon.container.ContainerGate;
 import ct.buildcraft.silicon.gate.EnumGateLogic;
 import ct.buildcraft.silicon.gate.EnumGateMaterial;
 import ct.buildcraft.silicon.gate.EnumGateModifier;
 import ct.buildcraft.silicon.gate.GateLogic;
 import ct.buildcraft.silicon.gate.GateVariant;
 import ct.buildcraft.silicon.item.ItemGateCopier;
-import ct.buildcraft.silicon.model.KeyPlugGate;
 import ct.buildcraft.transport.pipe.PluggableHolder;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -48,8 +50,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -58,8 +65,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
-public class PluggableGate extends PipePluggable implements IWireEmitter {
+public class PluggableGate extends PipePluggable implements IWireEmitter , MenuProvider{
     public static final FunctionContext MODEL_FUNC_CTX_STATIC, MODEL_FUNC_CTX_DYNAMIC;
     private static final NodeVariableObject<String> MODEL_MATERIAL;
     private static final NodeVariableObject<String> MODEL_MODIFIER;
@@ -236,7 +244,7 @@ public class PluggableGate extends PipePluggable implements IWireEmitter {
 
     @Override
     public InteractionResult onPluggableActivate(Player player, BlockHitResult trace, Level level) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide&&player instanceof ServerPlayer splayer) {
             if (interactWithCopier(player, player.getMainHandItem())) {
                 return InteractionResult.SUCCESS;
             }
@@ -245,7 +253,10 @@ public class PluggableGate extends PipePluggable implements IWireEmitter {
             }
 
             BlockPos pos = holder.getPipePos();
-            //BCSiliconGuis.GATE.openGui(player, pos, side.ordinal()); TODO
+            NetworkHooks.openScreen(splayer, this, buf ->{
+            	buf.writeBlockPos(pos);
+            	buf.writeEnum(side);
+            });
         }
         return InteractionResult.CONSUME;
     }
@@ -318,4 +329,19 @@ public class PluggableGate extends PipePluggable implements IWireEmitter {
         setClientModelVariables(side, logic.variant);
         MODEL_IS_ON.value = logic.isOn;
     }
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+        ContainerGate container = new ContainerGate(id, inv, 
+        		ContainerLevelAccess.create(holder.getPipeWorld(), holder.getPipePos()), logic);
+        MessageUtil.doDelayedServer(() -> {
+            container.sendMessage(ContainerGate.ID_VALID_STATEMENTS);
+        });
+		return container;
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return Component.literal("PluggableGate:TODO");
+	}
 }

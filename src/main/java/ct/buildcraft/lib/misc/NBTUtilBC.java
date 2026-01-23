@@ -103,7 +103,7 @@ public final class NBTUtilBC {
         }
         switch (base.getId()) {
             case Tag.TAG_INT_ARRAY: {
-                readBlockPos(((IntArrayTag)base).getAsIntArray());
+                return readBlockPos(((IntArrayTag)base).getAsIntArray());
             }
             case Tag.TAG_COMPOUND: {
                 CompoundTag nbt = (CompoundTag) base;

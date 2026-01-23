@@ -10,17 +10,14 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-
 import ct.buildcraft.api.transport.pluggable.IPluggableStaticBaker;
 import ct.buildcraft.api.transport.pluggable.PluggableModelKey;
 import ct.buildcraft.lib.client.model.MutableQuad;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
 /** An {@link IPluggableStaticBaker} that rotates a given model to the correct side, and returns the quads. */
@@ -42,7 +39,7 @@ public class PlugBakerSimple<K extends PluggableModelKey> implements IPluggableS
     		return a.toArray(MutableQuad[]::new);
     		};
     }
-
+    
     @Override
     public List<BakedQuad> bake(K key) {
         MutableQuad[] quads = provider.getCutoutQuads();

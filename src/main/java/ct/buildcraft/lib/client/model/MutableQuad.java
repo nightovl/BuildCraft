@@ -47,6 +47,10 @@ public class MutableQuad {
         this.face = face;
         this.shade = shade;
     }
+    
+    public MutableQuad(BakedQuad from) {
+    	fromBakedBlock(from);
+    }
 
     public MutableQuad(MutableQuad from) {
         copyFrom(from);

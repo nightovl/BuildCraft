@@ -34,20 +34,20 @@ public class GuiElementDrawable extends GuiElementSimple {
     @Override
     public void drawBackground(PoseStack pose, float partialTicks) {
         if (!foreground) {
-            draw();
+            draw(pose);
         }
     }
 
     @Override
     public void drawForeground(PoseStack pose, float partialTicks) {
         if (foreground) {
-            draw();
+            draw(pose);
         }
     }
 
-    private void draw() {
+    private void draw(PoseStack pose) {
         if (visible.evaluate()) {
-            drawable.drawAt(this);
+            drawable.drawAt(pose, this);
         }
     }
 }

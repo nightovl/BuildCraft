@@ -84,6 +84,7 @@ public class BCBuilders {
         public static void onClientSetup(FMLClientSetupEvent event){
         	BCBuildersSprites.init();
         	BCBuildersGuis.clientInit(event);
+        	event.enqueueWork(BCBuildersItems::registerItemProperties);
         }
         
         @SubscribeEvent
@@ -97,7 +98,6 @@ public class BCBuilders {
         
         @SubscribeEvent
         public static void onModelBakePre(RegisterAdditional event) {
-        	BCBuildersItems.registerItemProperties();
 /*        	event.register(ModelBuilder.blueprint);
         	event.register(ModelBuilder.template);
         	event.register(ModelBuilder.empty);*/

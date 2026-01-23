@@ -7,6 +7,9 @@
 package ct.buildcraft.silicon.item;
 
 import ct.buildcraft.api.enums.EnumRedstoneChipset;
+import ct.buildcraft.core.BCCore;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,7 +18,7 @@ public class ItemRedstoneChipset extends Item {
 	protected final EnumRedstoneChipset type ;
 	
     public ItemRedstoneChipset(EnumRedstoneChipset type) {
-        super(new Item.Properties()/*.stacksTo(16).tab(BCCore.BUILDCRAFT_TAB)*/);
+        super(new Item.Properties().stacksTo(16).tab(BCCore.BUILDCRAFT_TAB));
         this.type = type;
         //setHasSubtypes(true);
     }
@@ -27,6 +30,13 @@ public class ItemRedstoneChipset extends Item {
             addVariant(variants, type.ordinal(), type.getName());
         }
     }*/
+    
+	@Override
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list) {
+	      if (this.allowedIn(tab)) {
+	          list.add(new ItemStack(this));
+	       }
+	}
 
 	@Override
 	public String getDescriptionId(ItemStack p_41455_) {

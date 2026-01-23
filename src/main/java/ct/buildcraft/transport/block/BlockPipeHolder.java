@@ -34,6 +34,7 @@ import ct.buildcraft.transport.BCTransportBlocks;
 import ct.buildcraft.transport.BCTransportItems;
 import ct.buildcraft.transport.client.model.PipeModelCacheBase;
 import ct.buildcraft.transport.client.model.PipeModelCachePluggable;
+import ct.buildcraft.transport.client.render.PipeWireRenderer;
 import ct.buildcraft.transport.item.ItemWire;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.tile.TilePipeHolder;
@@ -531,13 +532,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				between = getWireBetweenHit(subHit);
 			}
 			if (part != null && tile.wireManager.getColorOfPart(part) != null) {
-				CompoundTag tag = new CompoundTag();
-				tag.putInt("color", tile.wireManager.getColorOfPart(part).getId());
-				return new ItemStack(BCTransportItems.wire.get(), 1, tag);
+				return new ItemStack(BCTransportItems.wires.get(tile.wireManager.getColorOfPart(part)), 1);
 			} else if (between != null && tile.wireManager.getColorOfPart(between.parts[0]) != null) {
-				CompoundTag tag = new CompoundTag();
-				tag.putInt("color", tile.wireManager.getColorOfPart(between.parts[0]).getId());
-				return new ItemStack(BCTransportItems.wire.get(), 1, tag);
+				return new ItemStack(BCTransportItems.wires.get(tile.wireManager.getColorOfPart(between.parts[0])), 1);
 			}
 		}
 		return ItemStack.EMPTY;
@@ -582,7 +579,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				return InteractionResult.SUCCESS;
 			}
 		}
-		if (item instanceof ItemWire) {
+		if (item instanceof ItemWire wire) {
 			EnumWirePart wirePartHit = getWirePartHit(subHit);
 			EnumWirePart wirePart;
 			TilePipeHolder attachTile = tile;
@@ -598,7 +595,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 						(re.getLocation().z % 1 + 1) % 1 > 0.5);
 			}
 			if (wirePart != null && attachTile != null) {
-				DyeColor colour = DyeColor.byId(held.getTag().getInt("color"));
+				DyeColor colour = wire.getType();
 				boolean attached = attachTile.getWireManager().addPart(wirePart, colour);
 				attachTile.scheduleNetworkUpdate(IPipeHolder.PipeMessageReceiver.WIRES);
 				if (attached) {
@@ -685,10 +682,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			}
 			return false;
 		} else if (part != null) {
-			CompoundTag tag = new CompoundTag();
-			tag.putInt("color", tile.wireManager.getColorOfPart(part).getId());
-			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), 1);
-			stack.setTag(tag);
+			ItemStack stack = new ItemStack(BCTransportItems.wires.get(tile.wireManager.getColorOfPart(part)), 1);
 			toDrop.add(stack);
 			tile.wireManager.removePart(part);
 			if (!player.isCreative()) {
@@ -697,10 +691,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			tile.scheduleNetworkUpdate(IPipeHolder.PipeMessageReceiver.WIRES);
 			return false;
 		} else if (between != null) {
-			CompoundTag tag = new CompoundTag();
-			tag.putInt("color", tile.wireManager.getColorOfPart(between.parts[0]).getId());
-			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), between.to == null ? 2 : 1);
-			stack.setTag(tag);
+			ItemStack stack = new ItemStack(BCTransportItems.wires.get(tile.wireManager.getColorOfPart(between.parts[0])), between.to == null ? 2 : 1);
 			toDrop.add(stack);
 			if (between.to == null) {
 				tile.wireManager.removeParts(Arrays.asList(between.parts));
@@ -743,10 +734,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			}
 		}
 		for (DyeColor color : tile.wireManager.parts.values()) {
-			CompoundTag tag = new CompoundTag();
-			tag.putInt(ItemStack.TAG_COLOR, color.getId());
-			ItemStack stack = new ItemStack(BCTransportItems.wire.get(), 1);
-			stack.setTag(tag);
+			ItemStack stack = new ItemStack(BCTransportItems.wires.get(color), 1);
 			toDrop.add(stack);
 		}
 		Pipe pipe = tile.getPipe();
@@ -937,8 +925,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
             if (colour == null) {
                 return null;
             }
-            BCLog.logger.debug("BlockPipeHolder.getHitSpriteInfo:call undone method. class : PipeWireRenderer");
-//            sprite = PipeWireRenderer.getWireSprite(colour).getSprite();//TODO
+            sprite = PipeWireRenderer.getWireSprite(colour).getSprite();
         } else if (6 + 6 + 1 + 8 < p && p <= 6 + 6 + 1 + 8 + 36) {
             EnumWireBetween wireBetween = EnumWireBetween.values()[p - 6 - 6 - 1 - 8];
             aabb = wireBetween.boundingBox;
@@ -946,8 +933,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
             if (colour == null) {
                 return null;
             }
-            BCLog.logger.debug("BlockPipeHolder.getHitSpriteInfo:call undone method. class : PipeWireRenderer");
-//            sprite = PipeWireRenderer.getWireSprite(colour).getSprite();
+            sprite = PipeWireRenderer.getWireSprite(colour).getSprite();
         } else {
             return null;
         }
@@ -1051,7 +1037,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
                         double _y = pos.getY() + info.aabb.min(Axis.Y) + (y + 0.5) * sizeY / countY;
                         double _z = pos.getZ() + info.aabb.min(Axis.Z) + (z + 0.5) * sizeZ / countZ;
 
-                        TerrainParticle particle = new TerrainParticle((ClientLevel) world, _x, _y, _z, d4 - 0.5, d5 -0.5, d6 - 0.5, state, pos);
+                        TerrainParticle particle = new TerrainParticle((ClientLevel) world, _x, _y, _z, d4 - 0.5, d5 - 0.5, d6 - 0.5, state, pos);
                         spriteSet.texture = info.sprite;
                         particle.pickSprite(spriteSet);
 //                        world.addParticle(ParticleTypes.GLOW, sizeX, sizeY, sizeZ, countX, countY, countZ);

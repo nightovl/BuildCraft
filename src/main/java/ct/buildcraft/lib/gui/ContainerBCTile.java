@@ -6,28 +6,24 @@
 
 package ct.buildcraft.lib.gui;
 
-import javax.annotation.Nullable;
-
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 
 public abstract class ContainerBCTile<T extends TileBC_Neptune> extends MenuBC_Neptune {
-    protected final @Nullable T tile;
+	public final T tile;
     protected final ContainerLevelAccess access;
 
-    @SuppressWarnings({ "resource", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
 	public ContainerBCTile(MenuType<?> type, Inventory playerInventory, int id, ContainerLevelAccess access) {
         super(playerInventory, type, id);
         this.access = access;
         this.tile = (T)(access.evaluate((level, pos) -> {
         	TileBC_Neptune b = (TileBC_Neptune) level.getBlockEntity(pos);
-            if (!level.isClientSide) {
+            if (!level.isClientSide) 
                 b.onPlayerOpen(playerInventory.player);
-            }
         	return b;
         }, null));
 
@@ -51,5 +47,4 @@ public abstract class ContainerBCTile<T extends TileBC_Neptune> extends MenuBC_N
         if(tile != null)
         	tile.sendNetworkGuiTick(playerInventory.player);
     }
-	
 }

@@ -8,7 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.builders.menu.ContainerArchitectTable;
-import ct.buildcraft.lib.delta.DeltaInt;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
@@ -36,19 +35,22 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
     public void init() {
         super.init();
         nameField = new EditBox(font, leftPos + 90, topPos + 62, 156, 12, Component.empty());
-        nameField.setValue(container.name);
+        nameField.setValue(container.tile.name);
         nameField.setFocus(true);
+        nameField.setResponder((s) -> container.sendNameToServer(s.trim()));
         this.addWidget(nameField);
     }
 
     @Override
     protected void drawBackgroundLayer(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
     	RenderSystem._setShaderTexture(0, TEXTURE_BASE);
-        ICON_GUI.drawAt(mainGui.rootElement);
+        ICON_GUI.drawAt(pose, mainGui.rootElement);
         drawProgress(
+                pose,
                 RECT_PROGRESS,
                 ICON_PROGRESS,
-                DeltaInt.getDynamic(container.deltaProgress, partialTicks),
+                //DeltaInt.getDynamic(container.deltaProgress, partialTicks),
+                container.tile.deltaProgress.getDynamic(partialTicks),
                 1
         );
     }
@@ -76,8 +78,9 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
 		}
         boolean typed = false;
         if (nameField.isFocused()) {
-            typed = nameField.keyPressed(a, b, c);
-            container.sendNameToServer(nameField.getValue().trim());
+        	
+//            typed = nameField.keyPressed(a, b, c);
+            
         }
         if (!typed) {
             return super.keyPressed(a, b, c);

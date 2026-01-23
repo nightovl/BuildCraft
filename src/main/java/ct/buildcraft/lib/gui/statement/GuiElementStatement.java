@@ -104,9 +104,9 @@ public class GuiElementStatement<S extends IStatement> extends GuiElementSimple
             S statement = ref.get();
             double x = getX();
             double y = getY();
-            GuiElementStatementSource.drawGuiSlot(statement, x, y);
+            GuiElementStatementSource.drawGuiSlot(pose, statement, x, y);
             if (!ref.canInteract) {
-                GuiIcon.drawAt(BCLibSprites.LOCK, x + 1, y + 1, 16);
+                GuiIcon.drawAt(pose, BCLibSprites.LOCK, x + 1, y + 1, 16);
             }
         }
     }

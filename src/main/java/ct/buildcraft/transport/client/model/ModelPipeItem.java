@@ -128,7 +128,7 @@ public enum ModelPipeItem implements BakedModel {
                 }
                 copy.copyFrom(f);
                 copy.texFromSprite(sprite);
-                copy.colouri(colour);
+                copy.normalf(0,0,0);//FIX Render bug
                 to.add(copy.toBakedItem());
             }
         }
@@ -174,7 +174,7 @@ public enum ModelPipeItem implements BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return null;
+        return SpriteUtil.missingSprite();
     }
 
     @Override

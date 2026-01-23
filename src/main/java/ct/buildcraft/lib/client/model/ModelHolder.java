@@ -9,6 +9,8 @@ package ct.buildcraft.lib.client.model;
 import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 
 /** Defines an object that will hold a model, and is automatically refreshed from the filesystem when the client reloads
  * all of its resources. */
@@ -18,14 +20,21 @@ public abstract class ModelHolder {
 
     public ModelHolder(ResourceLocation modelLocation) {
         this.modelLocation = modelLocation;
-        ModelHolderRegistry.HOLDERS.add(this);
+        if(this instanceof ModelHolderStatic)
+        	ModelHolderRegistry.HOLDERS_VANILLABAKE.add(this);
+        else
+        	ModelHolderRegistry.HOLDERS_JSONBAKE.add(this);
     }
 
     public ModelHolder(String modelLocation) {
         this(new ResourceLocation(modelLocation));
     }
+    
+    protected void onModelBakePre(RegisterAdditional event) {
+    	event.register(modelLocation);
+    };
 
-    protected abstract void onModelBake();
+    protected abstract void onModelBake(BakingCompleted event);
 
     protected abstract void onTextureStitchPre(Set<ResourceLocation> toRegisterSprites);
 

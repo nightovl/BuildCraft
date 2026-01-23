@@ -174,7 +174,7 @@ public class ItemSnapshot extends Item {
         	if(item instanceof ItemSnapshot snapshot) {
         		return get(snapshot.snapshotType, stack.getTagElement("header") != null);
         	}
-        	BCLog.logger.warn("ItemSnapshot.EnumItemSnapshotType : No a snapshot ItemStack!");
+        	BCLog.logger.warn("ItemSnapshot.EnumItemSnapshotType : Not a snapshot ItemStack!");
         	return BLUEPRINT_CLEAN;
         }
     }

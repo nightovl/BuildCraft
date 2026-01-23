@@ -15,6 +15,7 @@ import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
 import ct.buildcraft.lib.misc.ColourUtil;
 import ct.buildcraft.transport.client.model.PipeBaseModelGenStandard;
+import ct.buildcraft.transport.pipe.PipeRegistry;
 import ct.buildcraft.transport.pipe.behaviour.PipeBehaviourEmzuli.SlotIndex;
 
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 public class BCTransportSprites {
 
-	public static final LinkedHashMap<PipeDefinition,ResourceLocation> PIPE_TEX = new LinkedHashMap<>();
 	public static TextureAtlasSprite[] TEX_SPRITES;
 	
 	public static final ResourceLocation STRUCTURE = new ResourceLocation("buildcrafttransport:pipes/structure");
@@ -222,7 +222,7 @@ public class BCTransportSprites {
     
     public static TextureAtlasSprite[] getTexArray() {
     	if(TEX_SPRITES == null) {
-    		TEX_SPRITES = PIPE_TEX.values().stream().map(
+    		TEX_SPRITES = PipeRegistry.INSTANCE.getPipeItemsMap().keySet().stream().map(($) ->$.identifier).map(
     				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
     				::apply).toList().toArray(new TextureAtlasSprite[1]);
     	}

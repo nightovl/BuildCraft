@@ -60,14 +60,12 @@ public class RenderUtil {
         }
     }
 
-    @Deprecated
     public static void registerBlockColour(@Nullable Block block, BlockColor colour) {
         if (block != null) {
             Minecraft.getInstance().getBlockColors().register(colour, block);
         }
     }
 
-    @Deprecated
     public static void registerItemColour(@Nullable Item item, ItemColor colour) {
         if (item != null) {
             Minecraft.getInstance().getItemColors().register(colour, item);

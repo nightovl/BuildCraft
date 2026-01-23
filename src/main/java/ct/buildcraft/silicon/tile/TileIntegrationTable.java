@@ -9,31 +9,40 @@ package ct.buildcraft.silicon.tile;
 import java.io.IOException;
 import java.util.List;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Side;
-
 import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.recipes.IngredientStack;
 import ct.buildcraft.api.recipes.IntegrationRecipe;
+import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.misc.StackUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.recipe.IntegrationRecipeRegistry;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.silicon.BCSiliconBlocks;
+import ct.buildcraft.silicon.container.ContainerIntegrationTable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
-public class TileIntegrationTable extends TileLaserTableBase {
+public class TileIntegrationTable extends TileLaserTableBase implements MenuProvider{
 	
 	public TileIntegrationTable(BlockPos pos, BlockState state) {
 		super(BCSiliconBlocks.INTERGRATION_TABLE_TILE.get(), pos, state);
@@ -57,6 +66,7 @@ public class TileIntegrationTable extends TileLaserTableBase {
         ItemHandlerManager.EnumAccess.INSERT,
         EnumPipePart.VALUES
     );
+    public final ItemProvider invOutput = new ItemProvider((i) -> getOutput(), 1);
     public IntegrationRecipe recipe;
 
     private boolean extract(IngredientStack item, ImmutableList<IngredientStack> items, boolean simulate) {
@@ -175,4 +185,22 @@ public class TileIntegrationTable extends TileLaserTableBase {
     private IntegrationRecipe lookupRecipe(String name) {
         return IntegrationRecipeRegistry.INSTANCE.getRecipe(new ResourceLocation(name));
     }
+    
+	@Override
+	public InteractionResult onActivated(Player player, InteractionHand hand, BlockHitResult hit) {
+		if(player instanceof ServerPlayer splayer) {
+			NetworkHooks.openScreen(splayer, this, worldPosition);
+		}
+		return super.onActivated(player, hand, hit);
+	}
+
+	@Override
+	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player p_39956_) {
+		return new ContainerIntegrationTable(id, inventory, invTarget, invToIntegrate, invOutput, invResult, ContainerLevelAccess.create(level, worldPosition));
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return Component.literal("TileIntegrationTable:TODO");//TODO
+	}
 }

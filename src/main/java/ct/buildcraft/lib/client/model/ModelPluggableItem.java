@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.lib.misc.SpriteUtil;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -27,7 +28,7 @@ public class ModelPluggableItem implements BakedModel {
         ImmutableList.Builder<BakedQuad> list = ImmutableList.builder();
         for (MutableQuad[] qa : quads) {
             for (MutableQuad q : qa) {
-                list.add(q.toBakedItem());
+                list.add(q.toBakedBlock());
             }
         }
         this.quads = list.build();
@@ -40,12 +41,12 @@ public class ModelPluggableItem implements BakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isGui3d() {
-        return false;
+        return true;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ModelPluggableItem implements BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return null;
+        return quads.isEmpty() ? SpriteUtil.missingSprite() : quads.get(0).getSprite();
     }
 
     @Override
@@ -70,8 +71,7 @@ public class ModelPluggableItem implements BakedModel {
 
 	@Override
 	public boolean usesBlockLight() {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 

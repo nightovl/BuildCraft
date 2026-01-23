@@ -14,7 +14,7 @@ import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
 import ct.buildcraft.api.transport.pluggable.PluggableModelKey;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.BCSiliconStatements;
-import ct.buildcraft.silicon.model.KeyPlugLightSensor;
+import ct.buildcraft.silicon.client.model.key.KeyPlugLightSensor;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;

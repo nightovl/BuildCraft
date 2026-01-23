@@ -136,7 +136,7 @@ public class BCCoreRecipes extends RecipeProvider{
 	        // long mjCost = 2_000 * MjAPI.MJ;
 	        // ImmutableSet<StackDefinition> required = ImmutableSet.of(//
 	        // ArrayStackFilter.definition(8, Items.PAPER), //
-	        // OreStackFilter.definition(ColourUtil.getDyeName(EnumDyeColor.GREEN)), //
+	        // OreStackFilter.definition(ColourUtil.getDyeName(DyeColor.GREEN)), //
 	        // OreStackFilter.definition("dustRedstone")//
 	        // );
 	        // BuildcraftRecipeRegistry.assemblyRecipes

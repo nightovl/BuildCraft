@@ -6,6 +6,8 @@
 
 package ct.buildcraft.lib.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
@@ -25,11 +27,11 @@ public class GuiSpriteScaled implements ISimpleDrawable {
     }
 
     @Override
-    public void drawAt(double x, double y) {
+    public void drawAt(PoseStack pose, double x, double y) {
         x += area.getX();
         y += area.getY();
         double x2 = x + area.getWidth();
         double y2 = y + area.getHeight();
-        GuiIcon.draw(sprite, x, y, x2, y2);
+        GuiIcon.draw(pose, sprite, x, y, x2, y2);
     }
 }

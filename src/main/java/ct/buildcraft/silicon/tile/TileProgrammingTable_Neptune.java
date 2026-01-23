@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileProgrammingTable_Neptune extends TileLaserTableBase {
 	
     public TileProgrammingTable_Neptune(BlockPos pos, BlockState state) {
-		super(BCSiliconBlocks.PROGRAMMING_TABLE_TABLE_TILE.get(), pos, state);
+		super(BCSiliconBlocks.PROGRAMMING_TABLE_TILE.get(), pos, state);
 	}
 
 	@Override

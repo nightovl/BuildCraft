@@ -7,6 +7,7 @@
 package ct.buildcraft.lib.gui.ledger;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.gui.BuildCraftGui;
@@ -34,12 +35,12 @@ public class LedgerOwnership extends Ledger_Neptune {
     }
 
     @Override
-    protected void drawIcon(double x, double y) {
+    protected void drawIcon(PoseStack pose, double x, double y) {
         ISprite sprite = SpriteUtil.getFaceSprite(tile.getOwner());
-        GuiIcon.draw(sprite, x, y, x + 16, y + 16);
+        GuiIcon.draw(pose, sprite, x, y, x + 16, y + 16);
         sprite = SpriteUtil.getFaceOverlaySprite(tile.getOwner());
         if (sprite != null) {
-            GuiIcon.draw(sprite, x - 0.5, y - 0.5, x + 17, y + 17);
+            GuiIcon.draw(pose, sprite, x - 0.5, y - 0.5, x + 17, y + 17);
         }
     }
 

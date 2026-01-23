@@ -9,6 +9,7 @@ package ct.buildcraft.transport.wire;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,14 +32,6 @@ public class MessageWireSystemsPowered {
         this.hashesPowered = hashesPowered;
     }
 
-    public static  void toBytes(MessageWireSystemsPowered msg, FriendlyByteBuf buf) {
-        buf.writeInt(msg.hashesPowered.size());
-        msg.hashesPowered.forEach((wiresHashCode, powered) -> {
-            buf.writeInt(wiresHashCode);
-            buf.writeBoolean(powered);
-        });
-    }
-
     public MessageWireSystemsPowered(FriendlyByteBuf buf) {
         hashesPowered.clear();
         int count = buf.readInt();
@@ -46,42 +39,53 @@ public class MessageWireSystemsPowered {
             hashesPowered.put(buf.readInt(), buf.readBoolean());
         }
     }
+    
+    public static void toBytes(MessageWireSystemsPowered msg, FriendlyByteBuf buf) {
+        buf.writeInt(msg.hashesPowered.size());
+        msg.hashesPowered.forEach((wiresHashCode, powered) -> {
+            buf.writeInt(wiresHashCode);
+            buf.writeBoolean(powered);
+        });
+    }
 
-    public static final BiConsumer<MessageWireSystemsPowered, NetworkEvent.Context> HANDLER = (message, ctx) -> {
-        message.hashesPowered.entrySet().stream()
-                .map(hashPowered ->
-                        Pair.of(
-                                ClientWireSystems.INSTANCE.wireSystems.get(hashPowered.getKey()),
-                                hashPowered.getValue()
-                        )
-                )
-                .flatMap(systemPowered ->
-                        systemPowered.getLeft().elements.stream()
-                                .map(element ->
-                                        Pair.of(element, systemPowered.getRight())
-                                )
-                )
-                .forEach(elementPowered -> {
-                    WireSystem.WireElement element = elementPowered.getLeft();
-                    boolean powered = elementPowered.getRight();
-                    if (element.type == WireSystem.WireElement.Type.WIRE_PART) {
-                        BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(element.blockPos);
-                        if (tile instanceof IPipeHolder) {
-                            IPipeHolder holder = (IPipeHolder) tile;
-                            IWireManager iWireManager = holder.getWireManager();
-                            if (iWireManager instanceof WireManager) {
-                                WireManager wireManager = (WireManager) iWireManager;
-                                if (wireManager.getColorOfPart(element.wirePart) != null) {
-                                    if (powered) {
-                                        wireManager.poweredClient.add(element.wirePart);
-                                    } else {
-                                        wireManager.poweredClient.remove(element.wirePart);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-        return;
+    public static final BiConsumer<MessageWireSystemsPowered, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
+    	ctx.get().enqueueWork(() -> {    
+    		message.hashesPowered.entrySet().stream()
+	                .map(hashPowered ->
+	                        Pair.of(
+	                                ClientWireSystems.INSTANCE.wireSystems.get(hashPowered.getKey()),
+	                                hashPowered.getValue()
+	                        )
+	                )
+	                .flatMap(systemPowered ->
+	                        systemPowered.getLeft().elements.stream()
+	                                .map(element ->
+	                                        Pair.of(element, systemPowered.getRight())
+	                                )
+	                )
+	                .forEach(elementPowered -> {
+	                    WireSystem.WireElement element = elementPowered.getLeft();
+	                    boolean powered = elementPowered.getRight();
+	                    if (element.type == WireSystem.WireElement.Type.WIRE_PART) {
+	                        BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(element.blockPos);
+	                        if (tile instanceof IPipeHolder) {
+	                            IPipeHolder holder = (IPipeHolder) tile;
+	                            IWireManager iWireManager = holder.getWireManager();
+	                            if (iWireManager instanceof WireManager) {
+	                                WireManager wireManager = (WireManager) iWireManager;
+	                                if (wireManager.getColorOfPart(element.wirePart) != null) {
+	                                    if (powered) {
+	                                        wireManager.poweredClient.add(element.wirePart);
+	                                    } else {
+	                                        wireManager.poweredClient.remove(element.wirePart);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    }
+	                });
+	        return;
+    	});
+    	ctx.get().setPacketHandled(true);
     };
 }

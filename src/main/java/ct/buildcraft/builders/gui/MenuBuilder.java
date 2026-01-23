@@ -72,7 +72,6 @@ public class MenuBuilder extends AbstractContainerMenu {
 		return access.evaluate((level, pos) ->{
 			BlockEntity be = level.getBlockEntity(pos);
 			if(be instanceof TileBuilder tile) {
-				BCLog.d(""+index);
 				Tank tank= tile.tankManager.get(index/2);
 				int amount0 = tank.getFluidAmount();
 				if(tank!=null)

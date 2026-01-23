@@ -30,9 +30,9 @@ public class AddonRendererFillerPlanner implements IFastAddonRenderer<AddonFille
         if (addon.buildingInfo == null) {
             return;
         }
-//        Minecraft.getMinecraft().mcProfiler.startSection("filler_planner");
+//        Minecraft.getInstance().getProfiler().push("filler_planner");
 
-//        Minecraft.getMinecraft().mcProfiler.startSection("iter");
+//        Minecraft.getInstance().getProfiler().push("iter");
         List<BlockPos> list = StreamSupport.stream(
             BlockPos.betweenClosed(addon.buildingInfo.box.min(), addon.buildingInfo.box.max()).spliterator(),
             false
@@ -46,13 +46,13 @@ public class AddonRendererFillerPlanner implements IFastAddonRenderer<AddonFille
             )
             .filter(player.level::isEmptyBlock)
             .collect(Collectors.toCollection(ArrayList::new));
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
 
-  //      Minecraft.getMinecraft().mcProfiler.startSection("sort");
+  //      Minecraft.getInstance().getProfiler().push("sort");
         list.sort(Comparator.<BlockPos>comparingDouble(p -> player.distanceToSqr(Vec3.atLowerCornerOf(p))).reversed());
-  //      Minecraft.getMinecraft().mcProfiler.endSection();
+  //      Minecraft.getInstance().getProfiler().pop();
 
-    //    Minecraft.getMinecraft().mcProfiler.startSection("render");
+    //    Minecraft.getInstance().getProfiler().push("render");
         for (BlockPos p : list) {
             AABB bb = new AABB(p, p.offset(1, 1, 1)).inflate(-0.1);
             TextureAtlasSprite s = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation("quartz_block_top"));//ModelLoader.White.INSTANCE;
@@ -87,8 +87,8 @@ public class AddonRendererFillerPlanner implements IFastAddonRenderer<AddonFille
             vb.vertex(bb.maxX, bb.maxY, bb.maxZ).color(153, 153, 153, 127).uv(s.getU1(), s.getV1()).uv2(240, 0).endVertex();
             vb.vertex(bb.maxX, bb.minY, bb.maxZ).color(153, 153, 153, 127).uv(s.getU1(), s.getV0()).uv2(240, 0).endVertex();
         }
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
 
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
     }
 }

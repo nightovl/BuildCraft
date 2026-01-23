@@ -31,7 +31,7 @@ import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.addon.AddonFillerPlanner;
 import ct.buildcraft.builders.filler.FillerType;
 import ct.buildcraft.builders.filler.FillerUtil;
-import ct.buildcraft.builders.gui.MenuFiller;
+import ct.buildcraft.builders.menu.ContainerFiller;
 import ct.buildcraft.builders.snapshot.ITileForTemplateBuilder;
 import ct.buildcraft.builders.snapshot.SnapshotBuilder;
 import ct.buildcraft.builders.snapshot.Template;
@@ -331,6 +331,7 @@ public class TileFiller extends TileBC_Neptune
         }
         finished = false;
         updateBuildingInfo();
+        setChanged();
     }
 
     // Read-write
@@ -372,11 +373,16 @@ public class TileFiller extends TileBC_Neptune
         }
         markerBox = nbt.getBoolean("markerBox");
         patternStatement.readFromNbt(nbt.getCompound("patternStatement"));
-        updateBuildingInfo();
         if (nbt.contains("builder")) {
             Optional.ofNullable(getBuilder()).ifPresent(builder -> builder.deserializeNBT(nbt.getCompound("builder")));
         }
 	}
+	
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        updateBuildingInfo();
+    }
 
     // Rendering
 
@@ -476,7 +482,7 @@ public class TileFiller extends TileBC_Neptune
     }
 
     public boolean isValid() {
-        return hasBox() && (level.isClientSide || (addon != null ? addon.buildingInfo : buildingInfo) != null);
+        return hasBox() && ((level != null &&level.isClientSide) || (addon != null ? addon.buildingInfo : buildingInfo) != null);
     }
 
     @Override
@@ -510,8 +516,8 @@ public class TileFiller extends TileBC_Neptune
     }
 
 	@Override
-	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new MenuFiller(id, inv, invResources, ContainerLevelAccess.create(level, worldPosition));
+	public ContainerFiller createMenu(int id, Inventory inv, Player player) {
+		return new ContainerFiller(id, inv, invResources, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

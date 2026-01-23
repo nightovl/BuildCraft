@@ -14,11 +14,9 @@ import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pipe.PipeFlow;
 import ct.buildcraft.lib.misc.MessageUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.pipe.flow.PipeFlowItems;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

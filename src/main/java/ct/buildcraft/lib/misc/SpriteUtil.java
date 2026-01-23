@@ -17,6 +17,7 @@ import ct.buildcraft.lib.client.sprite.SpriteRaw;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -41,7 +42,8 @@ public class SpriteUtil {
     }
 
     public static void bindTexture(ResourceLocation identifier) {
-        Minecraft.getInstance().textureManager.bindForSetup(identifier);
+    	RenderSystem.setShaderTexture(0, identifier);
+        //Minecraft.getInstance().textureManager.bindForSetup(identifier);
     }
 
     /** Transforms the given {@link ResourceLocation}, adding ".png" to the end and prepending that

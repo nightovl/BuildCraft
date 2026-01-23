@@ -6,7 +6,6 @@
 
 package ct.buildcraft.transport.client.render;
 
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,6 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.api.transport.pipe.IPipeBehaviourRenderer;
 
@@ -21,24 +22,25 @@ import ct.buildcraft.lib.client.model.MutableQuad;
 
 import ct.buildcraft.transport.BCTransportModels;
 import ct.buildcraft.transport.pipe.behaviour.PipeBehaviourStripes;
-import ct.buildcraft.transport.tile.TilePipeHolder;
 
 @OnlyIn(Dist.CLIENT)
 public enum PipeBehaviourRendererStripes implements IPipeBehaviourRenderer<PipeBehaviourStripes> {
     INSTANCE;
 
     @Override
-    public void render(PipeBehaviourStripes stripes, float partialTicks, PoseStack matrix, VertexConsumer buffer,
+    public void render(PipeBehaviourStripes stripes, float partialTicks, PoseStack poseStack, VertexConsumer buffer,
 			int combinedLight, int combinedOverlay) {
-/*        Direction dir = stripes.direction;
+        Direction dir = stripes.direction;
         if (dir == null) return;
         MutableQuad[] quads = BCTransportModels.getStripesDynQuads(dir);
         int light = stripes.pipe.getHolder().getPipeWorld().getLightEngine().getRawBrightness(stripes.pipe.getHolder().getPipePos(), 0);//TODO
-        Pose pose = matrix.last();
+        Pose pose = poseStack.last();
+        Matrix4f trans = pose.pose();
+        Matrix3f normal = pose.normal();
         for (MutableQuad q : quads) {
             q.multShade();
             q.lighti(light);
-            q.render(pose.pose(), pose.normal(), (VertexConsumer) buffer);
-        }*/
+            q.render(trans, normal, (VertexConsumer) buffer);
+        }
     }
 }

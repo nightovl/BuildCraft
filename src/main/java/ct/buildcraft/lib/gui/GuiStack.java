@@ -7,6 +7,7 @@
 package ct.buildcraft.lib.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ public class GuiStack implements ISimpleDrawable {
     }
 
     @Override
-    public void drawAt(double x, double y) {
+    public void drawAt(PoseStack pose, double x, double y) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, (int) x, (int) y);
         RenderSystem.setShaderColor(1, 1, 1, 1);

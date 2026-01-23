@@ -33,29 +33,29 @@ public class RenderFiller implements BlockEntityRenderer<TileFiller> {
 
     @Override
     public void render(TileFiller tile, float partialTicks, PoseStack matrix, MultiBufferSource buffer, int light, int overlay) {
-//        Minecraft.getMinecraft().mcProfiler.startSection("bc");
-//        Minecraft.getMinecraft().mcProfiler.startSection("filler");
+//        Minecraft.getInstance().getProfiler().push("bc");
+//        Minecraft.getInstance().getProfiler().push("filler");
     	matrix.pushPose();
     	VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
        	Matrix4f pose = matrix.last().pose();
     	Matrix3f normal = matrix.last().normal();
-//        Minecraft.getMinecraft().mcProfiler.startSection("main");
+//        Minecraft.getInstance().getProfiler().push("main");
         if (tile.getBuilder() != null) {
             RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
 
-//        Minecraft.getMinecraft().mcProfiler.startSection("box");
+//        Minecraft.getInstance().getProfiler().push("box");
         if (tile.markerBox) {
  //           bb.setTranslation(x - tile.getBlockPos().getX(), y - tile.getBlockPos().getY(), z - tile.getBlockPos().getZ());
             LaserBoxRenderer.renderLaserBoxDynamic(tile.box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
  //           bb.setTranslation(0, 0, 0);
         }
         matrix.popPose();
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
 
-//        Minecraft.getMinecraft().mcProfiler.endSection();
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+//        Minecraft.getInstance().getProfiler().pop();
+//        Minecraft.getInstance().getProfiler().pop();
     }
 
     @Override

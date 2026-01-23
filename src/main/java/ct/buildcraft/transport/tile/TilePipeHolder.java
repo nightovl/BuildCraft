@@ -34,6 +34,7 @@ import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
+import ct.buildcraft.silicon.plug.FilterEventHandler;
 import ct.buildcraft.transport.BCTransportBlocks;
 import ct.buildcraft.transport.client.model.ModelPipe;
 import ct.buildcraft.transport.pipe.Pipe;
@@ -194,8 +195,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
             eventBus.registerHandler(pipe.behaviour);
             eventBus.registerHandler(pipe.flow);
             if (pipe.flow instanceof IFlowItems && BCModules.SILICON.isLoaded()) {
-            	BCLog.logger.debug("TilePipeHolder.load:called undone class : FilterEventHandler");
-//                eventBus.registerHandler(FilterEventHandler.class);
+                eventBus.registerHandler(FilterEventHandler.class);
             }
             int meta = ((IItemPipe) item).getcolorID();
             if (meta > 0 && meta <= 16) {
@@ -209,23 +209,13 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
         }
     }
 
-    
+
 	@Override
-	public void invalidateCaps() {
-	  super.invalidateCaps();
-	  eventBus.fireEvent(new PipeEventTileState.Invalidate(this));
-      wireManager.invalidate();
+	public void setRemoved() {
+		super.setRemoved();
+		eventBus.fireEvent(new PipeEventTileState.Invalidate(this));
+		wireManager.invalidate();
 	}
-
-	
-	
-    @Override
-	public boolean isRemoved() {
-		// TODO Auto-generated method stub
-		return super.isRemoved();
-	}
-
-
 
 	@Override
     public void clearRemoved() {

@@ -17,6 +17,7 @@ import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
 import ct.buildcraft.lib.misc.ColourUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
+import ct.buildcraft.silicon.BCSilicon;
 import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.plug.PluggableLens;
 import net.minecraft.core.Direction;
@@ -31,7 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public class ItemPluggableLens extends Item implements IItemPluggable {
     public ItemPluggableLens() {
-        super(new Item.Properties().durability(0));
+        super(new Item.Properties().durability(0).tab(BCSilicon.tabPlugs));
       //  setMaxDamage(0);
         //setHasSubtypes(true);
     }
@@ -75,13 +76,14 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
 	}
 
 /*	@Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public FontRenderer getFontRenderer(ItemStack stack) {
         return SpecialColourFontRenderer.INSTANCE;
     }*///TODO
 
     @Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
+    	if(this.allowedIn(tab))
         for (int i = 0; i < 34; i++) {
         	ItemStack item = new ItemStack(this, 1);
         	item.setDamageValue(i);
@@ -90,7 +92,7 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
     }
 
 /*    @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addModelVariants(TIntObjectHashMap<ModelResourceLocation> variants) {
         for (int i = 0; i < 34; i++) {
             variants.put(i, new ModelResourceLocation("buildcraftsilicon:lens_item#inventory"));

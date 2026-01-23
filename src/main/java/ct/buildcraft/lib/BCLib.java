@@ -7,7 +7,9 @@ package ct.buildcraft.lib;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.block.VanillaRotationHandlers;
+import ct.buildcraft.lib.expression.ExpressionDebugManager;
 import ct.buildcraft.lib.marker.MarkerCache;
+import ct.buildcraft.lib.misc.ExpressionCompat;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import net.minecraft.client.Minecraft;
@@ -67,8 +69,6 @@ public class BCLib {
             }
         }
 
-//        ExpressionDebugManager.logger = BCLog.logger::info;
-//        ExpressionCompat.setup();
         BCLibRegistries.fmlPreInit();
         
         
@@ -86,6 +86,8 @@ public class BCLib {
  //       ForgeChunkManager.syncConfigDefaults();
  //      ForgeChunkManager.setForcedChunkLoadingCallback(BCLib.MODID, ChunkLoaderManager::rebindTickets);
 
+        ExpressionDebugManager.logger = BCLog.logger::info;
+        ExpressionCompat.setup();
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCLibEventDist.class);

@@ -62,10 +62,11 @@ public enum DebugRenderHelper implements IDetachedRenderer {
         }
     }
 
-    public static void renderAABB(PoseStack pose, Matrix4f matrix, Matrix3f mormal, BufferBuilder bb, AABB aabb, int colour) {
+    public static void renderAABB(PoseStack pose, Matrix4f matrix, BufferBuilder bb, AABB aabb, int colour) {
     	if(s == null) s = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation("quartz_block_top"));//TODO change to white
     	pose.pushPose();
     	pose.translate(0, 0, 0);
+    	Matrix3f normal = pose.last().normal();
         for (Direction face : Direction.values()) {
             MutableQuad quad = ModelUtil.createFace(
                 face,
@@ -84,15 +85,16 @@ public enum DebugRenderHelper implements IDetachedRenderer {
             quad.lightf(1, 1);
             quad.texFromSprite(s);
             quad.colouri(colour);
-            quad.render(matrix, mormal, bb);
+            quad.render(matrix, normal, bb);
         }
         pose.popPose();
     }
 
-    public static void renderSmallCuboid(PoseStack pose, Matrix4f matrix, Matrix3f normal, BufferBuilder bb, BlockPos pos, int colour) {
+    public static void renderSmallCuboid(PoseStack pose, Matrix4f matrix, BufferBuilder bb, BlockPos pos, int colour) {
     	if(s == null) s = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(new ResourceLocation("quartz_block_top"));//TODO change to white
     	pose.pushPose();
         pose.translate(pos.getX(), pos.getY(), pos.getZ());
+        Matrix3f normal = pose.last().normal();
         for (MutableQuad q : smallCuboid) {
             q.texFromSprite(s);
             q.colouri(colour);

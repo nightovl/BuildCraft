@@ -6,12 +6,14 @@
 
 package ct.buildcraft.transport.client.model;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import ct.buildcraft.lib.misc.SpriteUtil;
+import ct.buildcraft.transport.block.BlockPipeHolder;
 import ct.buildcraft.transport.client.model.PipeModelCacheAll.PipeAllCutoutKey;
 import ct.buildcraft.transport.client.model.PipeModelCacheAll.PipeAllTranslucentKey;
 import ct.buildcraft.transport.client.model.PipeModelCacheBase.PipeBaseCutoutKey;
@@ -24,23 +26,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public enum ModelPipe implements BakedModel {
+public enum ModelPipe implements IDynamicBakedModel {
 	INSTANCE;
 
 	public static final ModelProperty<TilePipeHolder> PipeTypeModelKey = new ModelProperty<TilePipeHolder>();
 //	public static final ModelProperty<?> PipeDataModelKey = new ModelProperty<PipeModelData>();
-	protected static final Direction[][] LiteraDirection = {
+/*	protected static final Direction[][] LiteraDirection = {
 			{ Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST },
 			{ Direction.WEST, Direction.EAST, Direction.DOWN, Direction.UP },
 			{ Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH } };
@@ -48,8 +50,9 @@ public enum ModelPipe implements BakedModel {
 																											// down,
 																											// right,
 																											// center,centerHigh}
-	protected static final EnumMap<Direction, BakedQuad[]> facesCacheCombine = new EnumMap<>(Direction.class);
+	protected static final EnumMap<Direction, BakedQuad[]> facesCacheCombine = new EnumMap<>(Direction.class);*/
 
+	protected static final HashMap<ResourceLocation, TextureAtlasSprite> particleIcon = new HashMap<>();
 //	protected static final B
 	@Override
 	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
@@ -121,19 +124,11 @@ public enum ModelPipe implements BakedModel {
 	 * baked the model with no texture, as the texture must be put in during
 	 * rendering
 	 **/
-	public void BakeModel() {
-
-	}
 	
 	@Override
 	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand,
 			@NotNull ModelData data) {
 		return ChunkRenderTypeSet.of(List.of(RenderType.cutout()));
-	}
-
-	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand) {
-		return ImmutableList.of();
 	}
 
 	@Override
@@ -158,8 +153,17 @@ public enum ModelPipe implements BakedModel {
 
 	@Override
 	public TextureAtlasSprite getParticleIcon() {
-		return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS)
-				.getSprite(MissingTextureAtlasSprite.getLocation());
+		return SpriteUtil.missingSprite();
+	}
+	
+	/**
+	 * @see BlockPipeHolder#addDestroyEffects(BlockState, Level, BlockPos, ParticleEngine)
+	 * */
+	@Override
+	public TextureAtlasSprite getParticleIcon(ModelData data) {
+		if(data == ModelData.EMPTY)
+			return SpriteUtil.missingSprite();
+		return particleIcon.computeIfAbsent(data.get(PipeTypeModelKey).getPipe().definition.identifier, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)::apply);
 	}
 
 	@Override

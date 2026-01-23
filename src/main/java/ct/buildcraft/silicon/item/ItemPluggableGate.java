@@ -17,6 +17,7 @@ import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.lib.misc.StackUtil;
+import ct.buildcraft.silicon.BCSilicon;
 import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.gate.EnumGateLogic;
 import ct.buildcraft.silicon.gate.EnumGateMaterial;
@@ -38,7 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemPluggableGate extends Item implements IItemPluggable {
     public ItemPluggableGate() {
-        super(new Item.Properties());
+        super(new Item.Properties().tab(BCSilicon.tabPlugs));
     }
 
     public static GateVariant getVariant(@Nonnull ItemStack stack) {
@@ -88,8 +89,10 @@ public class ItemPluggableGate extends Item implements IItemPluggable {
 	}
     
     @Override
-	public void fillItemCategory(CreativeModeTab p_41391_, NonNullList<ItemStack> subItems) {
-        subItems.add(new ItemStack(this));
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
+    	if(!allowedIn(tab))
+    		return;
+    	subItems.add(new ItemStack(this));
         for (EnumGateMaterial material : EnumGateMaterial.VALUES) {
             if (!material.canBeModified) {
                 continue;
@@ -104,7 +107,7 @@ public class ItemPluggableGate extends Item implements IItemPluggable {
 
 
 /*    @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addModelVariants(TIntObjectHashMap<ModelResourceLocation> variants) {
         variants.put(0, new ModelResourceLocation("buildcraftsilicon:gate_item#inventory"));
     }*/

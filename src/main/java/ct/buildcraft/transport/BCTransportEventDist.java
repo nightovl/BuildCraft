@@ -8,15 +8,11 @@ package ct.buildcraft.transport;
 
 import ct.buildcraft.api.transport.pipe.PipeApiClient;
 import ct.buildcraft.transport.client.PipeRegistryClient;
-import ct.buildcraft.transport.client.gui.ScreenFilteredBuffer;
-import ct.buildcraft.transport.client.gui.ScreenPipeDiamond;
-import ct.buildcraft.transport.client.gui.ScreenPipeDiawood;
 import ct.buildcraft.transport.client.model.PipeBaseModelGenStandard;
+import ct.buildcraft.transport.client.render.PipeWireRenderer;
 import ct.buildcraft.transport.net.PipeItemMessageQueue;
 import ct.buildcraft.transport.wire.WorldSavedDataWireSystems;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -72,7 +68,7 @@ public class BCTransportEventDist {
         @SubscribeEvent
         public static void registryTexture(TextureStitchEvent.Pre e){ 
         	BCTransportSprites.onTextureStitchPre(e);
-//        	PipeWireRenderer.clearWireCache();
+        	PipeWireRenderer.onTextureStitchPre();
         }
         
     }

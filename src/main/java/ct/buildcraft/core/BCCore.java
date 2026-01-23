@@ -44,10 +44,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class BCCore {
 	public static final String MODID = "buildcraftcore";
     public static final CreativeTabBC BUILDCRAFT_TAB = CreativeTabManager.createTab("buildcraft.core");
-    public static final CreativeTabBC tabPipes = CreativeTabManager.createTab("buildcraft.pipes");
-    public static final CreativeTabBC tabPlugs = CreativeTabManager.createTab("buildcraft.plugs");
     public static final CreativeTabBC tabFluids = CreativeTabManager.createTab("buildcraft.fluid");
-    
 	
     public static final Map<String,Object> ENGINE_MAP = new HashMap<>();
 

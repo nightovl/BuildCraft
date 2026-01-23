@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.render.ISprite;
@@ -73,6 +74,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
         if (mainGui.currentMenu == null || !mainGui.currentMenu.shouldFullyOverride()) {
             this.renderTooltip(pose, mouseX, mouseY);
         }
+        
 	}
 
     protected boolean shouldAddHelpLedger() {
@@ -91,7 +93,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
 
 	@Override
     public void fillGradient(PoseStack pose, int left, int top, int right, int bottom, int startColor, int endColor) {
-        super.fillGradient(pose, left, top, right, bottom, startColor, endColor, endColor);
+        super.fillGradient(pose, left, top, right, bottom, startColor, endColor);
     }
 
     public List<Widget> getButtonList() {
@@ -142,6 +144,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
 
     @Override
 	protected void renderBg(PoseStack pose, float partialTicks, int mouseX, int mouseY) {
+    	
         mainGui.drawBackgroundLayer(pose, partialTicks, mouseX, mouseY, () -> renderBackground(pose));
         drawBackgroundLayer(pose, mouseX, mouseY, partialTicks);
         mainGui.drawElementBackgrounds(pose);
@@ -150,9 +153,8 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
     @Override
 	protected void renderLabels(PoseStack pose, int mouseX, int mouseY) {
 		//super.renderLabels(pose, mouseX, mouseY);  //do not render InventoryLabel
-    	this.font.draw(pose, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+    	//this.font.draw(pose, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         mainGui.preDrawForeground(pose);
-
         drawForegroundLayer(pose, mouseX, mouseY);
         mainGui.drawElementForegrounds(pose, () -> renderBackground(pose));
         drawForegroundLayerAboveElements();
@@ -160,13 +162,13 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
         mainGui.postDrawForeground(pose);
 	}
 
-    public void drawProgress(GuiRectangle rect, GuiIcon icon, double widthPercent, double heightPercent) {
+    public void drawProgress(PoseStack pose, GuiRectangle rect, GuiIcon icon, double widthPercent, double heightPercent) {
         double nWidth = rect.width * Math.abs(widthPercent);
         double nHeight = rect.height * Math.abs(heightPercent);
         ISprite sprite = GuiUtil.subRelative(icon.sprite, 0, 0, widthPercent, heightPercent);
         double x = rect.x + mainGui.rootElement.getX();
         double y = rect.y + mainGui.rootElement.getY();
-        GuiIcon.draw(sprite, x, y, x + nWidth, y + nHeight);
+        GuiIcon.draw(pose, sprite, x, y, x + nWidth, y + nHeight);
     }
     
     

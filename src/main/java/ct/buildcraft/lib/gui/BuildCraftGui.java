@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import ct.buildcraft.lib.BCLibSprites;
 import ct.buildcraft.lib.expression.api.IVariableNode.IVariableNodeBoolean;
 import ct.buildcraft.lib.gui.config.GuiConfigManager;
@@ -172,7 +173,7 @@ public class BuildCraftGui {
 
     public void drawBackgroundLayer(PoseStack pose, float partialTicks, int mouseX, int mouseY, Runnable menuBackgroundRenderer) {
         // FIX FOR MC-121719 // https://bugs.mojang.com/browse/MC-121719
-        partialTicks = mc.getPartialTick();
+  //      partialTicks = mc.getPartialTick();
         // END FIX
 
         this.lastPartialTicks = partialTicks;
@@ -183,7 +184,7 @@ public class BuildCraftGui {
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         if (isDebuggingShown.evaluate()) {
-            SPRITE_DEBUG.drawAt(0, 0);
+            SPRITE_DEBUG.drawAt(pose, 0, 0);
             if (isDebuggingEnabled.evaluate()) {
             	GuiComponent.fill(pose, 0, 0, 16, 16, 0x33_FF_FF_FF);
 
@@ -210,11 +211,16 @@ public class BuildCraftGui {
     }
 
     public void drawElementBackgrounds(PoseStack pose) {
-        for (IGuiElement element : shownElements) {
+/*        for (IGuiElement element : shownElements) {
             if (element != currentMenu) {
                 element.drawBackground(pose, lastPartialTicks);
-            }
-        }
+            }shownElements.size()
+        }*/
+    	for(int i = 0;i<shownElements.size();i++) {
+    		if(shownElements.get(i) != currentMenu) {
+    			shownElements.get(i).drawBackground(pose, lastPartialTicks);
+    		}
+    	}
     }
 
     public void preDrawForeground(PoseStack pose) {

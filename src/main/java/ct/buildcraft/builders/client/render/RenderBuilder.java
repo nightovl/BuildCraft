@@ -22,6 +22,7 @@ import ct.buildcraft.lib.client.render.laser.LaserData_BC8;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -41,22 +42,19 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
     
     @Override
     public void render(@Nonnull TileBuilder tile, float partialTicks, PoseStack matrix, MultiBufferSource buffer, int light, int overlay) {
-//        Minecraft.getMinecraft().mcProfiler.startSection("bc");
-//        Minecraft.getMinecraft().mcProfiler.startSection("builder");
-
+        Minecraft.getInstance().getProfiler().push("bc");
+        Minecraft.getInstance().getProfiler().push("builder");
+        matrix.pushPose();
 		VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
 		BlockPos pos = tile.getBlockPos();
 		matrix.translate(-pos.getX(), -pos.getY(), -pos.getZ());
 		Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
-//        Minecraft.getMinecraft().mcProfiler.startSection("box");
+        Minecraft.getInstance().getProfiler().push("box");
         Box box = tile.getBox();
-/*        if(tile.getBuilder() != null&&tile.getBuilder().robotPos != null) {
-        	tile.getBattery();
-        }*/
         LaserBoxRenderer.renderLaserBoxDynamic(box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
 
-//        Minecraft.getMinecraft().mcProfiler.endStartSection("path");
+        Minecraft.getInstance().getProfiler().popPush("path");
 
         List<BlockPos> path = tile.path;
         if (path != null) {
@@ -75,15 +73,15 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
         }
 
 
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+        Minecraft.getInstance().getProfiler().pop();
 
         matrix.translate(pos.getX(), pos.getY(), pos.getZ());
         if (tile.getBuilder() != null) {
             RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }
-
-//        Minecraft.getMinecraft().mcProfiler.endSection();
-//        Minecraft.getMinecraft().mcProfiler.endSection();
+        matrix.popPose();
+        Minecraft.getInstance().getProfiler().pop();
+        Minecraft.getInstance().getProfiler().pop();
     }
 
     private static Vec3 offset(Vec3 from, Vec3 to) {

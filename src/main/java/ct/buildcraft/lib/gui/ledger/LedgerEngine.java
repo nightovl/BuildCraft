@@ -6,6 +6,8 @@
 
 package ct.buildcraft.lib.gui.ledger;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.BCLibSprites;
 import ct.buildcraft.lib.engine.TileEngineBase_BC8;
@@ -47,7 +49,7 @@ public class LedgerEngine extends Ledger_Neptune {
     }
 
     @Override
-    protected void drawIcon(double x, double y) {
+    protected void drawIcon(PoseStack pose, double x, double y) {
         ISprite sprite;
         switch (engine.getPowerStage()) {
             case OVERHEAT:
@@ -60,6 +62,6 @@ public class LedgerEngine extends Ledger_Neptune {
             default:
                 sprite = engine.isEngineOn() ? BCLibSprites.ENGINE_ACTIVE : BCLibSprites.ENGINE_INACTIVE;
         }
-        GuiIcon.draw(sprite, x, y, x + 16, y + 16);
+        GuiIcon.draw(pose, sprite, x, y, x + 16, y + 16);
     }
 }

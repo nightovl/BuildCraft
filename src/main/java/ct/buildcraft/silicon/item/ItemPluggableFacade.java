@@ -20,6 +20,7 @@ import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.lib.misc.StackUtil;
+import ct.buildcraft.silicon.BCSilicon;
 import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.plug.FacadeBlockStateInfo;
 import ct.buildcraft.silicon.plug.FacadeInstance;
@@ -49,7 +50,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemPluggableFacade extends Item implements IItemPluggable, IFacadeItem {
     public ItemPluggableFacade() {
-        super(new Item.Properties().durability(0)/*.tab(BCCore.BUILDCRAFT_TAB)*/);
+        super(new Item.Properties().durability(0).tab(BCSilicon.tabFacades));
 //        setHasSubtypes(true);
     }
 

@@ -11,7 +11,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.api.properties.BuildCraftProperties;
@@ -50,10 +49,9 @@ public class AdvDebuggerLaser implements DetachedRenderer.IDetachedRenderer {
         }
         BufferBuilder bb = Tesselator.getInstance().getBuilder();
         bb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-        Matrix3f normal = pose.last().normal();
         VolumeUtil.iterateCone(player.level, pos, face, 6, true, (world, start, p, visible) -> {
             int colour = visible ? COLOUR_VISIBLE : COLOUR_NOT_VISIBLE;
-            DebugRenderHelper.renderSmallCuboid(pose, matrix, normal, bb, p, colour);
+            DebugRenderHelper.renderSmallCuboid(pose, matrix, bb, p, colour);
         });
         Tesselator.getInstance().end();
     }

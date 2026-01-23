@@ -48,8 +48,8 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
 	}
 
  /*   @Override
-    public BlockRenderLayer getBlockLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public RenderType getBlockLayer() {
+        return RenderType.CUTOUT;
     }*/
 
     @Override
@@ -77,26 +77,10 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
     @Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
-    	switch(type) {
-        case ASSEMBLY_TABLE:
-            if (!world.isClientSide) {
-                //BCSiliconGuis.ASSEMBLY_TABLE.openGUI(player, pos);
-            }
-            return InteractionResult.CONSUME;
-        case ADVANCED_CRAFTING_TABLE:
-            if (!world.isClientSide) {
-                //BCSiliconGuis.ADVANCED_CRAFTING_TABLE.openGUI(player, pos);
-            }
-            return InteractionResult.CONSUME;
-        case INTEGRATION_TABLE:
-            if (!world.isClientSide) {
-               // BCSiliconGuis.INTEGRATION_TABLE.openGUI(player, pos);
-            }
-            return InteractionResult.CONSUME;
-        case CHARGING_TABLE:
-        case PROGRAMMING_TABLE:
-    }
-    return InteractionResult.PASS;
+    	if(world.getBlockEntity(pos) instanceof TileBC_Neptune tile) {
+    		tile.onActivated(player, hand, hit);
+    	}
+    	return InteractionResult.SUCCESS;
 	}
 
 }

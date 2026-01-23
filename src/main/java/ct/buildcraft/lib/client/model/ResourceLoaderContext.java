@@ -29,7 +29,7 @@ public class ResourceLoaderContext {
         }
         loadingStack.push(location);
         return new InputStreamReader(Minecraft.getInstance().getResourceManager().open(
-        		new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json")),
+        		location),
         		StandardCharsets.UTF_8);
     }
 

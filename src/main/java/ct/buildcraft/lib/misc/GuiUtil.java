@@ -142,7 +142,7 @@ public class GuiUtil {
      * @param font the font for drawing the text in the tooltip box */
     public static int drawHoveringText(List<Component> textLines, final int mouseX, final int mouseY,
         final int screenWidth, final int screenHeight, final int maxTextWidth, Font font, PoseStack pose) {
-        if (!textLines.isEmpty()) {
+        if (!textLines.isEmpty()) {//TODO
         	Matrix4f matrix = pose.last().pose();
             //GlStateManager.disableRescaleNormal();
             //GlStateManager.disableLighting();
@@ -220,7 +220,7 @@ public class GuiUtil {
                 tooltipY = screenHeight - tooltipHeight - 6;
             }
 
-            final int zLevel = 300;
+            final int zLevel = 0;
             final int backgroundColor = 0xF0100010;
             ScreenUtils.drawGradientRect(matrix, zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3,
                 backgroundColor, backgroundColor);
@@ -243,8 +243,8 @@ public class GuiUtil {
             ScreenUtils.drawGradientRect(matrix, zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2,
                 tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
 
-            for (int lineNumber = 0; lineNumber < wrappedTextLines.size(); ++lineNumber) {
-                FormattedCharSequence line = wrappedTextLines.get(lineNumber);
+            for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
+                Component line = textLines.get(lineNumber);
                 font.drawShadow(pose, line, tooltipX, tooltipY, -1);
 
                 if (lineNumber + 1 == titleLinesCount) {
@@ -386,8 +386,8 @@ public class GuiUtil {
 
     private static void scissor0(double x, double y, double width, double height) {
         Window win = mc.getWindow();
-        double scaleW = win.getGuiScaledWidth();
-        double scaleH = win.getGuiScaledHeight();
+        double scaleW = win.getGuiScale();
+        double scaleH = win.getGuiScale();
         int rx = (int) (x * scaleW);
         int ry = (int) (win.getScreenHeight() - (y + height) * scaleH);
         GL11.glScissor(rx, ry, (int) (width * scaleW), (int) (height * scaleH));

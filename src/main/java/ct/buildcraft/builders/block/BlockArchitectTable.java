@@ -49,7 +49,7 @@ public class BlockArchitectTable extends BlockBCTile_Neptune implements IBlockWi
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult hit) {
         if (!world.isClientSide&&world.getBlockEntity(pos) instanceof TileArchitectTable tile) {
-        	NetworkHooks.openScreen((ServerPlayer)player, tile, (buf) -> buf.writeUtf(tile.name));
+        	NetworkHooks.openScreen((ServerPlayer)player, tile, pos);
         }
         return InteractionResult.SUCCESS;
 	}

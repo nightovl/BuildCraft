@@ -1,6 +1,5 @@
 package ct.buildcraft.lib.gui.json;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.google.gson.Gson;
@@ -68,7 +67,8 @@ public class BuildCraftJsonGui extends BuildCraftGui {
             sizeY = (int) GenericExpressionCompiler.compileExpressionLong(info.sizeY, context).evaluate();
             varData.setNodes(info.createTickableNodes());
 
-            for (JsonGuiElement elem : info.elements) {
+            //for (JsonGuiElement elem : info.elements) {
+            for(int i =0;i<info.elements.size();i++) {JsonGuiElement elem = info.elements.get(i);
                 String typeName = elem.properties.get("type");
                 ElementType type = JsonGuiTypeRegistry.TYPES.get(typeName);
                 if (type == null) {
@@ -77,6 +77,7 @@ public class BuildCraftJsonGui extends BuildCraftGui {
                     IGuiElement e = type.deserialize(this, rootElement, info, elem);
                     String parent = elem.properties.get("parent");
                     IContainingElement p = properties.get("custom." + parent, IContainingElement.class);
+
                     properties.put("custom." + elem.name, e);
                     if (p == null) {
                         shownElements.add(e);
@@ -88,7 +89,8 @@ public class BuildCraftJsonGui extends BuildCraftGui {
             }
         } catch (InvalidExpressionException iee) {
             throw new JsonSyntaxException("Failed to resolve the size of " + jsonGuiDefinition, iee);
-        } catch (IOException e) {
+        } catch (Exception e) {
+        	e.printStackTrace();
             throw new Error(e);
         }
         loadHistory.finishLoading();

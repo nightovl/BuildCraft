@@ -15,6 +15,7 @@ import ct.buildcraft.lib.gui.IGuiElement;
 import ct.buildcraft.lib.gui.IMenuElement;
 import ct.buildcraft.lib.misc.data.IReference;
 import ct.buildcraft.lib.statement.StatementWrapper;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public class GuiElementStatementDrag implements IMenuElement {
 
@@ -71,14 +72,13 @@ public class GuiElementStatementDrag implements IMenuElement {
                     }
                 }
             }
-            RenderSystem.clearDepth(0);
             if (!canPlace) {
                 RenderSystem.setShaderColor(1f, 0.7f, 0.7f, 1f);
             }
             double x = gui.mouse.getX() - 9;
             double y = gui.mouse.getY() - 9;
             if (dragging instanceof IStatementParameter) {
-                ParameterRenderer.draw((IStatementParameter) dragging, x, y);
+                ParameterRenderer.draw(pose, (IStatementParameter) dragging, x, y);
             } else {
                 GuiIcon background = GuiElementStatement.SLOT_COLOUR;
                 if (dragging instanceof StatementWrapper) {
@@ -87,11 +87,11 @@ public class GuiElementStatementDrag implements IMenuElement {
                         background = background.offset(0, (1 + part.getIndex()) * 18);
                     }
                 }
-                background.drawAt(x, y);
+                background.drawAt(pose, x, y);
                 if (dragging != null) {
                     ISprite sprite = dragging.getSprite();
                     if (sprite != null) {
-                        GuiIcon.drawAt(sprite, x + 1, y + 1, 16);
+                        GuiIcon.drawAt(pose, sprite, x + 1, y + 1, 16);
                     }
                 }
             }

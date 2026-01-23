@@ -80,11 +80,11 @@ public class GuiElementStatementVariant extends GuiElementSimple implements IMen
         // Render above items in the players inventory
     	pose.translate(0, 0, 1000);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        SELECTION_HOVER.draw(this);
+        SELECTION_HOVER.draw(pose, this);
         iteratePossible((pos, slot) -> {
             double x = pos.getX();
             double y = pos.getY();
-            GuiElementStatementSource.drawGuiSlot(slot, x, y);
+            GuiElementStatementSource.drawGuiSlot(pose, slot, x, y);
         });
         pose.popPose();
     }
