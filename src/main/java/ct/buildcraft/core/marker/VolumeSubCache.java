@@ -35,7 +35,14 @@ public class VolumeSubCache extends MarkerSubCache<VolumeConnection> {
 	        }
 	        data.loadInto(this);
         }
+        VolumeSavedData data = null;
+        if(world instanceof ServerLevel serverlevel)
+        	data = serverlevel.getDataStorage().computeIfAbsent(VolumeSavedData::new, VolumeSavedData::new, VolumeSavedData.NAME);
+        else 
+        	data = new VolumeSavedData();
+        data.loadInto(this);
     }
+
 
     @Override
     public boolean tryConnect(BlockPos from, BlockPos to) {

@@ -9,6 +9,7 @@ import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.lib.client.model.ModelHolderRegistry;
 import ct.buildcraft.lib.client.model.json.VariablePartLed;
+import ct.buildcraft.lib.client.reload.LibConfigChangeListener;
 import ct.buildcraft.lib.client.reload.ReloadManager;
 import ct.buildcraft.lib.client.render.DetachedRenderer;
 import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
@@ -19,7 +20,11 @@ import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.misc.FakePlayerProvider;
 import ct.buildcraft.lib.misc.MessageUtil;
+import ct.buildcraft.lib.net.MessageDebugResponse;
+import ct.buildcraft.lib.net.MessageManager;
+import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
+import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
@@ -59,11 +64,11 @@ public class BCLibEventDist {
             DetachedRenderer.INSTANCE.addRenderer(RenderMatrixType.FROM_WORLD_ORIGIN, MarkerRenderer.INSTANCE);
             // various sprite registers
             BCLibSprites.fmlPreInitClient();
-//            BCLibConfig.configChangeListeners.add(LibConfigChangeListener.INSTANCE);
+            BCLibConfig.configChangeListeners.add(LibConfigChangeListener.INSTANCE);
 
-//            MessageManager.setHandler(MessageMarker.class, MessageMarker.HANDLER, Dist.CLIENT);
-//            MessageManager.setHandler(MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, Dist.CLIENT);
-//            MessageManager.setHandler(MessageDebugResponse.class, MessageDebugResponse.HANDLER, Dist.CLIENT);
+            MessageManager.setHandler(MessageMarker.class, MessageMarker.HANDLER, Dist.CLIENT);
+            MessageManager.setHandler(MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, Dist.CLIENT);
+            MessageManager.setHandler(MessageDebugResponse.class, MessageDebugResponse.HANDLER, Dist.CLIENT);
         }
         
         @SubscribeEvent
@@ -184,9 +189,9 @@ public class BCLibEventDist {
             BuildCraftObjectCaches.onClientTick();
             MessageUtil.postClientTick();
 /*            Minecraft mc = Minecraft.getInstance();
-            LocalPlayer player = mc.player;
+            LocalPlayer player = mc.play
             if (player != null && ItemDebugger.isShowDebugInfo(player)) {
-                HitResult mouseOver = mc.hitResult;
+                HitResult mouseOver er;= mc.hitResult;
                 if (mouseOver != null) {
                     IDebuggable debuggable = ClientDebuggables.getDebuggableObject(mouseOver);
                     if (debuggable instanceof BlockEntity) {

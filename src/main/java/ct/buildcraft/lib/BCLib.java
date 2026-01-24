@@ -69,6 +69,9 @@ public class BCLib {
             }
         }
 
+
+        ExpressionDebugManager.logger = BCLog.logger::info;
+        ExpressionCompat.setup();
         BCLibRegistries.fmlPreInit();
         
         

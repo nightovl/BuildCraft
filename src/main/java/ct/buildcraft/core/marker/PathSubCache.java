@@ -26,6 +26,8 @@ public class PathSubCache extends MarkerSubCache<PathConnection> {
         if(data == null) {
         	data = new PathSavedData();
         }
+        else
+    		data = new PathSavedData();
         data.loadInto(this);
         
     }
