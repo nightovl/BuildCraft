@@ -44,24 +44,22 @@ import ct.buildcraft.silicon.gate.EnumGateMaterial;
 import ct.buildcraft.silicon.gate.EnumGateModifier;
 import ct.buildcraft.silicon.gate.GateVariant;
 import ct.buildcraft.silicon.recipe.FacadeAssemblyRecipes;
-import ct.buildcraft.silicon.recipe.FacadeSwapRecipe;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = BCSilicon.MODID)
@@ -296,7 +294,7 @@ public class BCSiliconRecipes {
 
     private static void scanForJsonRecipes() {
         final boolean[] failed = { false };
-        for (ModContainer mod : Loader.instance().getActiveModList()) {
+        for (ModInfo mod : FMLLoader.getLoadingModList().getMods()) {
             JsonContext ctx = new JsonContext(mod.getModId());
             CraftingHelper.findFiles(mod, "assets/" + mod.getModId() + "/assembly_recipes_pre_mj", null, (root, file) -> {
                 try {
