@@ -28,7 +28,7 @@ import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageUpdateTile;
-import ct.buildcraft.lib.recipe.AssemblyRecipe;
+import ct.buildcraft.lib.recipe.AssemblyRecipeBasic;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
@@ -91,7 +91,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     private void updateRecipes() {
     	isDirty = false;
         int count = recipesStates.size();
-        for(AssemblyRecipe recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
+        for(AssemblyRecipeBasic recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
             Set<ItemStack> outputs = recipe.getOutputs(inv);//TODO
             for (ItemStack out: outputs) {
                 boolean found = false;
@@ -178,7 +178,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
             }
             index = 0;
             for (Map.Entry<AssemblyInstruction, EnumAssemblyRecipeState> entry : recipesStates.entrySet()) {
-                AssemblyRecipe recipe = entry.getKey().recipe;
+                AssemblyRecipeBasic recipe = entry.getKey().recipe;
                 EnumAssemblyRecipeState state = entry.getValue();
                 if (state == EnumAssemblyRecipeState.SAVED_ENOUGH && recipe != activeRecipe.recipe && (index > activeIndex || isActiveLast)) {
                     state = EnumAssemblyRecipeState.SAVED_ENOUGH_ACTIVE;
@@ -323,16 +323,16 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     
     @Nullable
     private AssemblyInstruction lookupRecipe(String name, ItemStack output) {
-        Optional<Pair<ResourceLocation, AssemblyRecipe>> recipe = level.getRecipeManager().getRecipeFor(BCSiliconRecipes.ASSEMBLY_TYPE.get(), new RecipeWrapper(inv), level, new ResourceLocation(name));
+        Optional<Pair<ResourceLocation, AssemblyRecipeBasic>> recipe = level.getRecipeManager().getRecipeFor(BCSiliconRecipes.ASSEMBLY_TYPE.get(), new RecipeWrapper(inv), level, new ResourceLocation(name));
         return recipe.isPresent() ? new AssemblyInstruction(recipe.get().getSecond(), output) : null;
     }
 
     public class AssemblyInstruction implements Comparable<AssemblyInstruction> {
-        public final AssemblyRecipe recipe;
+        public final AssemblyRecipeBasic recipe;
         public final ItemStack output;
 
-        private AssemblyInstruction(AssemblyRecipe recipe, ItemStack output) {
-            this.recipe = recipe;
+        private AssemblyInstruction(AssemblyRecipeBasic assemblyRecipeBasic, ItemStack output) {
+            this.recipe = assemblyRecipeBasic;
             this.output = output;
         }
 
