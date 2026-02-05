@@ -18,6 +18,8 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import com.mojang.datafixers.util.Pair;
+
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.misc.AdvancementUtil;
@@ -27,11 +29,11 @@ import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.recipe.AssemblyRecipe;
-import ct.buildcraft.lib.recipe.AssemblyRecipeRegistry;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.silicon.BCSiliconBlocks;
+import ct.buildcraft.silicon.BCSiliconRecipes;
 import ct.buildcraft.silicon.EnumAssemblyRecipeState;
 import ct.buildcraft.silicon.container.ContainerAssemblyTable;
 import net.minecraft.core.BlockPos;
@@ -54,6 +56,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -72,9 +75,12 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     	return i < recipesStates.size() ? new ArrayList<>(recipesStates.keySet()).get(i).output : ItemStack.EMPTY;}, 3 * 4);
 
     private static final ResourceLocation ADVANCEMENT = new ResourceLocation("buildcraftsilicon:precision_crafting");
+    
+    protected boolean isDirty = true;
 
     public TileAssemblyTable(BlockPos pos, BlockState state) {
     	super(BCSiliconBlocks.ASSEMBLY_TABLE_TILE.get(), pos, state);
+    	inv.setCallback((a,b,c,d) -> isDirty = true);
     }
     
     @Override
@@ -83,10 +89,10 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     }
 
     private void updateRecipes() {
-        //TODO: rework this to not iterate over every recipe every tick
+    	isDirty = false;
         int count = recipesStates.size();
-        for (AssemblyRecipe recipe: AssemblyRecipeRegistry.REGISTRY.values()) {
-            Set<ItemStack> outputs = recipe.getOutputs(inv.stacks);
+        for(AssemblyRecipe recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
+            Set<ItemStack> outputs = recipe.getOutputs(inv);//TODO
             for (ItemStack out: outputs) {
                 boolean found = false;
                 for (AssemblyInstruction instruction: recipesStates.keySet()) {
@@ -196,8 +202,9 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
         if (level.isClientSide) {
             return;
         }
-
-        updateRecipes();
+    	
+        if(isDirty)
+    		updateRecipes();
 
         if (getTarget() > 0) {
             AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT);
@@ -220,7 +227,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
 	      ListTag recipesStatesTag = new ListTag();
 	        recipesStates.forEach((instruction, state) -> {
 	            CompoundTag entryTag = new CompoundTag();
-	            entryTag.putString("recipe", instruction.recipe.getRegistryName().toString());
+	            entryTag.putString("recipe", instruction.recipe.getId().toString());
 	            entryTag.put("output", instruction.output.serializeNBT());
 	            entryTag.putInt("state", state.ordinal());
 	            recipesStatesTag.add(entryTag);
@@ -251,7 +258,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
         if (id == NET_GUI_DATA) {
             buffer.writeInt(recipesStates.size());
             recipesStates.forEach((instruction, state) -> {
-                buffer.writeUtf(instruction.recipe.getRegistryName().toString());
+                buffer.writeUtf(instruction.recipe.getId().toString());
                 buffer.writeItem(instruction.output);
                 buffer.writeInt(state.ordinal());
             });
@@ -282,7 +289,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
 
     public void sendRecipeStateToServer(AssemblyInstruction instruction, EnumAssemblyRecipeState state) {
     	MessageUpdateTile message = createMessage(NET_RECIPE_STATE, (buffer) -> {
-            buffer.writeUtf(instruction.recipe.getRegistryName().toString());
+            buffer.writeUtf(instruction.recipe.getId().toString());
             buffer.writeItem(instruction.output);
             buffer.writeInt(state.ordinal());
         });
@@ -316,8 +323,8 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     
     @Nullable
     private AssemblyInstruction lookupRecipe(String name, ItemStack output) {
-        AssemblyRecipe recipe = AssemblyRecipeRegistry.REGISTRY.get(new ResourceLocation(name));
-        return recipe != null ? new AssemblyInstruction(recipe, output) : null;
+        Optional<Pair<ResourceLocation, AssemblyRecipe>> recipe = level.getRecipeManager().getRecipeFor(BCSiliconRecipes.ASSEMBLY_TYPE.get(), new RecipeWrapper(inv), level, new ResourceLocation(name));
+        return recipe.isPresent() ? new AssemblyInstruction(recipe.get().getSecond(), output) : null;
     }
 
     public class AssemblyInstruction implements Comparable<AssemblyInstruction> {
@@ -331,14 +338,14 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
 
         @Override
         public int compareTo(AssemblyInstruction o) {
-            return recipe.compareTo(o.recipe) + output.serializeNBT().toString().compareTo(o.output.serializeNBT().toString());
+            return recipe.getId().compareTo(o.recipe.getId()) + output.serializeNBT().toString().compareTo(o.output.serializeNBT().toString());
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof AssemblyInstruction)) return false;
             AssemblyInstruction instruction = (AssemblyInstruction) obj;
-            return recipe.getRegistryName().equals(instruction.recipe.getRegistryName()) && ItemStack.isSame(output, instruction.output);
+            return recipe.getId().equals(instruction.recipe.getId()) && ItemStack.isSame(output, instruction.output);
         }
     }
 

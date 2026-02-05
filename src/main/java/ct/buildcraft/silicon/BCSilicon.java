@@ -6,6 +6,7 @@
 
 package ct.buildcraft.silicon;
 
+import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.facades.FacadeAPI;
 import ct.buildcraft.builders.BCBuildersConfig;
 import ct.buildcraft.lib.CreativeTabManager;
@@ -20,6 +21,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,33 +39,28 @@ public class BCSilicon {
     public static final String MODID = "buildcraftsilicon";
 
     public static CreativeTabBC tabPlugs = BCTransport.tabPlugs;
-    public static CreativeTabBC tabFacades = CreativeTabManager.createTab("buildcraft.facades");
+    public static CreativeTabBC tabFacades = (CreativeTabBC) CreativeTabManager.createTab("buildcraft.facades").setRecipeFolderName("facades");
     
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, BCSilicon.MODID);
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, BCSilicon.MODID);
-
     public BCSilicon() {
  //       RegistryConfig.useOtherModConfigFor(MODID, BCCore.MODID);
 
     	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	modEventBus.addListener(BCSilicon::commonSetup);
     	modEventBus.addListener(BCSilicon::postInit);
+    	modEventBus.addListener(BCSilicon::gatherData);
     	BCSiliconSprites.fmlPreInit();
         FacadeAPI.registry = FacadeStateManager.INSTANCE;
 
         BCSiliconConfig.preInit();
-        BCSiliconPlugs.preInit();
         BCSiliconStatements.preInit();
+        BCSiliconPlugs.preInit();
         BCSiliconBlocks.registry(modEventBus);
         BCSiliconItems.registry(modEventBus);
         BCSiliconGuis.preInit(modEventBus);
+        BCSiliconRecipes.preInit(modEventBus);
         
         
-        RECIPE_SERIALIZERS.register("facade_swap_recipe_", () -> FacadeSwapRecipe.SERIALIZER);
-        RECIPE_TYPE.register("facade_swap", () -> FacadeSwapRecipe.TYPE);
-        RECIPE_SERIALIZERS.register(modEventBus);
-        RECIPE_TYPE.register(modEventBus);
-        
+
 
         ModLoadingContext.get().registerConfig(Type.COMMON, BCSiliconConfig.config);
         MinecraftForge.EVENT_BUS.register(this);
@@ -81,11 +78,17 @@ public class BCSilicon {
             FacadeBlockStateInfo state = FacadeStateManager.previewState;
             FacadeInstance inst = FacadeInstance.createSingle(state, false);
             tabFacades.setItem(BCSiliconItems.plugFacade.createItemStack(inst));
-        }
+        }*/
 
         if (!BCModules.TRANSPORT.isLoaded()) {
-            tabPlugs.setItem(BCSiliconItems.plugGate);
-        }*/
+            tabPlugs.setItem(BCSiliconItems.PLUG_GATE_ITEM.get());
+        }
+    }
+    public static void gatherData(GatherDataEvent event) {
+        event.getGenerator().addProvider(
+            event.includeServer(),
+            new BCSiliconRecipesProvider(event.getGenerator())
+        );
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -101,6 +104,7 @@ public class BCSilicon {
         {
             BCSiliconModels.fmlInit();
             BCSiliconGuis.clientInit(event);
+            event.enqueueWork(BCSiliconItems::registerItemProperties);
         }
         
         @SubscribeEvent

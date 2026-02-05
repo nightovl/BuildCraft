@@ -33,13 +33,13 @@ public class BCTransport {
     public static final String MODID = "buildcrafttransport";
     
 
-    public static final CreativeTabBC tabPipes = CreativeTabManager.createTab("buildcraft.pipes");
-    public static final CreativeTabBC tabPlugs = CreativeTabManager.createTab("buildcraft.plugs");
+    public static final CreativeTabBC tabPipes = (CreativeTabBC) CreativeTabManager.createTab("buildcraft.pipes").setRecipeFolderName("pipes");
+    public static final CreativeTabBC tabPlugs = (CreativeTabBC) CreativeTabManager.createTab("buildcraft.plugs").setRecipeFolderName("plugs");
 
     public BCTransport() {
     	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::init);
-//    	modEventBus.addListener(this::gatherData);//DataGenerator
+    	modEventBus.addListener(this::gatherData);//DataGenerator
 
         BCTransportRegistries.preInit();
         BCTransportConfig.preInit();

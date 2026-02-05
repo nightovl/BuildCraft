@@ -24,12 +24,12 @@ public class GuiElementSlotMover extends GuiElementSimple {
     @Override
     public void drawBackground(PoseStack pose, float partialTicks) {
     	//throw new UnsupportedOperationException("ct.buildcraft.lib.gui.elem.GuiElementSlotMover : Should not use this class");
-        if (visible.evaluate()) {
+/*        if (visible.evaluate()) {
             toMove.x = 1 + (int) Math.round(getX());
             toMove.y = 1 + (int) Math.round(getY());
         } else {
             toMove.x = -10000;
             toMove.y = -10000;
-        }
+        }*/
     }
 }

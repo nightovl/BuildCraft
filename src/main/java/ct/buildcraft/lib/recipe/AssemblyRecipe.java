@@ -1,84 +1,188 @@
 package ct.buildcraft.lib.recipe;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import ct.buildcraft.api.recipes.IngredientStack;
+import ct.buildcraft.silicon.BCSiliconRecipes;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-/**
- * @deprecated TEMPORARY CLASS DO NOT USE!
- */
-@Deprecated
-public abstract class AssemblyRecipe implements Comparable<AssemblyRecipe>/*, IForgeRegistryEntry<AssemblyRecipe>*/{
-    private ResourceLocation name;
+public class AssemblyRecipe extends AssemblyRecipeBasic{
 
-    /**
-     * The outputs this recipe can generate with any of the given inputs
-     * @param inputs Current ingredients in the assembly table
-     * @return A Set containing all possible outputs given the given inputs or an empty one if nothing can be assembled from the given inputs
-     */
-    public abstract Set<ItemStack> getOutputs(NonNullList<ItemStack> inputs);
+    final long requiredMicroJoules;
+    final ImmutableSet<IngredientStack> requiredStacks;
+    final ItemStack output;
+    final String group;
 
-    /**
-     * Used to determine all outputs from this recipe for recipe previews (guide book and/or JEI)
-     */
-    public abstract Set<ItemStack> getOutputPreviews();
-
-    /**
-     * Used to determine what items to use up for the given output
-     * @param output The output we want to know the inputs for, only ever called using stacks obtained from getOutputs or getOutputPreviews
-     */
-    public abstract Set<IngredientStack> getInputsFor(@Nonnull ItemStack output);
-
-    /**
-     * Used to determine how much MJ is required to asemble the given output item
-     * @param output The output we want to know the MJ cost for, only ever called using stacks obtained from getOutputs or getOutputPreviews
-     */
-    public abstract long getRequiredMicroJoulesFor(@Nonnull ItemStack output);
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        AssemblyRecipe that = (AssemblyRecipe) o;
-
-        return name.equals(that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public int compareTo(AssemblyRecipe o) {
-        return name.toString().compareTo(o.name.toString());
-    }
-
-   // @Override
-    public AssemblyRecipe setRegistryName(ResourceLocation name) {
+    public AssemblyRecipe(ResourceLocation name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output, String group) {
+        this.requiredMicroJoules = requiredMicroJoules;
+        this.requiredStacks = ImmutableSet.copyOf(requiredStacks);
+        this.output = output.copy();
         this.name = name;
-        return this;
+		this.group = group == null ? "" : group;
     }
 
-    @Nullable
-   // @Override
-    public ResourceLocation getRegistryName() {
-        return name;
+    public AssemblyRecipe(String name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output, String group) {
+        this(new ResourceLocation(name), requiredMicroJoules, requiredStacks, output, group);
     }
 
-    //@Override
-    public Class<AssemblyRecipe> getRegistryType() {
-        return AssemblyRecipe.class;
+    public AssemblyRecipe(String name, long requiredMicroJoules, Set<IngredientStack> requiredStacks, @Nonnull ItemStack output, String group) {
+        this(name, requiredMicroJoules, ImmutableSet.copyOf(requiredStacks), output, group);
     }
+    
+    public long getRequiredMicroJoulesFor(ItemStack output2) {
+        return requiredMicroJoules;
+    }
+    
+    @Override
+	public Set<ItemStack> getOutputs(IItemHandlerModifiable inputs) {
+		return ImmutableSet.of(assemble(new RecipeWrapper(inputs)));
+	}
+	
+	@Override
+	public boolean matches(Container container, Level level) {
+		int size = container.getContainerSize();
+		for(IngredientStack stack : requiredStacks) {
+			boolean match = false;
+			for(int i=0;i<size;i++) {
+				ItemStack itemStack = container.getItem(i);
+				if(!itemStack.isEmpty() && stack.ingredient.test(itemStack) && itemStack.getCount()>=stack.count) {
+					match = true;
+					break;
+				}
+			}
+			if(!match)
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public ItemStack assemble(Container container) {
+		int size = container.getContainerSize();
+		for(IngredientStack stack : requiredStacks) {
+			boolean match = false;
+			for(int i=0;i<size;i++) {
+				ItemStack itemStack = container.getItem(i);
+				if(!itemStack.isEmpty() && stack.ingredient.test(itemStack) && itemStack.getCount()>=stack.count) {
+					match = true;
+					break;
+				}
+			}
+			if(!match)
+				return ItemStack.EMPTY;
+		}
+		return output.copy();
+	}
+
+	@Override
+	public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
+		return true;//TODO
+	}
+
+	@Override
+	public ItemStack getResultItem() {
+		return output.copy();
+	}
+	
+	@Override
+	public NonNullList<Ingredient> getIngredients() {
+		NonNullList<Ingredient> list = NonNullList.create();
+		for(IngredientStack stack : requiredStacks) {
+			for(int i =0;i<stack.count;i++)
+				list.add(stack.ingredient);
+		}
+		return list;
+	}
+	
+	public Set<IngredientStack> getInputsFor(ItemStack output2) {
+		return requiredStacks;
+	}
+
+	public Set<ItemStack> getOutputPreviews() {
+		return ImmutableSet.of();
+	}	
+
+	@Override
+	public boolean isSpecial() {
+		return true;
+	}
+
+	@Override
+	public String getGroup() {
+		return group;
+	}
+
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return BCSiliconRecipes.ASSEMBLY_SERIALIZER.get();
+	}
+	
+	public static class Serializer<C extends Container> implements RecipeSerializer<AssemblyRecipe>{
+		@Override
+		public AssemblyRecipe fromJson(ResourceLocation id, JsonObject json) {
+			String group = GsonHelper.getAsString(json, "group", "");
+			JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
+			JsonArray counts = GsonHelper.getAsJsonArray(json, "ingredient_counts");
+			Set<IngredientStack> stacks = new HashSet<>();
+			if(ingredients.size() != counts.size())
+				throw new JsonParseException("ingredients and counts don't match! recipe:"+id);
+			for(int i = 0; i < ingredients.size(); ++i) {
+				Ingredient ingredient = Ingredient.fromJson(ingredients.get(i));
+				int count = counts.get(i).getAsInt();
+				stacks.add(new IngredientStack(ingredient, count));
+			}
+			ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true, true);
+			long power = GsonHelper.getAsLong(json, "MJ");
+			return new AssemblyRecipe(id, power, ImmutableSet.copyOf(stacks), result, group);
+		}
+
+		@Override
+		public @Nullable AssemblyRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+			String group = buf.readUtf();
+			int size = buf.readInt();
+			Set<IngredientStack> stacks = new HashSet<IngredientStack>();
+			for(int i = 0; i < size; i++) {
+				Ingredient ingredient = Ingredient.fromNetwork(buf);
+				int count = buf.readInt();
+				stacks.add(new IngredientStack(ingredient, count));
+			}
+			ItemStack result = buf.readItem();
+			long power = buf.readLong();
+			return new AssemblyRecipe(id, power, ImmutableSet.copyOf(stacks), result, group);
+		}
+
+		@Override
+		public void toNetwork(FriendlyByteBuf buf, AssemblyRecipe recipe) {
+			buf.writeUtf(recipe.group);
+			buf.writeInt(recipe.requiredStacks.size());
+			for(IngredientStack stack : recipe.requiredStacks) {
+				stack.ingredient.toNetwork(buf);
+				buf.writeInt(stack.count);
+			}
+			buf.writeItem(recipe.output);
+			buf.writeLong(recipe.requiredMicroJoules);
+		}
+		
+	}
 }

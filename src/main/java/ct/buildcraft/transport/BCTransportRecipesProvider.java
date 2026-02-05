@@ -27,6 +27,7 @@ import net.minecraft.world.level.ItemLike;
 public class BCTransportRecipesProvider extends RecipeProvider{
 
 	private final Item waterProof ;
+	
 	public BCTransportRecipesProvider(DataGenerator p_125973_) {
 		super(p_125973_);
 		waterProof = BCTransportItems.WATER_PROOF.get();
@@ -55,7 +56,6 @@ public class BCTransportRecipesProvider extends RecipeProvider{
         creatPlugBlockerRecipes(writer);
         creatWaterProofRecipe(writer);
         creatFilterBufferRecipe(writer);
-        super.buildCraftingRecipes(writer);
 	}
 	
 	private void creatPipeRecipes(Consumer<FinishedRecipe> writer, ItemLike mat, Item itemOutput, Item fluidOutput, Item powerOutput) {

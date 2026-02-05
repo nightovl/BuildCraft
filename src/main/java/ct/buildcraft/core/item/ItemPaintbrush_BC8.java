@@ -4,14 +4,11 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.core.item;
 
-import java.util.EnumMap;
-
 import ct.buildcraft.api.blocks.CustomPaintHelper;
 import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.lib.misc.StackUtil;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,10 +24,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
     
-    public ItemPaintbrush_BC8(Properties pro, DyeColor color, EnumMap<DyeColor, ItemPaintbrush_BC8> map) {
-		super(pro, color, null);
-		if(color != null)
-			map.put(color, this);
+    public ItemPaintbrush_BC8(Properties pro, DyeColor color) {
+		super(pro, color);
     }
 		
     @Override

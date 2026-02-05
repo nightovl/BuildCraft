@@ -136,6 +136,6 @@
         "bottom": "buildcraftsilicon:blocks/table/programming/bottom",
         "side": "buildcraftsilicon:blocks/table/programming/side",
         "center": "buildcraftsilicon:blocks/table/programming/center",
-        "glass": "blocks/glass_white"
+        "glass": "block/white_stained_glass"
     }
 }

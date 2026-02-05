@@ -51,13 +51,13 @@ public final class BuildCraftAPI {
     public static boolean isSoftBlock(Level world, BlockPos pos) {
         return worldProperties.get("soft").get(world, pos);
     }
-
+/*
     public static ResourceLocation nameToResourceLocation(String name) {
         if (name.indexOf(':') > 0) return new ResourceLocation(name);
-        ModContainer modContainer = null;//TODO
+        ModContainer modContainer = FMLLoader.;//TODO
         if (modContainer == null) {
             throw new IllegalStateException("Illegal recipe name " + name + ". Provide domain id to register it correctly.");
         }
         return new ResourceLocation(modContainer.getModId(), name);
-    }
+    }*/
 }

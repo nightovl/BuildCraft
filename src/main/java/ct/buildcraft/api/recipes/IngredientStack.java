@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 
-import ct.buildcraft.api.core.BCLog;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -47,8 +46,6 @@ public final class IngredientStack {
     	if(o instanceof TagKey item) {
     		return new IngredientStack(Ingredient.of(item));
     	}
-    	BCLog.logger.error("IngredientStack:not a valid Ingredient parm "+o.getClass().descriptorString());
-    	return null;
-    	
+    	throw new IllegalArgumentException("IngredientStack:not a valid Ingredient parm "+o.getClass().descriptorString());
     }
 }

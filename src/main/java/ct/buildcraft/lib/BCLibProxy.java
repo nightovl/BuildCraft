@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.lib.net.MessageContainer;
+import ct.buildcraft.lib.net.MessageDebugResponse;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.MessageUpdateTile;
@@ -37,7 +38,7 @@ public abstract class BCLibProxy {
         MessageManager.registerMessageClass(BCModules.LIB, MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, MessageObjectCacheResponse::toBytes, MessageObjectCacheResponse::new/*, Dist.CLIENT*/);
 //        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugRequest.class, MessageDebugRequest.HANDLER, MessageDebugRequest::toBytes, MessageDebugRequest::new, 
 //            Dist.DEDICATED_SERVER);
-//        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugResponse.class, MessageDebugResponse.HANDLER, MessageDebugResponse::toBytes, MessageDebugResponse::new, Dist.CLIENT)*/;
+        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugResponse.class, MessageDebugResponse.HANDLER, MessageDebugResponse::toBytes, MessageDebugResponse::new/*, Dist.CLIENT*/);
     }
 
 

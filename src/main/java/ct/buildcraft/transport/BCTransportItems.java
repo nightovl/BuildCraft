@@ -89,7 +89,7 @@ public class BCTransportItems {
 
     public static final RegistryObject<ItemPluggableSimple> plugBlocker;
     public static final RegistryObject<ItemPluggableSimple> plugPowerAdaptor;
-    public static final EnumMap<DyeColor, ItemByEnum<DyeColor>> wires = ItemByEnum.creatItems(ItemWire::new, new Properties().tab(BCTransport.tabPlugs), DyeColor.values(), DyeColor.class, "wire", ITEMS);;
+    public static final EnumMap<DyeColor, ItemWire> wires = ItemByEnum.creatItems(ItemWire::new, new Properties().tab(BCTransport.tabPlugs), DyeColor.values(), DyeColor.class, "wire", ITEMS);;
 
     static {
         WATER_PROOF = ITEMS.register("waterproof",() -> new ItemBC_Neptune("waterproof", new Properties().tab(BCTransport.tabPipes)));

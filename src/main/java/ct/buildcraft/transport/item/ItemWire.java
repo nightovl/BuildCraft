@@ -6,16 +6,14 @@
 
 package ct.buildcraft.transport.item;
 
-import java.util.EnumMap;
-
 import ct.buildcraft.lib.item.ItemByEnum;
 import net.minecraft.world.item.DyeColor;
 
 public class ItemWire extends ItemByEnum<DyeColor> {
 	
 	
-    public ItemWire(Properties pro, DyeColor color, EnumMap<DyeColor, ItemByEnum<DyeColor>> map) {
-        super(pro, color, map);
+    public ItemWire(Properties pro, DyeColor color) {
+        super(pro, color);
     }
     
 /*

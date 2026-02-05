@@ -19,11 +19,12 @@ import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.api.recipes.IngredientStack;
 import ct.buildcraft.lib.misc.ItemStackKey;
 import ct.buildcraft.lib.misc.StackUtil;
-import ct.buildcraft.lib.recipe.AssemblyRecipe;
+import ct.buildcraft.lib.recipe.AssemblyRecipeBasic;
 import ct.buildcraft.lib.recipe.ChangingItemStack;
 import ct.buildcraft.lib.recipe.ChangingObject;
 import ct.buildcraft.lib.recipe.IRecipeViewable;
 import ct.buildcraft.silicon.BCSiliconItems;
+import ct.buildcraft.silicon.BCSiliconRecipes;
 import ct.buildcraft.silicon.item.ItemPluggableFacade;
 import ct.buildcraft.silicon.plug.FacadeBlockStateInfo;
 import ct.buildcraft.silicon.plug.FacadeInstance;
@@ -34,18 +35,26 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class FacadeAssemblyRecipes extends AssemblyRecipe implements IRecipeViewable.IRecipePowered {
-    public static final FacadeAssemblyRecipes INSTANCE = new FacadeAssemblyRecipes();
+public class FacadeAssemblyRecipes extends AssemblyRecipeBasic implements IRecipeViewable.IRecipePowered {
+    public FacadeAssemblyRecipes(ResourceLocation name) {
+    	this.name = name;
+	}
 
-    static {
-        INSTANCE.setRegistryName(new ResourceLocation("buildcrafttransport:facadeRecipes"));
-    }
-
+    public static final ResourceLocation ID = new ResourceLocation("buildcrafttransport:facaderecipes");
+    public static final FacadeAssemblyRecipes INSTANCE = new FacadeAssemblyRecipes(ID);
+    
     private static final int TIME_GAP = 500;
     private static final long MJ_COST = 64 * MjAPI.MJ;
     private static final ChangingObject<Long> MJ_COSTS = new ChangingObject<>(new Long[] { MJ_COST });
+    
+    public static FacadeAssemblyRecipes getInstance(ResourceLocation location) {
+    	//if(ID.equals(location))
+    	return INSTANCE;
+    }
 
     public static ItemStack createFacadeStack(FacadeBlockStateInfo info, boolean isHollow) {
         ItemStack stack = BCSiliconItems.PLUG_FACADE_ITEM.get().createItemStack(FacadeInstance.createSingle(info, isHollow));
@@ -89,14 +98,15 @@ public class FacadeAssemblyRecipes extends AssemblyRecipe implements IRecipeView
     }
 
     @Override
-    public Set<ItemStack> getOutputs(NonNullList<ItemStack> inputs) {
+    public Set<ItemStack> getOutputs(IItemHandlerModifiable inputs) {
         if (!StackUtil.contains(baseRequirementStack(), inputs)) {
             return Collections.emptySet();
         }
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
-        for (ItemStack stack : inputs) {
-            stack = stack.copy();
+        int size = inputs.getSlots();
+        for (int i = 0;i<size;i++) {
+        	ItemStack stack = inputs.getStackInSlot(i).copy();
             stack.setCount(1);
             List<FacadeBlockStateInfo> infos = FacadeStateManager.stackFacades.get(new ItemStackKey(stack));
             if (infos == null || infos.isEmpty()) {
@@ -111,7 +121,7 @@ public class FacadeAssemblyRecipes extends AssemblyRecipe implements IRecipeView
     }
 
     private static ItemStack baseRequirementStack() {
-        if (BCTransportItems.PIPE_STRUCTURE.get() == null/*BCItems.Transport.PIPE_STRUCTURE == null*/) {
+        if (!BCTransportItems.PIPE_STRUCTURE.isPresent()) {
             return new ItemStack(Blocks.COBBLESTONE_WALL);
         }
         return new ItemStack(BCTransportItems.PIPE_STRUCTURE.get(), 3);
@@ -136,4 +146,19 @@ public class FacadeAssemblyRecipes extends AssemblyRecipe implements IRecipeView
     public long getRequiredMicroJoulesFor(@Nonnull ItemStack output) {
         return MJ_COST;
     }
+
+	@Override
+	public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
+		return true;//TODO
+	}
+
+	@Override
+	public ItemStack getResultItem() {//TODO:CACHE THIS 
+		return createFacadeStack(FacadeStateManager.validFacadeStates.values().toArray(FacadeBlockStateInfo[]::new)[0], false);
+	}
+
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return BCSiliconRecipes.FACADE_SERIALIZER.get();
+	}
 }

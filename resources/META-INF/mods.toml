@@ -63,7 +63,7 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     modId="buildcraftlib"
     mandatory=true
     versionRange="[8.0.0.0]"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
     
 #factory    
@@ -98,7 +98,7 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     modId="buildcraftlib"
     mandatory=true
     versionRange="[8.0.0.0]"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.buildcraftfactory]]
@@ -139,7 +139,7 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     modId="buildcraftlib"
     mandatory=true
     versionRange="[8.0.0.0]"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.buildcrafttransport]]
@@ -183,7 +183,7 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     modId="buildcraftlib"
     mandatory=true
     versionRange="[8.0.0.0]"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.buildcraftenergy]]
@@ -274,7 +274,7 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     modId="buildcraftlib"
     mandatory=true
     versionRange="[8.0.0.0]"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.buildcraftsilicon]]

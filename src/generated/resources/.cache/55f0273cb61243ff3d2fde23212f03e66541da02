@@ -1,6 +1,0 @@
-// 1.19.2	2024-10-04T21:22:48.0404972	Tags for minecraft:worldgen/biome
-46e0782f2ced340c704988461d3359950942a592 data/buildcraftenergy/tags/worldgen/biome/is_oil_biome.json
-46e0782f2ced340c704988461d3359950942a592 data/forge/tags/worldgen/biome/is_desert.json
-46e0782f2ced340c704988461d3359950942a592 data/forge/tags/worldgen/biome/is_dry/overworld.json
-46e0782f2ced340c704988461d3359950942a592 data/forge/tags/worldgen/biome/is_hot/overworld.json
-46e0782f2ced340c704988461d3359950942a592 data/forge/tags/worldgen/biome/is_sandy.json

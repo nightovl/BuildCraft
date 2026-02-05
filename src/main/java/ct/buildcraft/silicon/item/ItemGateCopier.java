@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.core.BCCore;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -22,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemGateCopier extends Item {
-    private static final String NBT_DATA = "gate_data";
+    public static final String NBT_DATA = "gate_data";
 
     public ItemGateCopier() {
-        super(new Item.Properties().stacksTo(1)/*.tab(BCCore.BUILDCRAFT_TAB)*/);
+        super(new Item.Properties().stacksTo(1).tab(BCCore.BUILDCRAFT_TAB));
     }
 
 /*    @Override

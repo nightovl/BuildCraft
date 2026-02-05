@@ -30,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.IItemHandler;
 
 /** Provides various utils for interacting with {@link ItemStack}, and multiples. */
 public class StackUtil {
@@ -86,6 +87,22 @@ public class StackUtil {
     /** Checks to see if the given required stack is contained fully in a single stack in a list. */
     public static boolean contains(@Nonnull ItemStack required, Collection<ItemStack> containers) {
         for (ItemStack possible : containers) {
+            if (possible == null) {
+                // Use an explicit null check here as the collection doesn't have @Nonnull applied to its type
+                throw new NullPointerException("Found a null itemstack in " + containers);
+            }
+            if (contains(required, possible)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /** Checks to see if the given required stack is contained fully in a single stack in a list. */
+    public static boolean contains(@Nonnull ItemStack required, IItemHandler containers) {
+    	int size = containers.getSlots();
+        for (int i = 0;i<size;i++) {
+        	ItemStack possible = containers.getStackInSlot(i);
             if (possible == null) {
                 // Use an explicit null check here as the collection doesn't have @Nonnull applied to its type
                 throw new NullPointerException("Found a null itemstack in " + containers);

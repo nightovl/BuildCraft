@@ -1,67 +1,97 @@
-/*
- * Copyright (c) 2017 SpaceToad and the BuildCraft team
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
- * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
- */
-
 package ct.buildcraft.lib.recipe;
 
-import java.util.Collections;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableSet;
-
-import ct.buildcraft.api.core.BuildCraftAPI;
 import ct.buildcraft.api.recipes.IngredientStack;
-import net.minecraft.core.NonNullList;
+import ct.buildcraft.silicon.BCSiliconItems;
+import ct.buildcraft.silicon.BCSiliconRecipes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
-/**
- * @deprecated TEMPORARY CLASS DO NOT USE!
- */
-@Deprecated
-public class AssemblyRecipeBasic extends AssemblyRecipe {
-    private final long requiredMicroJoules;
-    private final ImmutableSet<IngredientStack> requiredStacks;
-    private final ImmutableSet<ItemStack> output;
+public abstract class AssemblyRecipeBasic implements Recipe<Container>, Comparable<AssemblyRecipeBasic>{
+	   protected ResourceLocation name;
 
-    public AssemblyRecipeBasic(ResourceLocation name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output) {
-        this.requiredMicroJoules = requiredMicroJoules;
-        this.requiredStacks = ImmutableSet.copyOf(requiredStacks);
-        this.output = ImmutableSet.of(output);
-        setRegistryName(name);
-    }
+	    /**
+	     * The outputs this recipe can generate with any of the given inputs
+	     * @param inputs Current ingredients in the assembly table
+	     * @return A Set containing all possible outputs given the given inputs or an empty one if nothing can be assembled from the given inputs
+	     */
+	    public abstract Set<ItemStack> getOutputs(IItemHandlerModifiable inputs);
 
-    public AssemblyRecipeBasic(String name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output) {
-        this(BuildCraftAPI.nameToResourceLocation(name), requiredMicroJoules, requiredStacks, output);
-    }
+	    /**
+	     * Used to determine all outputs from this recipe for recipe previews (guide book and/or JEI)
+	     */
+	    public abstract Set<ItemStack> getOutputPreviews();
 
-    public AssemblyRecipeBasic(String name, long requiredMicroJoules, Set<IngredientStack> requiredStacks, @Nonnull ItemStack output) {
-        this(name, requiredMicroJoules, ImmutableSet.copyOf(requiredStacks), output);
-    }
+	    /**
+	     * Used to determine what items to use up for the given output
+	     * @param output The output we want to know the inputs for, only ever called using stacks obtained from getOutputs or getOutputPreviews
+	     */
+	    public abstract Set<IngredientStack> getInputsFor(@Nonnull ItemStack output);
 
-    @Override
-    public Set<ItemStack> getOutputs(NonNullList<ItemStack> inputs) {
-        if (requiredStacks.stream().allMatch((definition) -> inputs.stream().anyMatch((stack) -> !stack.isEmpty() && definition.ingredient.test(stack) && stack.getCount() >= definition.count)))
-            return output;
-        return Collections.emptySet();
-    }
+	    /**
+	     * Used to determine how much MJ is required to asemble the given output item
+	     * @param output The output we want to know the MJ cost for, only ever called using stacks obtained from getOutputs or getOutputPreviews
+	     */
+	    public abstract long getRequiredMicroJoulesFor(@Nonnull ItemStack output);
 
-    @Override
-    public Set<ItemStack> getOutputPreviews() {
-        return output;
-    }
+	    @Override
+		public boolean matches(Container container, Level p_44003_) {
+			return !getOutputs(new InvWrapper(container)).isEmpty();
+		}
 
-    @Override
-    public Set<IngredientStack> getInputsFor(@Nonnull ItemStack output) {
-        return requiredStacks;
-    }
+		@Override
+		public ItemStack assemble(Container container) {
+			Set<ItemStack> outputs = getOutputs(new InvWrapper(container));
+			return outputs.isEmpty() ? ItemStack.EMPTY : outputs.toArray(new ItemStack[1])[0];
+		}
+		
+		@Override
+		public ItemStack getToastSymbol() {
+			return new ItemStack(BCSiliconItems.ASSEMBLY_TABLE_ITEM.get());
+		}
 
-    @Override
-    public long getRequiredMicroJoulesFor(@Nonnull ItemStack output) {
-        return requiredMicroJoules;
-    }
+		@Override
+	    public boolean equals(Object o) {
+	        if (this == o) {
+	            return true;
+	        }
+	        if (o == null || getClass() != o.getClass()) {
+	            return false;
+	        }
+
+	        AssemblyRecipe that = (AssemblyRecipe) o;
+
+	        return name.equals(that.name);
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        return name.hashCode();
+	    }
+
+	    @Override
+	    public int compareTo(AssemblyRecipeBasic o) {
+	        return name.toString().compareTo(o.name.toString());
+	    }
+	    
+	    @Override
+		public ResourceLocation getId() {
+			return name;
+		}
+
+		@Override
+		public RecipeType<?> getType() {
+			return BCSiliconRecipes.ASSEMBLY_TYPE.get();
+		}
+		
+		
 }
