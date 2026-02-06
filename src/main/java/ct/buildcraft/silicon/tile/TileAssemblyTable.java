@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.misc.AdvancementUtil;
@@ -29,6 +30,7 @@ import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.recipe.AssemblyRecipe;
+import ct.buildcraft.lib.recipe.AssemblyRecipeBasic;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
@@ -53,6 +55,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
@@ -91,9 +94,11 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     private void updateRecipes() {
     	isDirty = false;
         int count = recipesStates.size();
-        for(AssemblyRecipe recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
+        for(AssemblyRecipeBasic recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
             Set<ItemStack> outputs = recipe.getOutputs(inv);//TODO
             for (ItemStack out: outputs) {
+            	if(out.isEmpty())
+            		break;
                 boolean found = false;
                 for (AssemblyInstruction instruction: recipesStates.keySet()) {
                     if (instruction.recipe == recipe && out == instruction.output) {
@@ -178,7 +183,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
             }
             index = 0;
             for (Map.Entry<AssemblyInstruction, EnumAssemblyRecipeState> entry : recipesStates.entrySet()) {
-                AssemblyRecipe recipe = entry.getKey().recipe;
+            	AssemblyRecipeBasic recipe = entry.getKey().recipe;
                 EnumAssemblyRecipeState state = entry.getValue();
                 if (state == EnumAssemblyRecipeState.SAVED_ENOUGH && recipe != activeRecipe.recipe && (index > activeIndex || isActiveLast)) {
                     state = EnumAssemblyRecipeState.SAVED_ENOUGH_ACTIVE;
@@ -200,11 +205,17 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
         super.update();
 
         if (level.isClientSide) {
+
             return;
         }
+        for(var e : recipesStates.entrySet()) {
+        	if(e.getValue() != EnumAssemblyRecipeState.SAVED)
+        	BCLog.d(e.getKey().toString()+": "+e.getValue().toString());
+        }
     	
-        if(isDirty)
-    		updateRecipes();
+ //        if(isDirty)
+        updateRecipes();
+
 
         if (getTarget() > 0) {
             AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT);
@@ -283,6 +294,8 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
             EnumAssemblyRecipeState state = EnumAssemblyRecipeState.values()[buffer.readInt()];
             if (recipesStates.containsKey(recipe)) {
                 recipesStates.put(recipe, state);
+            	//recipesStates = null;
+                //BCLog.d("set "+state);
             }
         }
     }
@@ -323,15 +336,16 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     
     @Nullable
     private AssemblyInstruction lookupRecipe(String name, ItemStack output) {
-        Optional<Pair<ResourceLocation, AssemblyRecipe>> recipe = level.getRecipeManager().getRecipeFor(BCSiliconRecipes.ASSEMBLY_TYPE.get(), new RecipeWrapper(inv), level, new ResourceLocation(name));
-        return recipe.isPresent() ? new AssemblyInstruction(recipe.get().getSecond(), output) : null;
+        Optional<? extends Recipe<?>> recipe = level.getRecipeManager().byKey(new ResourceLocation(name));
+        return (recipe.isPresent() && recipe.get() instanceof AssemblyRecipeBasic assemblyRecipeBasic)
+        		? new AssemblyInstruction(assemblyRecipeBasic, output) : null;
     }
 
     public class AssemblyInstruction implements Comparable<AssemblyInstruction> {
-        public final AssemblyRecipe recipe;
+        public final AssemblyRecipeBasic recipe;
         public final ItemStack output;
 
-        private AssemblyInstruction(AssemblyRecipe recipe, ItemStack output) {
+        private AssemblyInstruction(AssemblyRecipeBasic recipe, ItemStack output) {
             this.recipe = recipe;
             this.output = output;
         }

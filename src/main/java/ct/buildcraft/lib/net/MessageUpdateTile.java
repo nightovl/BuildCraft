@@ -45,13 +45,15 @@ public class MessageUpdateTile {
 
     public MessageUpdateTile(FriendlyByteBuf buf) {
         pos = buf.readBlockPos();
-        buf.discardReadBytes();
-        payload = buf;
+        int size = buf.readUnsignedMedium();
+        payload = new FriendlyByteBuf(buf.readBytes(size));
     }
 
     public static void toBytes(MessageUpdateTile msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.pos);
-        buf.writeBytes(msg.payload);
+        int length = msg.payload.readableBytes();
+        buf.writeMedium(length);
+        buf.writeBytes(msg.payload, 0, length);
     }
 
     public static final BiConsumer<MessageUpdateTile, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {

@@ -114,18 +114,22 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
 
     @Override
     public boolean isDirty() {
+    	if(subCache ==null)
+    		return false;
     	return subCache.isDirty();
  //       return true;
     }
 
     @Override
 	public void setDirty() {
-    	subCache.setDirty(true);
+    	if(subCache !=null)
+    		subCache.setDirty(true);
 	}
 
 	@Override
 	public void setDirty(boolean p_77761_) {
-		subCache.setDirty(p_77761_);
+    	if(subCache !=null)
+    		subCache.setDirty(p_77761_);
 	}
 
 	public final void setCache(S subCache) {
