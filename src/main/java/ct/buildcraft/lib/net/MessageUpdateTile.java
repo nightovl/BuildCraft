@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.misc.MessageUtil;
 import com.mojang.logging.LogUtils;
@@ -20,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
@@ -60,8 +63,11 @@ public class MessageUpdateTile {
     	
     	ctx.get().enqueueWork(() -> {
         	try {
-                ClientLevel level = Minecraft.getInstance().level;
+                @Nullable
+				ServerPlayer sender = ctx.get().getSender();
+                Level level = sender != null ? sender.level : null;
                 if (level == null) {
+                	BCLog.logger.error("Should not handle MessageUpdateTile in client side");
                     return;
                 }
 //                BCLog.logger.debug("trying to updata client pipe in "+ message.pos);
@@ -74,15 +80,15 @@ public class MessageUpdateTile {
                     BCLog.logger.warn("Dropped message for player " + "null" + " for tile at " + message.pos
                         + " (found " + tile + ")");
                 }
-                //ctx.get().setPacketHandled(true);
                 return;
             } catch (IOException io) {
                 throw new RuntimeException(io);
             } finally {
+            	ctx.get().setPacketHandled(true);
                 //message.payload.release();
             }
     	  });
-    	  ctx.get().setPacketHandled(true);
+//    	  ctx.get().setPacketHandled(true);
 
     	
     };
