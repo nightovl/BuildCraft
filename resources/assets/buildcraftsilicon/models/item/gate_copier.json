@@ -8,7 +8,7 @@
 	            "predicate": {
 	                "buildcraftsilicon:isempty": 0
 	            },
-	            "model": "buildcraftsilicon:item/gatecopyier_full"
+	            "model": "buildcraftsilicon:item/gatecopier_full"
 	        },
 	        {
 	            "predicate": {

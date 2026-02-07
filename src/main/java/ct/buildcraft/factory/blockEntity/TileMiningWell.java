@@ -132,9 +132,6 @@ public class TileMiningWell extends TileMiner {
         currentPos = null;
         updateLength();
     }
-    
-    
-
 
 	@Override
 	public void onRemove(boolean dropSelf) {

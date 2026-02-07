@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.SafeTimeTracker;
 import ct.buildcraft.api.mj.ILaserTarget;
 import ct.buildcraft.api.mj.ILaserTargetBlock;
@@ -84,8 +85,12 @@ public class TileLaser extends TileBC_Neptune implements IDebuggable, GameEventL
 
     @Override
     public boolean handleGameEvent(ServerLevel level, GameEvent.Message msg) {
-        this.levelHasUpdated = true;
-        return true;
+    	GameEvent gameEvent = msg.gameEvent();
+    	if(gameEvent == (GameEvent.BLOCK_PLACE)||gameEvent == (GameEvent.BLOCK_DESTROY)||gameEvent == (GameEvent.BLOCK_CHANGE)) {
+    		this.levelHasUpdated = true;
+    		return true;
+    	}
+        return false;
     }
 
     private void findPossibleTargets() {
@@ -280,23 +285,6 @@ public class TileLaser extends TileBC_Neptune implements IDebuggable, GameEventL
         left.add("average = " + LocaleUtil.localizeMjFlow(averageClient == 0 ? (long) avgPower.getAverage() : averageClient));
     }
 
-	@Override
-	public void setRemoved() {
-		super.setRemoved();
-        if (!level.isClientSide) {
-            //LocalBlockUpdateNotifier.instance(level).removeSubscriberFromUpdateNotifications(this);
-        }
-	}
-
-	@Override
-	public void clearRemoved() {
-		super.clearRemoved();
-        if (!level.isClientSide) {
-            //LocalBlockUpdateNotifier.instance(level).registerSubscriberForUpdateNotifications(this);
-        }
-	}
-
-	
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)

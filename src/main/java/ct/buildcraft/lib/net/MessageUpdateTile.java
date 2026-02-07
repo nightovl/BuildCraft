@@ -18,9 +18,12 @@ import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -63,11 +66,13 @@ public class MessageUpdateTile {
     	
     	ctx.get().enqueueWork(() -> {
         	try {
-                @Nullable
-				ServerPlayer sender = ctx.get().getSender();
-                Level level = sender != null ? sender.level : null;
+                PacketListener netHandler = ctx.get().getNetworkManager().getPacketListener();//TODO
+                Level level = null;
+                if(netHandler instanceof ServerGamePacketListenerImpl sim) 
+                	level = sim.player.level;
+                else if(netHandler instanceof ClientPacketListener sim)
+                	level = sim.getLevel();
                 if (level == null) {
-                	BCLog.logger.error("Should not handle MessageUpdateTile in client side");
                     return;
                 }
 //                BCLog.logger.debug("trying to updata client pipe in "+ message.pos);
@@ -84,11 +89,11 @@ public class MessageUpdateTile {
             } catch (IOException io) {
                 throw new RuntimeException(io);
             } finally {
-            	ctx.get().setPacketHandled(true);
+  //          	ctx.get().setPacketHandled(true);
                 //message.payload.release();
             }
     	  });
-//    	  ctx.get().setPacketHandled(true);
+    	  ctx.get().setPacketHandled(true);
 
     	
     };

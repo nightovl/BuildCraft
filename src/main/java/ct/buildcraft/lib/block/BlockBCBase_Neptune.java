@@ -37,11 +37,7 @@ public class BlockBCBase_Neptune extends Block {
     }
 
     public BlockBCBase_Neptune() {
-    	super(Properties.of(Material.METAL).strength(5.0f, 10.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
-    	if (this instanceof IBlockWithFacing) {
-            EnumProperty<Direction> facingProp = ((IBlockWithFacing) this).getFacingProperty();
-    		this.registerDefaultState(this.stateDefinition.any().setValue(facingProp, Direction.NORTH));
-        }
+    	this(Properties.of(Material.METAL).strength(5.0f, 10.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
     }
 
     // BlockState

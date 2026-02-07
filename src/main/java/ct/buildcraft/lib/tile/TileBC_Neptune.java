@@ -618,6 +618,8 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     public final void receivePayload(NetworkEvent.Context ctx, FriendlyByteBuf buffer) throws IOException {
     	try {
         int id = buffer.readUnsignedShort();
+        if(id == 11 && level.isClientSide)
+        	BCLog.d("ss");
 
         LogicalSide direction = ctx.getDirection().getReceptionSide();
         readPayload(id, buffer, direction ,ctx);

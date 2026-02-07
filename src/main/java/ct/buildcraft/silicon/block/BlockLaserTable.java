@@ -49,7 +49,7 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
 
  /*   @Override
     public RenderType getBlockLayer() {
-        return RenderType.CUTOUT;
+        return RenderType.CUTOUT;//TODO
     }*/
 
     @Override

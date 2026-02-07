@@ -75,17 +75,6 @@ public abstract class BlockEngineBase_BC8<E extends Enum<E> & IEngineType & Stri
     public BlockEngineBase_BC8() {
     	super();
     }
-    
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level lev, BlockState bs,
-			BlockEntityType<T> bet) {
-		return ($0,pos,$1,BlockEntity) -> {
-			if(BlockEntity instanceof TileEngineBase_BC8) {
-				((TileEngineBase_BC8) BlockEntity).update();
-			}
-		};
-	}
-
     // Engine directly related methods
 
     public BlockEngineBase_BC8<E> registerEngine(E type, BiFunction<BlockPos, BlockState, ? extends TileEngineBase_BC8> constructor) {

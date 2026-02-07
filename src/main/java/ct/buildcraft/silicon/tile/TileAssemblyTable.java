@@ -18,9 +18,6 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
-import com.mojang.datafixers.util.Pair;
-
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.lib.gui.ItemProvider;
 import ct.buildcraft.lib.misc.AdvancementUtil;
@@ -29,7 +26,6 @@ import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageUpdateTile;
-import ct.buildcraft.lib.recipe.AssemblyRecipe;
 import ct.buildcraft.lib.recipe.AssemblyRecipeBasic;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager;
@@ -59,7 +55,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -92,25 +87,27 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
     }
 
     private void updateRecipes() {
-    	isDirty = false;
         int count = recipesStates.size();
-        for(AssemblyRecipeBasic recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
-            Set<ItemStack> outputs = recipe.getOutputs(inv);//TODO
-            for (ItemStack out: outputs) {
-            	if(out.isEmpty())
-            		break;
-                boolean found = false;
-                for (AssemblyInstruction instruction: recipesStates.keySet()) {
-                    if (instruction.recipe == recipe && out == instruction.output) {
-                        found = true;
-                        break;
-                    }
-                }
-                AssemblyInstruction instruction = new AssemblyInstruction(recipe, out);
-                if (!found && !recipesStates.containsKey(instruction)) {
-                    recipesStates.put(instruction, EnumAssemblyRecipeState.POSSIBLE);
-                }
-            }
+        if(isDirty) {
+	        for(AssemblyRecipeBasic recipe: level.getRecipeManager().getAllRecipesFor(BCSiliconRecipes.ASSEMBLY_TYPE.get())) {
+	            Set<ItemStack> outputs = recipe.getOutputs(inv);
+	            for (ItemStack out: outputs) {
+	            	if(out.isEmpty())
+	            		break;
+	                boolean found = false;
+	                for (AssemblyInstruction instruction: recipesStates.keySet()) {
+	                    if (instruction.recipe == recipe && out == instruction.output) {
+	                        found = true;
+	                        break;
+	                    }
+	                }
+	                AssemblyInstruction instruction = new AssemblyInstruction(recipe, out);
+	                if (!found && !recipesStates.containsKey(instruction)) {
+	                    recipesStates.put(instruction, EnumAssemblyRecipeState.POSSIBLE);
+	                }
+	            }
+	        }
+	        isDirty = false;
         }
 
         boolean findActive = false;
@@ -208,10 +205,6 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
 
             return;
         }
-        for(var e : recipesStates.entrySet()) {
-        	if(e.getValue() != EnumAssemblyRecipeState.SAVED)
-        	BCLog.d(e.getKey().toString()+": "+e.getValue().toString());
-        }
     	
  //        if(isDirty)
         updateRecipes();
@@ -255,14 +248,24 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
             CompoundTag entryTag = recipesStatesTag.getCompound(i);
             String name = entryTag.getString("recipe");
             if (entryTag.contains("output")) {
-                AssemblyInstruction instruction = lookupRecipe(name, ItemStack.of(entryTag.getCompound("output")));//TODO CHECK!
-                if (instruction != null)
-                    recipesStates.put(instruction, EnumAssemblyRecipeState.values()[entryTag.getInt("state")]);
+            	loadingrecipe = ()->{
+            		AssemblyInstruction instruction = lookupRecipe(name, ItemStack.of(entryTag.getCompound("output")));//TODO CHECK!
+                	if (instruction != null)
+                		recipesStates.put(instruction, EnumAssemblyRecipeState.values()[entryTag.getInt("state")]);
+            	};
             }
         }
 	}
+	Runnable loadingrecipe = null;
+	
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if(loadingrecipe != null)
+		loadingrecipe.run();
+	}
 
-    @Override
+	@Override
     public void writePayload(int id, FriendlyByteBuf buffer, LogicalSide side) {
         super.writePayload(id, buffer, side);
 
@@ -294,8 +297,6 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
             EnumAssemblyRecipeState state = EnumAssemblyRecipeState.values()[buffer.readInt()];
             if (recipesStates.containsKey(recipe)) {
                 recipesStates.put(recipe, state);
-            	//recipesStates = null;
-                //BCLog.d("set "+state);
             }
         }
     }
