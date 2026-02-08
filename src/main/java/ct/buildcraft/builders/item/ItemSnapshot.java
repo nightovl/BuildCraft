@@ -105,9 +105,9 @@ public class ItemSnapshot extends Item {
 	public String getDescriptionId(ItemStack stack) {
         EnumItemSnapshotType type = EnumItemSnapshotType.getFromStack(stack);
         if (type.snapshotType == EnumSnapshotType.BLUEPRINT) {
-            return "item.blueprintItem";
+            return "item.buildcraftbuilders.blueprint";
         }
-        return "item.templateItem";
+        return "item.buildcraftbuilders.template";
 	}
     
     

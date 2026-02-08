@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.api.core.BuildCraftAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -22,7 +23,7 @@ public class SchematicBlockFactoryRegistry {
                                                                    Predicate<SchematicBlockContext> predicate,
                                                                    Supplier<S> supplier) {
         FACTORIES.add(new SchematicBlockFactory<>(
-            new ResourceLocation(name),
+        	BuildCraftAPI.nameToResourceLocation(name),
             priority,
             predicate,
             supplier

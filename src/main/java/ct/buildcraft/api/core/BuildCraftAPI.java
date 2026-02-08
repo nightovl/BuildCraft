@@ -17,8 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.ModLoadingContext;
 
 public final class BuildCraftAPI {
     public static IFakePlayerProvider fakePlayerProvider;
@@ -51,13 +50,13 @@ public final class BuildCraftAPI {
     public static boolean isSoftBlock(Level world, BlockPos pos) {
         return worldProperties.get("soft").get(world, pos);
     }
-/*
+
     public static ResourceLocation nameToResourceLocation(String name) {
         if (name.indexOf(':') > 0) return new ResourceLocation(name);
-        ModContainer modContainer = FMLLoader.;//TODO
+        ModContainer modContainer = ModLoadingContext.get().getActiveContainer();
         if (modContainer == null) {
             throw new IllegalStateException("Illegal recipe name " + name + ". Provide domain id to register it correctly.");
         }
         return new ResourceLocation(modContainer.getModId(), name);
-    }*/
+    }
 }

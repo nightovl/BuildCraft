@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 
 public interface INamedItem {
-    String getName(@Nonnull ItemStack stack);
+    String getLabelName(@Nonnull ItemStack stack);
 
-    boolean setName(@Nonnull ItemStack stack, String name);
+    boolean setLabelName(@Nonnull ItemStack stack, String name);
 }

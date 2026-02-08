@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import ct.buildcraft.api.core.BuildCraftAPI;
 import ct.buildcraft.api.recipes.IngredientStack;
 import ct.buildcraft.silicon.BCSiliconRecipes;
 import net.minecraft.core.NonNullList;
@@ -43,7 +44,7 @@ public class AssemblyRecipe extends AssemblyRecipeBasic{
     }
 
     public AssemblyRecipe(String name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output, String group) {
-        this(new ResourceLocation(name), requiredMicroJoules, requiredStacks, output, group);
+        this(BuildCraftAPI.nameToResourceLocation(name), requiredMicroJoules, requiredStacks, output, group);
     }
 
     public AssemblyRecipe(String name, long requiredMicroJoules, Set<IngredientStack> requiredStacks, @Nonnull ItemStack output, String group) {

@@ -36,6 +36,6 @@ public class ItemRedstoneChipset extends ItemByEnum<EnumRedstoneChipset> {
 
 	@Override
 	public String getDescriptionId(ItemStack p_41455_) {
-		return "item.redstone_" + type.getSerializedName() + "_chipset";
+		return "item.buildcraftsilicon.redstone_" + type.getSerializedName() + "_chipset";
 	}
 }

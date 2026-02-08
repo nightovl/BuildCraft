@@ -26,9 +26,11 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;
+import net.minecraftforge.client.model.DynamicFluidContainerModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -43,7 +45,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(BCCore.MODID)
 public class BCCore {
 	public static final String MODID = "buildcraftcore";
-    public static final CreativeTabBC BUILDCRAFT_TAB = CreativeTabManager.createTab("buildcraft.core");
+    public static final CreativeTabBC BUILDCRAFT_TAB = CreativeTabManager.createTab("buildcraft.main");
     public static final CreativeTabBC tabFluids = CreativeTabManager.createTab("buildcraft.fluid");
 	
     public static final Map<String,Object> ENGINE_MAP = new HashMap<>();
@@ -129,6 +131,11 @@ public class BCCore {
         	event.getModels().put(new ModelResourceLocation("buildcraftcore:engine#type=stone"), new ModelEngine(RenderEngine_BC8.STONE_BACK, RenderEngine_BC8.STONE_SIDE));
         	event.getModels().put(new ModelResourceLocation("buildcraftcore:engine#type=iron"), new ModelEngine(RenderEngine_BC8.IRON_BACK, RenderEngine_BC8.IRON_SIDE));
         	ModelEngine.release();
+        }
+        
+        @SubscribeEvent
+        public static void RegisterItemColor(RegisterColorHandlersEvent.Item event) {
+        	event.register(new DynamicFluidContainerModel.Colors(), BCCoreItems.FRAGILE_FLUID_SHARD.get());
         }
         	
     }

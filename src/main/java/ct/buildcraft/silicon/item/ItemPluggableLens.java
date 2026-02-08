@@ -22,6 +22,8 @@ import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.plug.PluggableLens;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -69,10 +71,9 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
     @Override
 	public String getDescriptionId(ItemStack stack) {
         LensData data = getData(stack);
-        String colour = data.colour == null ? LocaleUtil.localize("color.clear")
-            : ColourUtil.getTextFullTooltipSpecial(data.colour);
-        String first = LocaleUtil.localize(data.isFilter ? "item.Filter.name" : "item.Lens.name");
-        return colour + " " + first;
+        String colour = data.colour == null ? "clear" : data.colour.getName();
+        String first = data.isFilter ? "item.filter." : "item.lens.";
+        return first+colour;
 	}
 
 /*	@Override
@@ -81,7 +82,7 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
         return SpecialColourFontRenderer.INSTANCE;
     }*///TODO
 
-    @Override
+	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
     	if(this.allowedIn(tab))
         for (int i = 0; i < 34; i++) {

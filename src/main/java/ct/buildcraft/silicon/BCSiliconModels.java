@@ -33,12 +33,15 @@ import ct.buildcraft.silicon.client.render.RenderProgrammingTable;
 import ct.buildcraft.silicon.gate.GateVariant;
 import ct.buildcraft.silicon.plug.PluggableGate;
 import ct.buildcraft.silicon.plug.PluggablePulsar;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.model.DynamicFluidContainerModel;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -116,6 +119,7 @@ public class BCSiliconModels {
 
     public static void RegisterItemColor(RegisterColorHandlersEvent.Item event) {
     	event.register(FacadeItemColours.INSTANCE, BCSiliconItems.PLUG_FACADE_ITEM.get());
+//    	event.register(new DynamicFluidContainerModel.Colors(), BCSiliconItems.PLUG_LENS_ITEM.get());
     }
     
     public static void onModelBake(BakingCompleted event) {

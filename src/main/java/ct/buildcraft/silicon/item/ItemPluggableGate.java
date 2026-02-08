@@ -64,10 +64,15 @@ public class ItemPluggableGate extends Item implements IItemPluggable {
     
     @Override
 	public String getDescriptionId(ItemStack stack) {
-    	return getVariant(StackUtil.asNonNull(stack)).getLocalizedName().getString();
+    	return getName(stack).getString();//TODO
+	}
+    
+    @Override
+	public Component getName(ItemStack stack) {
+		return getVariant(StackUtil.asNonNull(stack)).getLocalizedName();
 	}
 
-    @Override
+	@Override
     @OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
     	 GateVariant variant = getVariant(StackUtil.asNonNull(stack));

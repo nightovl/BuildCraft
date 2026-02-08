@@ -17,6 +17,7 @@ import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -57,7 +58,6 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
 
 	@Override
 	public String getDescriptionId() {
-		// TODO Auto-generated method stub
 		return super.getDescriptionId();
 	}
 
@@ -65,24 +65,25 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
 	public Component getName(ItemStack stack) {
         FluidStack fluid = getFluid(stack);
 
-        Component localized;
-
+        String localized;
+        Language lang = Language.getInstance();
         if (fluid == null) {
-            localized = Component.literal("ERROR! NULL FLUID!");
+            localized = "ERROR! NULL FLUID!";
         } else if (fluid.getFluid() instanceof BCFluid) {
             BCFluid bcFluid = (BCFluid) fluid.getFluid();
             if (bcFluid.isHeatable()) {
+            	
                 // Add the heatable bit to the end of the name
-                localized = bcFluid.getBareLocalizedName(fluid);
-                Component whole = Component.translatable(getDescriptionId() + ".name", localized);
+                localized = lang.getOrDefault(bcFluid.getFluidType().getDescriptionId());
+                Component whole = Component.translatable(getDescriptionId(), localized);
                 return Component.empty().append(whole).append(Component.translatable("buildcraft.fluid.heat_" + bcFluid.getHeatValue()));
             } else {
-                localized = fluid.getDisplayName();
+                localized = lang.getOrDefault(fluid.getTranslationKey());
             }
         } else {
-            localized = fluid.getDisplayName();
+            localized = lang.getOrDefault(fluid.getTranslationKey());
         }
-        return Component.empty().append(getDescription()).append(localized);
+        return Component.translatable(getDescriptionId(), localized);
 	}
 
 	@OnlyIn(Dist.CLIENT)

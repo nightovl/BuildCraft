@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.lib.misc.NBTUtilBC;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.saveddata.SavedData;
 
 public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends MarkerConnection<C>> extends SavedData {
@@ -38,7 +37,7 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
         ListTag positionList = (ListTag) nbt.get("positions");
         int s = positionList.size();
         for (int i = 0; i < s; i++) {
-            markerPositions.add(NBTUtilBC.readBlockPos(positionList.get(i)));
+            markerPositions.add(NbtUtils.readBlockPos((CompoundTag) positionList.get(i)));//CHANGED
         }
 
         ListTag connectionList = (ListTag) nbt.get("connections");
@@ -49,7 +48,7 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
             markerConnections.add(inner);
             s = positionList.size();
             for (int j = 0; j < s; j++) {
-                inner.add(NBTUtilBC.readBlockPos(positionList.get(j)));
+                inner.add(NbtUtils.readBlockPos((CompoundTag) positionList.get(j)));
             }
         }
 
@@ -80,7 +79,7 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
         }
         ListTag positionList = new ListTag();
         for (BlockPos p : markerPositions) {
-            positionList.add(new IntArrayTag(NBTUtilBC.writeBlockPos(p)));
+            positionList.add(NbtUtils.writeBlockPos(p));
         }
         nbt.put("positions", positionList);
 
@@ -88,7 +87,7 @@ public abstract class MarkerSavedData<S extends MarkerSubCache<C>, C extends Mar
         for (List<BlockPos> connection : markerConnections) {
         	ListTag inner = new ListTag();
             for (BlockPos p : connection) {
-                inner.add(new IntArrayTag(NBTUtilBC.writeBlockPos(p)));
+                inner.add(NbtUtils.writeBlockPos(p));
             }
             connectionList.add(inner);
         }

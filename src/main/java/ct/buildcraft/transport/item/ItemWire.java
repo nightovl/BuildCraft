@@ -15,6 +15,13 @@ public class ItemWire extends ItemByEnum<DyeColor> {
     public ItemWire(Properties pro, DyeColor color) {
         super(pro, color);
     }
+
+	@Override
+	public String getDescriptionId() {
+		return "item.pipewire." + type.getName();
+	}
+    
+    
     
 /*
     @Override
@@ -31,11 +38,6 @@ public class ItemWire extends ItemByEnum<DyeColor> {
             addVariant(variants, color.getId(), color.getName());
         }
     }*/
-/*
-    @Override
-    public String getItemStackDisplayName(ItemStack stack) {
-        return ColourUtil.getTextFullTooltipSpecial(DyeColor.byId(stack.getId())) + " " + super.getItemStackDisplayName(stack);
-    }
 /*
     @Override
     @OnlyIn(Dist.CLIENT)
