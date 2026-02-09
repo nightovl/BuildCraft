@@ -12,6 +12,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.misc.SpriteUtil;
 import ct.buildcraft.transport.block.BlockPipeHolder;
 import ct.buildcraft.transport.client.model.PipeModelCacheAll.PipeAllCutoutKey;
@@ -119,6 +120,7 @@ public enum ModelPipe implements IDynamicBakedModel {
 		 */
 
 	}
+	
 
 	/*
 	 * baked the model with no texture, as the texture must be put in during
@@ -160,10 +162,19 @@ public enum ModelPipe implements IDynamicBakedModel {
 	 * @see BlockPipeHolder#addDestroyEffects(BlockState, Level, BlockPos, ParticleEngine)
 	 * */
 	@Override
-	public TextureAtlasSprite getParticleIcon(ModelData data) {
+	public TextureAtlasSprite getParticleIcon(ModelData data) {//TODO
 		if(data == ModelData.EMPTY)
 			return SpriteUtil.missingSprite();
-		return particleIcon.computeIfAbsent(data.get(PipeTypeModelKey).getPipe().definition.identifier, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)::apply);
+		ResourceLocation identifier = data.get(PipeTypeModelKey).getPipe().definition.identifier;
+//		return particleIcon.computeIfAbsent(new ResourceLocation(identifier.getNamespace(), "pipes/"+identifier.getPath()),
+//				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)::apply);
+		return particleIcon.computeIfAbsent(new ResourceLocation(identifier.getNamespace(), "pipes/"+identifier.getPath()),
+				(a) -> {
+					TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(a);
+					if(sprite == SpriteUtil.missingSprite())
+						BCLog.logger.error("ModelPipe:empty spite for "+a);
+					return sprite;
+				});
 	}
 
 	@Override

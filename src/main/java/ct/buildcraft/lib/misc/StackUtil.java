@@ -233,13 +233,7 @@ public class StackUtil {
         }
 
         if (checkTag) {
-            TagKey<Item>[] idBase = (TagKey<Item>[]) base.getTags().toArray();
-            if (idBase.length > 0) {
-                for (var id : idBase) {
-                	if(base.is(id))
-                		return true;
-                }
-            }
+            return base.getTags().anyMatch(base::is);
         }
 
         return false;
@@ -289,7 +283,6 @@ public class StackUtil {
      * @param matchDamage
      * @param matchNBT
      * @return true if matches */
-    @Deprecated
     public static boolean isMatchingItem(@Nonnull final ItemStack base, @Nonnull final ItemStack comparison,
         final boolean matchDamage, final boolean matchNBT) {
         if (base.isEmpty() || comparison.isEmpty()) {

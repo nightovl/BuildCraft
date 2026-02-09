@@ -6,13 +6,16 @@
     },
     "facing=east": {
       "model": "buildcraftsilicon:block/laser",
+      "x": 90,
       "y": 90
     },
     "facing=north": {
-      "model": "buildcraftsilicon:block/laser"
+      "model": "buildcraftsilicon:block/laser",
+      "x": 90
     },
     "facing=south": {
       "model": "buildcraftsilicon:block/laser",
+      "x": 90,
       "y": 180
     },
     "facing=up": {
@@ -20,6 +23,7 @@
     },
     "facing=west": {
       "model": "buildcraftsilicon:block/laser",
+      "x": 90,
       "y": 270
     }
   }

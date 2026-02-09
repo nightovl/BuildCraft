@@ -201,32 +201,32 @@ public class BCEnergyConfig {
         game.setTo(propChristmasEventType);*/
 
         // Move old configs
-        // boolean hasKey(String category, String key)
+        // boolean containes(String category, String key)
         // boolean moveProperty(String oldCategory, String propName, String newCategory);
         // boolean renameProperty(String category, String oldPropName, String newPropName)
-/*        if (BCCoreConfig.config.hasKey("worldgen", "enableOilGen")) {
+/*        if (BCCoreConfig.config.containes("worldgen", "enableOilGen")) {
             BCCoreConfig.config.moveProperty("worldgen", "enableOilGen", "worldgen.oil");
             BCCoreConfig.config.renameProperty("worldgen.oil", "enableOilGen", "enable");
         }
-        if (BCCoreConfig.config.hasKey("worldgen", "oilWellGenerationRate")) {
+        if (BCCoreConfig.config.containes("worldgen", "oilWellGenerationRate")) {
             BCCoreConfig.config.moveProperty("worldgen", "oilWellGenerationRate", "worldgen.oil");
             BCCoreConfig.config.renameProperty("worldgen.oil", "oilWellGenerationRate", "generationRate");
         }
-        if (BCCoreConfig.config.hasKey("worldgen", "enableOilSpouts")) {
+        if (BCCoreConfig.config.containes("worldgen", "enableOilSpouts")) {
             BCCoreConfig.config.moveProperty("worldgen", "enableOilSpouts", "worldgen.oil.spouts");
             BCCoreConfig.config.renameProperty("worldgen.oil.spouts", "enableOilSpouts", "enable");
         }
 
-        if (BCCoreConfig.config.hasKey("worldgen", "excessiveBiomes")) {
+        if (BCCoreConfig.config.containes("worldgen", "excessiveBiomes")) {
             BCCoreConfig.config.moveProperty("worldgen", "excessiveBiomes", "worldgen.oil");
         }
-        if (BCCoreConfig.config.hasKey("worldgen", "surfaceDepositBiomes")) {
+        if (BCCoreConfig.config.containes("worldgen", "surfaceDepositBiomes")) {
             BCCoreConfig.config.moveProperty("worldgen", "surfaceDepositBiomes", "worldgen.oil");
         }
-        if (BCCoreConfig.config.hasKey("worldgen", "excludedBiomes")) {
+        if (BCCoreConfig.config.containes("worldgen", "excludedBiomes")) {
             BCCoreConfig.config.moveProperty("worldgen", "excludedBiomes", "worldgen.oil");
         }
-        if (BCCoreConfig.config.hasKey("worldgen", "excludedDimensions")) {
+        if (BCCoreConfig.config.containes("worldgen", "excludedDimensions")) {
             BCCoreConfig.config.moveProperty("worldgen", "excludedDimensions", "worldgen.oil");
         }
 

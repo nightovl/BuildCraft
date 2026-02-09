@@ -6,13 +6,16 @@
     },
     "facing=east": {
       "model": "buildcraftfactory:block/chute",
+      "x": 90,
       "y": 90
     },
     "facing=north": {
-      "model": "buildcraftfactory:block/chute"
+      "model": "buildcraftfactory:block/chute",
+      "x": 90
     },
     "facing=south": {
       "model": "buildcraftfactory:block/chute",
+      "x": 90,
       "y": 180
     },
     "facing=up": {
@@ -20,6 +23,7 @@
     },
     "facing=west": {
       "model": "buildcraftfactory:block/chute",
+      "x": 90,
       "y": 270
     }
   }

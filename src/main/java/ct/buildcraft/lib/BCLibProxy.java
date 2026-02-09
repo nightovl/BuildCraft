@@ -18,13 +18,16 @@ import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheRequest;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public abstract class BCLibProxy {
@@ -41,8 +44,6 @@ public abstract class BCLibProxy {
         MessageManager.registerMessageClass(BCModules.LIB, MessageDebugResponse.class, MessageDebugResponse.HANDLER, MessageDebugResponse::toBytes, MessageDebugResponse::new/*, Dist.CLIENT*/);
     }
 
-
-    
     static void fmlInit() {}
 
     void fmlPostInit() {}
@@ -51,8 +52,13 @@ public abstract class BCLibProxy {
         return null;
     }
 
-    public Player getClientPlayer() {
-        return null;
+    public static Player getClientPlayer() {
+    	Player[] player = {null};
+    	DistExecutor.safeRunWhenOn(Dist.CLIENT, ()-> ()->{
+    		var mc = Minecraft.getInstance();
+    		player[0] = mc.player;
+    	});
+        return player[0];
     }
 
 
@@ -69,16 +75,8 @@ public abstract class BCLibProxy {
     public Iterable<File> getLoadedResourcePackFiles() {
         return Collections.emptySet();
     }
+    
 
-
-    @SuppressWarnings("unused")
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    public static class ServerProxy extends BCLibProxy {
-        @Override
-        public File getGameDirectory() {
-        	return ServerLifecycleHooks.getCurrentServer().getServerDirectory();
-        }
-    }
 /*
     @SuppressWarnings("unused")
     @OnlyIn(Dist.CLIENT)

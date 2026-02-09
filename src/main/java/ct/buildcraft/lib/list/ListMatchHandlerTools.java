@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import ct.buildcraft.api.lists.ListMatchHandler;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 
 public class ListMatchHandlerTools extends ListMatchHandler {

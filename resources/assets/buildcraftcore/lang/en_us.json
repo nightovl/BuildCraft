@@ -1,7 +1,5 @@
 {
 	"item.buildcraftcore.wrench":"Wrench",
-	"item.buildcraftcore.engine_redstone":"Redstone Engine",
-	"item.buildcraftcore.engine_creative":"Creative Engine",
 	"item.buildcraftcore.gears.gear_wood":"Wood Gear",
 	"item.buildcraftcore.gears.gear_stone":"Stone Gear",
 	"item.buildcraftcore.gears.gear_iron":"Iron Gear",
@@ -26,8 +24,6 @@
 	"item.buildcraftcore.paintbrush.black":"§8Black§r Paintbrush",
 	"item.buildcraftcore.fragile_fluid_shard":"Fragile %s Shard",
 	"item.buildcraftcore.marker_connector":"Marker Connector",
-	"item.buildcraftcore.volume_box":"Volume Box",
-	"item.buildcraftcore.marker_path":"Marker Path",
 	"item.buildcraftcore.map_location":"Map Location",
 	"item.buildcraftcore.list":"List",
 	
@@ -38,5 +34,6 @@
 	"block.buildcraftcore.spring_water":"Water Spring",
 	"block.buildcraftcore.spring_oil":"Oil Spring",
 	"block.buildcraftcore.spring":"BC Spring",
-	"block.buildcraftcore.marker_path":"Marker Path"
+	"block.buildcraftcore.marker_path":"Marker Path",
+	"block.buildcraftcore.volume_box":"Volume Box",
 }

@@ -39,7 +39,6 @@ import ct.buildcraft.transport.item.ItemWire;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.tile.TilePipeHolder;
 import ct.buildcraft.transport.wire.EnumWireBetween;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -51,6 +50,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -704,11 +705,10 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			tile.scheduleNetworkUpdate(IPipeHolder.PipeMessageReceiver.WIRES);
 			return false;
 		} else {
-			toDrop.addAll(getDrops(state, (ServerLevel) world, pos, null));
-			/*
-			 * for (Direction face : Direction.values()) { removePluggable(face, tile,
-			 * NonNullList.create()); }
-			 */
+//  		toDrop.addAll(getDrops(state, (ServerLevel) world, pos, null));
+            for (Direction face : Direction.values()) {
+                removePluggable(face, tile, toDrop);
+            }
 		}
 		if (!player.isCreative()) {
 			InventoryUtil.dropAll(world, pos, toDrop);
@@ -832,7 +832,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 	@Override
 	public boolean addLandingEffects(BlockState state, ServerLevel worldObj, BlockPos blockPosition,
 			BlockState BlockState, LivingEntity entity, int numberOfParticles) {
-		return super.addLandingEffects(state, worldObj, blockPosition, BlockState, entity, numberOfParticles);
+		BlockParticleOption particle = new BlockParticleOption(ParticleTypes.BLOCK, BlockState).setPos(blockPosition);
+		worldObj.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(), numberOfParticles, 0.0D, 0.0D, 0.0D, (double)0.15F);
+		return true;
 	}
 	
 	

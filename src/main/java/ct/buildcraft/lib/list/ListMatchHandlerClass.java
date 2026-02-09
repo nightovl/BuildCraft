@@ -8,10 +8,9 @@ package ct.buildcraft.lib.list;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-
-import buildcraft.api.lists.ListMatchHandler;
-import buildcraft.api.lists.ListRegistry;
+import ct.buildcraft.api.lists.ListMatchHandler;
+import ct.buildcraft.api.lists.ListRegistry;
+import net.minecraft.world.item.ItemStack;
 
 public class ListMatchHandlerClass extends ListMatchHandler {
     @Override

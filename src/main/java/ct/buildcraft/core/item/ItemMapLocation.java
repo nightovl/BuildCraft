@@ -18,8 +18,8 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -60,20 +60,20 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addModelVariants(TIntObjectHashMap<ModelResourceLocation> variants) {
         for (MapLocationType type : MapLocationType.values()) {
             addVariant(variants, type.meta, type.name().toLowerCase(Locale.ROOT));
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, World world, List<String> strings, ITooltipFlag flag) {
         stack = StackUtil.asNonNull(stack);
-        NBTTagCompound cpt = NBTUtilBC.getItemData(stack);
+        CompoundTag cpt = NBTUtilBC.getItemData(stack);
 
-        if (cpt.hasKey("name")) {
+        if (cpt.containes("name")) {
             String name = cpt.getString("name");
             if (name.length() > 0) {
                 strings.add(name);
@@ -83,7 +83,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
         MapLocationType type = MapLocationType.getFromStack(stack);
         switch (type) {
             case SPOT: {
-                if (cpt.hasKey("x") && cpt.hasKey("y") && cpt.hasKey("z") && cpt.hasKey("side")) {
+                if (cpt.containes("x") && cpt.containes("y") && cpt.containes("z") && cpt.containes("side")) {
                     int x = cpt.getInteger("x");
                     int y = cpt.getInteger("y");
                     int z = cpt.getInteger("z");
@@ -94,8 +94,8 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
                 break;
             }
             case AREA: {
-                if (cpt.hasKey("xMin") && cpt.hasKey("yMin") && cpt.hasKey("zMin") && cpt.hasKey("xMax")
-                    && cpt.hasKey("yMax") && cpt.hasKey("zMax")) {
+                if (cpt.containes("xMin") && cpt.containes("yMin") && cpt.containes("zMin") && cpt.containes("xMax")
+                    && cpt.containes("yMax") && cpt.containes("zMax")) {
                     int x = cpt.getInteger("xMin");
                     int y = cpt.getInteger("yMin");
                     int z = cpt.getInteger("zMin");
@@ -110,8 +110,8 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
             }
             case PATH:
             case PATH_REPEATING: {
-                if (cpt.hasKey("path")) {
-                    NBTTagList pathNBT = (NBTTagList) cpt.getTag("path");
+                if (cpt.containes("path")) {
+                    ListTag pathNBT = (ListTag) cpt.getTag("path");
 
                     if (pathNBT.tagCount() > 0) {
                         BlockPos first = NBTUtilBC.readBlockPos(pathNBT.get(0));
@@ -148,7 +148,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
         if (MapLocationType.getFromStack(stack) == MapLocationType.CLEAN) {
             return new ActionResult<>(EnumActionResult.PASS, stack);
         }
-        NBTTagCompound nbt = NBTUtilBC.getItemData(stack);
+        CompoundTag nbt = NBTUtilBC.getItemData(stack);
         for (String key : STORAGE_TAGS) {
             nbt.removeTag(key);
         }
@@ -180,7 +180,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
         }
 
         TileEntity tile = world.getTileEntity(pos);
-        NBTTagCompound cpt = NBTUtilBC.getItemData(modified);
+        CompoundTag cpt = NBTUtilBC.getItemData(modified);
 
         if (tile instanceof IPathProvider) {
             List<BlockPos> path = ((IPathProvider) tile).getPath();
@@ -191,7 +191,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
                 MapLocationType.PATH.setToStack(stack);
             }
 
-            NBTTagList pathNBT = new NBTTagList();
+            ListTag pathNBT = new ListTag();
 
             for (BlockPos posInPath : path) {
                 pathNBT.appendTag(NBTUtilBC.writeBlockPos(posInPath));
@@ -223,7 +223,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
     }
 
     public static IBox getAreaBox(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         int xMin = cpt.getInteger("xMin");
         int yMin = cpt.getInteger("yMin");
         int zMin = cpt.getInteger("zMin");
@@ -238,7 +238,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
     }
 
     public static IBox getPointBox(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType type = MapLocationType.getFromStack(item);
 
         switch (type) {
@@ -258,7 +258,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
     }
 
     public static EnumFacing getPointFace(@Nonnull ItemStack stack) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(stack);
+        CompoundTag cpt = NBTUtilBC.getItemData(stack);
         return EnumFacing.VALUES[cpt.getByte("side")];
     }
 
@@ -281,7 +281,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
 
     @Override
     public EnumFacing getPointSide(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType type = MapLocationType.getFromStack(item);
 
         if (type == MapLocationType.SPOT) {
@@ -293,7 +293,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
 
     @Override
     public BlockPos getPoint(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType type = MapLocationType.getFromStack(item);
 
         if (type == MapLocationType.SPOT) {
@@ -305,7 +305,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
 
     @Override
     public IZone getZone(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType type = MapLocationType.getFromStack(item);
         switch (type) {
             case ZONE: {
@@ -328,13 +328,13 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
 
     @Override
     public List<BlockPos> getPath(@Nonnull ItemStack item) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType type = MapLocationType.getFromStack(item);
         switch (type) {
             case PATH:
             case PATH_REPEATING: {
                 List<BlockPos> indexList = new ArrayList<>();
-                NBTTagList pathNBT = (NBTTagList) cpt.getTag("path");
+                ListTag pathNBT = (ListTag) cpt.getTag("path");
                 for (int i = 0; i < pathNBT.tagCount(); i++) {
                     BlockPos pos = NBTUtilBC.readBlockPos(pathNBT.get(i));
                     if (pos != null) {
@@ -355,7 +355,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
     }
 
     public static void setZone(@Nonnull ItemStack item, ZonePlan plan) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         MapLocationType.ZONE.setToStack(item);
         plan.writeToNBT(cpt);
     }
@@ -367,7 +367,7 @@ public class ItemMapLocation extends ItemBC_Neptune implements IMapLocation {
 
     @Override
     public boolean setName(@Nonnull ItemStack item, String name) {
-        NBTTagCompound cpt = NBTUtilBC.getItemData(item);
+        CompoundTag cpt = NBTUtilBC.getItemData(item);
         cpt.setString("name", name);
         return true;
     }

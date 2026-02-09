@@ -7,18 +7,21 @@
 package ct.buildcraft.lib.list;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.api.lists.ListMatchHandler;
+import ct.buildcraft.api.lists.ListMatchHandler.Type;
+import net.minecraft.core.NonNullList;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
-
-import buildcraft.api.lists.ListMatchHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ListMatchHandlerOreDictionary extends ListMatchHandler {
     private static int getUppercaseCount(String s) {
@@ -33,28 +36,13 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
 
     @Override
     public boolean matches(Type type, @Nonnull ItemStack stack, @Nonnull ItemStack target, boolean precise) {
-        int[] oreIds = OreDictionary.getOreIDs(stack);
+        Stream<TagKey<Item>> oreIds = stack.getTags();
+        Stream<TagKey<Item>> matchesIds = target.getTags();
 
-        if (oreIds.length == 0) {
-            // Unfortunately we cannot compare the items.
-            return false;
-        }
-
-        int[] matchesIds = OreDictionary.getOreIDs(target);
-
-        String[] oreNames = new String[oreIds.length];
-        for (int i = 0; i < oreIds.length; i++) {
-            oreNames[i] = OreDictionary.getOreName(oreIds[i]);
-        }
 
         if (type == Type.CLASS) {
-            for (int i : oreIds) {
-                for (int j : matchesIds) {
-                    if (i == j) {
-                        return true;
-                    }
-                }
-            }
+        	if(oreIds.anyMatch(target::is))
+        		return true;
         } else {
             // Always pick only the longest OreDictionary string for matching.
             // It's ugly, but should give us the most precise result for the
@@ -80,7 +68,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
 
     @Override
     public boolean isValidSource(Type type, @Nonnull ItemStack stack) {
-        return OreDictionary.getOreIDs(stack).length > 0;
+        return !stack.getTags().findFirst().isEmpty();
     }
 
     private static String getBestOreString(String[] oreIds) {
@@ -96,13 +84,13 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
         return s;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public NonNullList<ItemStack> getClientExamples(Type type, @Nonnull ItemStack stack) {
-        int[] oreIds = OreDictionary.getOreIDs(stack);
+        Stream<TagKey<Item>> oreIds = stack.getTags();
         NonNullList<ItemStack> stacks = NonNullList.create();
 
-        if (oreIds.length == 0) {
+/*        if (oreIds.length == 0) {
             // No ore IDs? Time for the best effort plan of METADATA!
             if (type == Type.TYPE) {
                 NonNullList<ItemStack> tempStack = NonNullList.create();
@@ -114,7 +102,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
                 }
             }
             return stacks;
-        }
+        }*/
 
         String[] oreNames = new String[oreIds.length];
         for (int i = 0; i < oreIds.length; i++) {
@@ -123,7 +111,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
 
         if (type == Type.CLASS) {
             for (String s : oreNames) {
-                stacks.addAll(OreDictionary.getOres(s));
+                stacks.addAll(OreDictionary.getOres(s));Blocks
             }
         } else {
             String s = getBestOreString(oreNames);
