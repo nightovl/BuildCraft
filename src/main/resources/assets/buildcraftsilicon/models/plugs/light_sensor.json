@@ -1,6 +1,6 @@
 {
     "textures": {
-        "#all":"buildcraftsilicon:plugs/daylight_sensor",
+        "all":"buildcraftsilicon:plugs/daylight_sensor",
         "particle":"#all"
     },
     "elements": [

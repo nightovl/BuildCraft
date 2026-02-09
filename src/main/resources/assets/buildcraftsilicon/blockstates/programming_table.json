@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-       "model": "buildcraftsilicon:block/table/programming_table"
+      "model": "buildcraftsilicon:block/table/programming/transparent"
     }
   }
 }

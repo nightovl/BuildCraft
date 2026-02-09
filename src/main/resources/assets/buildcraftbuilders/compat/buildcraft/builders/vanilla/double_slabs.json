@@ -1,227 +1,282 @@
 [
     {
-        "selectors": ["minecraft:double_stone_slab[variant=stone]"],
+        "selectors": ["minecraft:oak_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 0
+                        "item": "minecraft:oak_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=sandstone]"],
+        "selectors": ["minecraft:spruce_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 1
+                        "item": "minecraft:spruce_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=cobblestone]"],
+        "selectors": ["minecraft:birch_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 3
+                        "item": "minecraft:birch_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=brick]"],
+        "selectors": ["minecraft:jungle_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 4
+                        "item": "minecraft:jungle_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=stone_brick]"],
+        "selectors": ["minecraft:acacia_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 5
+                        "item": "minecraft:acacia_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=nether_brick]"],
+        "selectors": ["minecraft:dark_oak_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 6
+                        "item": "minecraft:dark_oak_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab[variant=quartz]"],
+        "selectors": ["minecraft:mangrove_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab",
-                        "amount": 2,
-                        "meta": 7
+                        "item": "minecraft:mangrove_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=oak]"],
+        "selectors": ["minecraft:smooth_stone_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 0
+                        "item": "minecraft:smooth_stone_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=spruce]"],
+        "selectors": ["minecraft:sandstone_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 1
+                        "item": "minecraft:sandstone_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=birch]"],
+        "selectors": ["minecraft:cut_sandstone_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 2
+                        "item": "minecraft:cut_sandstone_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=jungle]"],
+        "selectors": ["minecraft:petrified_oak_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 3
+                        "item": "minecraft:petrified_oak_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=acacia]"],
+        "selectors": ["minecraft:cobblestone_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 4
+                        "item": "minecraft:cobblestone_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_wooden_slab[variant=dark_oak]"],
+        "selectors": ["minecraft:brick_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:wooden_slab",
-                        "amount": 2,
-                        "meta": 5
+                        "item": "minecraft:brick_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:double_stone_slab2[variant=red_sandstone]"],
+        "selectors": ["minecraft:stone_brick_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:stone_slab2",
-                        "amount": 2,
-                        "meta": 0
+                        "item": "minecraft:stone_brick_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
     },
     {
-        "selectors": ["minecraft:purpur_double_slab[variant=default]"],
+        "selectors": ["minecraft:mud_brick_slab[type=double]"],
         "requiredExtractors": [
             {
                 "type": "constant",
                 "items": [
                     {
-                        "item": "minecraft:purpur_slab",
-                        "amount": 2,
-                        "meta": 0
+                        "item": "minecraft:mud_brick_slab",
+                        "amount": 2
                     }
                 ]
             }
         ]
-    }
+    },
+	{
+	    "selectors": ["minecraft:nether_brick_slab[type=double]"],
+	    "requiredExtractors": [
+	        {
+	            "type": "constant",
+	            "items": [
+	                {
+	                    "item": "minecraft:nether_brick_slab",
+	                    "amount": 2
+	                }
+	            ]
+	        }
+	    ]
+	},
+	{
+	    "selectors": ["minecraft:quartz_slab[type=double]"],
+	    "requiredExtractors": [
+	        {
+	            "type": "constant",
+	            "items": [
+	                {
+	                    "item": "minecraft:quartz_slab",
+	                    "amount": 2
+	                }
+	            ]
+	        }
+	    ]
+	},
+	{
+	    "selectors": ["minecraft:red_sandstone_slab[type=double]"],
+	    "requiredExtractors": [
+	        {
+	            "type": "constant",
+	            "items": [
+	                {
+	                    "item": "minecraft:red_sandstone_slab",
+	                    "amount": 2
+	                }
+	            ]
+	        }
+	    ]
+	},
+	{
+	    "selectors": ["minecraft:cut_red_sandstone_slab[type=double]"],
+	    "requiredExtractors": [
+	        {
+	            "type": "constant",
+	            "items": [
+	                {
+	                    "item": "minecraft:cut_red_sandstone_slab",
+	                    "amount": 2
+	                }
+	            ]
+	        }
+	    ]
+	},
+	{
+	    "selectors": ["minecraft:purpur_slab[type=double]"],
+	    "requiredExtractors": [
+	        {
+	            "type": "constant",
+	            "items": [
+	                {
+	                    "item": "minecraft:purpur_slab",
+	                    "amount": 2
+	                }
+	            ]
+	        }
+	    ]
+	}
 ]

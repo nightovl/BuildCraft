@@ -35,7 +35,7 @@ public class RenderUtil {
 
     static {
         threadLocalTessellators = ThreadLocal.withInitial(TessellatorQueue::new);
-        HANDLE_IS_BUFFER_DRAWING = createGetter(BufferBuilder.class, boolean.class, "building", "field_179010_r");//TODO correct field name
+        HANDLE_IS_BUFFER_DRAWING = createGetter(BufferBuilder.class, boolean.class, "building", "f_85661_");
     }
 
     private static MethodHandle createGetter(Class<?> owner, Class<?> type, String... names) {
@@ -62,7 +62,7 @@ public class RenderUtil {
 
     public static void registerBlockColour(@Nullable Block block, BlockColor colour) {
         if (block != null) {
-            Minecraft.getInstance().getBlockColors().register(colour, block);
+            Minecraft.getInstance().getBlockColors().register(colour, block);//TODO
         }
     }
 

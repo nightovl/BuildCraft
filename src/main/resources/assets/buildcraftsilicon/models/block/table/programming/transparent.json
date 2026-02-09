@@ -1,0 +1,6 @@
+{
+"parent": "buildcraftsilicon:block/table/programming",
+	"textures": {
+		"glass": "buildcraftsilicon:blocks/table/programming/transparent"
+	}
+}

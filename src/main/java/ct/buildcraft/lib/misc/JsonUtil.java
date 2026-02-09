@@ -596,7 +596,7 @@ public class JsonUtil {
                     jsonArray.add(new JsonPrimitive(element));
                 }
                 return jsonArray;
-            }).registerTypeAdapter(IntArray.class,
+            }).registerTypeAdapter(IntArrayTag.class,
                 (JsonDeserializer<IntArrayTag>) (json, typeOfT, context) -> new IntArrayTag(StreamSupport
                     .stream(json.getAsJsonArray().spliterator(), false).mapToInt(JsonElement::getAsByte).toArray()));
     }
