@@ -38,5 +38,7 @@
 	"block.buildcraftcore.spring_water":"Water Spring",
 	"block.buildcraftcore.spring_oil":"Oil Spring",
 	"block.buildcraftcore.spring":"BC Spring",
-	"block.buildcraftcore.marker_path":"Marker Path"
+	"block.buildcraftcore.marker_path":"Marker Path",
+	
+	"buildcraft.item.nonclean.usage": "Shift-right click to clean"
 }

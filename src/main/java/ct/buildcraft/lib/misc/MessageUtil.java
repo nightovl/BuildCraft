@@ -15,13 +15,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.lib.misc.data.DelayedList;
-import ct.buildcraft.lib.net.MessageManager;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import com.mojang.authlib.GameProfile;
 
+import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.lib.misc.data.DelayedList;
+import ct.buildcraft.lib.net.IPayloadWriter;
+import ct.buildcraft.lib.net.MessageManager;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.util.internal.StringUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -92,9 +93,8 @@ public class MessageUtil {
     }
 
     public static void writeBooleanArray(FriendlyByteBuf buf, boolean[] bool) {
-        PacketBufferBC bufBc = PacketBufferBC.asPacketBufferBc(buf);
         for (boolean b : bool) {
-            bufBc.writeBoolean(b);
+            buf.writeBoolean(b);
         }
     }
 
@@ -105,9 +105,8 @@ public class MessageUtil {
     }
 
     public static void readBooleanArray(FriendlyByteBuf buf, boolean[] into) {
-        PacketBufferBC bufBc = PacketBufferBC.asPacketBufferBc(buf);
         for (int i = 0; i < into.length; i++) {
-            into[i] = bufBc.readBoolean();
+            into[i] = buf.readBoolean();
         }
     }
 
@@ -235,7 +234,7 @@ public class MessageUtil {
 
     /** {@link FriendlyByteBuf#writeEnum(Enum)} can only write *actual* enum values - so not null. This method allows
      * for writing an enum value, or null. */
-    public static void writeEnumOrNull(ByteBuf buffer, Enum<?> value) {
+    public static void writeEnumOrNull(FriendlyByteBuf buffer, Enum<?> value) {
     	FriendlyByteBuf buf = new FriendlyByteBuf(buffer);
         if (value == null) {
             buf.writeBoolean(false);
@@ -247,7 +246,7 @@ public class MessageUtil {
 
     /** {@link FriendlyByteBuf#readEnum(Class)} can only read *actual* enum values - so not null. This method allows
      * for reading an enum value, or null. */
-    public static <E extends Enum<E>> E readEnumOrNull(ByteBuf buffer, Class<E> clazz) {
+    public static <E extends Enum<E>> E readEnumOrNull(FriendlyByteBuf buffer, Class<E> clazz) {
     	FriendlyByteBuf buf = new FriendlyByteBuf(buffer);
     	if (buf.readBoolean()) {
             return buf.readEnum(clazz);
@@ -256,22 +255,20 @@ public class MessageUtil {
         }
     }
 
-    public static <E extends Enum<E>> void writeEnumSet(ByteBuf buffer, Set<E> set, Class<E> clazz) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
+    public static <E extends Enum<E>> void writeEnumSet(FriendlyByteBuf buffer, Set<E> set, Class<E> clazz) {
         E[] constants = clazz.getEnumConstants();
         if (constants == null) throw new IllegalArgumentException("Not an enum type " + clazz);
         for (E e : constants) {
-            buf.writeBoolean(set.contains(e));
+            buffer.writeBoolean(set.contains(e));
         }
     }
 
-    public static <E extends Enum<E>> EnumSet<E> readEnumSet(ByteBuf buffer, Class<E> clazz) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
+    public static <E extends Enum<E>> EnumSet<E> readEnumSet(FriendlyByteBuf buffer, Class<E> clazz) {
         E[] constants = clazz.getEnumConstants();
         if (constants == null) throw new IllegalArgumentException("Not an enum type " + clazz);
         EnumSet<E> set = EnumSet.noneOf(clazz);
         for (E e : constants) {
-            if (buf.readBoolean()) {
+            if (buffer.readBoolean()) {
                 set.add(e);
             }
         }
@@ -294,6 +291,12 @@ public class MessageUtil {
         }
         return new FriendlyByteBuf(buf);
     }
+    
+    public static FriendlyByteBuf write(IPayloadWriter writer) {
+    	FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        writer.write(buffer);
+        return buffer;
+    }
 
     /** Checks to make sure that this buffer has been *completely* read (so that there are no readable bytes left
      * over */
@@ -301,9 +304,9 @@ public class MessageUtil {
         int readableBytes = buf.readableBytes();
         int rb = readableBytes;
 
-        if (buf instanceof PacketBufferBC) {
+//        if (buf instanceof PacketBufferBC) {
             // TODO: Find a way of checking if the partial bits have been fully read!
-        }
+//        }
 
         if (readableBytes > 0) {
             int ri = buf.readerIndex();

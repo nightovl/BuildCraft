@@ -19,18 +19,16 @@ import ct.buildcraft.api.transport.EnumWirePart;
 import ct.buildcraft.api.transport.IWireManager;
 import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.transport.pipe.Pipe;
-
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.network.NetworkEvent;
 
 public class WireManager implements IWireManager {
     private final IPipeHolder holder;

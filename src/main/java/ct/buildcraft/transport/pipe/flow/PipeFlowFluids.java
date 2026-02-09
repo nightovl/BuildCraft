@@ -43,11 +43,9 @@ import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.MathUtil;
 import ct.buildcraft.lib.misc.StringUtilBC;
 import ct.buildcraft.lib.misc.VecUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.NetworkedObjectCache;
 import ct.buildcraft.transport.BCTransportStatements;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -713,8 +711,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
     }
 
     @Override
-    public void writePayload(int id, FriendlyByteBuf buf, LogicalSide side) {
-        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(buf);
+    public void writePayload(int id, FriendlyByteBuf buffer, LogicalSide side) {
         if (side == LogicalSide.SERVER) {
             if (id == NET_FLUID_AMOUNTS || id == NET_ID_FULL_STATE) {
                 boolean full = id == NET_ID_FULL_STATE;
@@ -744,8 +741,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
     }
 
     @Override
-    public void readPayload(int id, FriendlyByteBuf buf, LogicalSide side) throws IOException {
-        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(buf);
+    public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide side) throws IOException {
         if (side == LogicalSide.CLIENT) {
             if (id == NET_FLUID_AMOUNTS || id == NET_ID_FULL_STATE) {
                 boolean full = id == NET_ID_FULL_STATE;

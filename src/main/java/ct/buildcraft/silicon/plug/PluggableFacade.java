@@ -17,7 +17,6 @@ import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
 import ct.buildcraft.api.transport.pluggable.PluggableModelKey;
 import ct.buildcraft.lib.misc.MathUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.world.SingleBlockAccess;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.client.model.key.KeyPlugFacade;
@@ -107,17 +106,15 @@ public class PluggableFacade extends PipePluggable implements IFacade {
 
     public PluggableFacade(PluggableDefinition def, IPipeHolder holder, Direction side, FriendlyByteBuf buffer) {
         super(def, holder, side);
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        states = FacadeInstance.readFromBuffer(buf);
-        isSideSolid = buf.readBoolean();
+        states = FacadeInstance.readFromBuffer(buffer);
+        isSideSolid = buffer.readBoolean();
       // blockFaceShape = buf.readEnumValue(BlockFaceShape.class);
     }
 
     @Override
     public void writeCreationPayload(FriendlyByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        states.writeToBuffer(buf);
-        buf.writeBoolean(isSideSolid);
+        states.writeToBuffer(buffer);
+        buffer.writeBoolean(isSideSolid);
        // buf.writeEnumValue(blockFaceShape);
     }
 

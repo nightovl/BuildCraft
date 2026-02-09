@@ -20,7 +20,7 @@ import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -120,7 +120,7 @@ public final class ListHandler {
                 : ListMatchHandler.Type.MATERIAL;
         }
 
-        public static Line fromNBT(NBTTagCompound data) {
+        public static Line fromNBT(CompoundTag data) {
             Line line = new Line();
 
             if (data != null && data.hasKey("st")) {
@@ -137,11 +137,11 @@ public final class ListHandler {
             return line;
         }
 
-        public NBTTagCompound toNBT() {
-            NBTTagCompound data = new NBTTagCompound();
+        public CompoundTag toNBT() {
+            CompoundTag data = new CompoundTag();
             NBTTagList stackList = new NBTTagList();
             for (ItemStack stack1 : stacks) {
-                NBTTagCompound stack = new NBTTagCompound();
+                CompoundTag stack = new CompoundTag();
                 if (stack1 != null) {
                     stack1.writeToNBT(stack);
                 }
@@ -235,7 +235,7 @@ public final class ListHandler {
     }
 
     public static Line[] getLines(@Nonnull ItemStack item) {
-        NBTTagCompound data = NBTUtilBC.getItemData(item);
+        CompoundTag data = NBTUtilBC.getItemData(item);
         if (data.hasKey("written") && data.hasKey("lines")) {
             NBTTagList list = data.getTagList("lines", 10);
             Line[] lines = new Line[list.tagCount()];
@@ -263,7 +263,7 @@ public final class ListHandler {
         }
 
         if (hasLine) {
-            NBTTagCompound data = NBTUtilBC.getItemData(stackList);
+            CompoundTag data = NBTUtilBC.getItemData(stackList);
             data.setBoolean("written", true);
             NBTTagList lineList = new NBTTagList();
             for (Line saving : lines) {
@@ -271,7 +271,7 @@ public final class ListHandler {
             }
             data.setTag("lines", lineList);
         } else if (stackList.hasTagCompound()) {
-            NBTTagCompound data = NBTUtilBC.getItemData(stackList);
+            CompoundTag data = NBTUtilBC.getItemData(stackList);
             // No non-default lines, we can remove the old NBT data
             data.removeTag("written");
             data.removeTag("lines");
@@ -283,7 +283,7 @@ public final class ListHandler {
     }
 
     public static boolean matches(@Nonnull ItemStack stackList, @Nonnull ItemStack item) {
-        NBTTagCompound data = NBTUtilBC.getItemData(stackList);
+        CompoundTag data = NBTUtilBC.getItemData(stackList);
         if (data.hasKey("written") && data.hasKey("lines")) {
             NBTTagList list = data.getTagList("lines", 10);
             for (int i = 0; i < list.tagCount(); i++) {

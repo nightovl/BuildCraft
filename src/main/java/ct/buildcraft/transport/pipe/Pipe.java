@@ -14,7 +14,6 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NotNull;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.InvalidInputDataException;
 import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
@@ -31,9 +30,7 @@ import ct.buildcraft.api.transport.pipe.PipeFlow;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.transport.client.model.key.PipeModelKey;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;

@@ -80,7 +80,7 @@ public class ItemList_BC8 extends Item implements IList, MenuProvider {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, Level world, List<String> tooltip, ITooltipFlag flag) {
         String name = getName(StackUtil.asNonNull(stack));
         if (StringUtil.isNullOrEmpty(name)) return;
         tooltip.add(TextFormatting.ITALIC + name);

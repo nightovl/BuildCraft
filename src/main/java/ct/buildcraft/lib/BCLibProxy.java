@@ -10,15 +10,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.lib.net.MessageContainer;
+import ct.buildcraft.lib.net.MessageDebugRequest;
 import ct.buildcraft.lib.net.MessageDebugResponse;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.MessageUpdateTile;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheRequest;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -36,8 +37,8 @@ public abstract class BCLibProxy {
         MessageManager.registerMessageClass(BCModules.LIB, MessageObjectCacheRequest.class,
         MessageObjectCacheRequest.HANDLER, MessageObjectCacheRequest::toBytes, MessageObjectCacheRequest::new/*, Dist.DEDICATED_SERVER*/);
         MessageManager.registerMessageClass(BCModules.LIB, MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, MessageObjectCacheResponse::toBytes, MessageObjectCacheResponse::new/*, Dist.CLIENT*/);
-//        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugRequest.class, MessageDebugRequest.HANDLER, MessageDebugRequest::toBytes, MessageDebugRequest::new, 
-//            Dist.DEDICATED_SERVER);
+        MessageManager.registerMessageClass(BCModules.LIB, MessageDebugRequest.class, MessageDebugRequest.HANDLER, MessageDebugRequest::toBytes, MessageDebugRequest::new, 
+            Dist.DEDICATED_SERVER);
         MessageManager.registerMessageClass(BCModules.LIB, MessageDebugResponse.class, MessageDebugResponse.HANDLER, MessageDebugResponse::toBytes, MessageDebugResponse::new/*, Dist.CLIENT*/);
     }
 

@@ -71,6 +71,10 @@ public final class NBTUtilBC {
         return source;
     }
 
+    @Deprecated
+    /**
+     * @see ItemStack#getOrCreateTag()
+     * */
     public static CompoundTag getItemData(@Nonnull ItemStack stack) {
         if (stack.isEmpty()) {
             return new CompoundTag();

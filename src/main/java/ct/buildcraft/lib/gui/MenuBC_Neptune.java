@@ -19,12 +19,12 @@ import ct.buildcraft.api.core.BCDebugging;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.gui.slot.IPhantomSlot;
 import ct.buildcraft.lib.gui.slot.SlotPhantom;
+import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.net.IPayloadWriter;
 import ct.buildcraft.lib.net.MessageContainer;
 import ct.buildcraft.lib.net.MessageManager;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
@@ -201,7 +201,7 @@ public abstract class MenuBC_Neptune extends AbstractContainerMenu {
     }
 
     public final void sendMessage(int id, IPayloadWriter writer) {
-        PacketBufferBC payload = PacketBufferBC.write(writer);
+        FriendlyByteBuf payload = MessageUtil.write(writer);
         MessageContainer message = new MessageContainer(containerId, id, payload);
         if (playerInventory.player.level.isClientSide) {
             MessageManager.sendToServer(message);

@@ -32,7 +32,6 @@ import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.lib.net.IPayloadWriter;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.client.model.key.KeyPlugGate;
 import ct.buildcraft.silicon.container.ContainerGate;
@@ -168,12 +167,12 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
 
     public PluggableGate(PluggableDefinition def, IPipeHolder holder, Direction side, FriendlyByteBuf buffer) {
         super(def, holder, side);
-        logic = new GateLogic(this, PacketBufferBC.asPacketBufferBc(buffer));
+        logic = new GateLogic(this, buffer);
     }
 
     @Override
     public void writeCreationPayload(FriendlyByteBuf buffer) {
-        logic.writeCreationToBuf(PacketBufferBC.asPacketBufferBc(buffer));
+        logic.writeCreationToBuf(buffer);
     }
 
     public void sendMessage(IPayloadWriter writer) {
@@ -182,7 +181,7 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
             /* The pluggable holder receives this message and requires the ID '1' (UPDATE) to forward the message onto
              * ourselves */
             buffer.writeByte(PluggableHolder.ID_UPDATE_PLUG);
-            writer.write(PacketBufferBC.asPacketBufferBc(buffer));
+            writer.write(buffer);
         });
     }
 
@@ -192,7 +191,7 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
             /* The pluggable holder receives this message and requires the ID '1' (UPDATE) to forward the message onto
              * ourselves */
             buffer.writeByte(PluggableHolder.ID_UPDATE_PLUG);
-            writer.write(PacketBufferBC.asPacketBufferBc(buffer));
+            writer.write(buffer);
         });
     }
 
@@ -203,7 +202,7 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
 
     @Override
     public void readPayload(FriendlyByteBuf b, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
-        logic.readPayload(PacketBufferBC.asPacketBufferBc(b), side, ctx);
+        logic.readPayload(b, side, ctx);
     }
 
     // PipePluggable

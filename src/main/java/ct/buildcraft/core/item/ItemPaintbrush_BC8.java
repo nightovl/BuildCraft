@@ -34,7 +34,7 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
         InteractionHand hand = ctx.getHand();
         Level world = ctx.getLevel();
         BlockPos pos = ctx.getClickedPos();
-    	ItemStack stack = StackUtil.asNonNull(player.getItemInHand(hand));
+    	ItemStack stack = player.getItemInHand(hand);
         Vec3 hitPos = ctx.getClickLocation();
         if (CustomPaintHelper.INSTANCE.attemptPaintBlock(world, pos, world.getBlockState(pos), hitPos, ctx.getClickedFace(), type) == InteractionResult.SUCCESS) {
             CompoundTag tag = stack.getTag();

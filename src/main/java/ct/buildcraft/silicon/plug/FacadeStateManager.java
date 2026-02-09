@@ -34,12 +34,12 @@ import ct.buildcraft.lib.BCLib;
 import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.ItemStackKey;
 import ct.buildcraft.lib.misc.StackUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.world.SingleBlockAccess;
 import ct.buildcraft.silicon.recipe.FacadeSwapRecipe;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.DyeColor;
@@ -297,7 +297,7 @@ public enum FacadeStateManager implements IFacadeRegistry {
                     }
                 }
             }
-            PacketBufferBC testingBuffer = PacketBufferBC.asPacketBufferBc(Unpooled.buffer());
+            FriendlyByteBuf testingBuffer = new FriendlyByteBuf(Unpooled.buffer());
             varyingProperties.forEach((key, vars) -> {
                 if (DEBUG) {
                     BCLog.logger.info("[silicon.facade]   pre-" + key + ":");

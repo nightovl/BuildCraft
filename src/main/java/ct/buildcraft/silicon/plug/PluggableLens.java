@@ -14,7 +14,6 @@ import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
 import ct.buildcraft.api.transport.pluggable.PluggableModelKey;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.client.model.key.KeyPlugLens;
 import net.minecraft.client.renderer.RenderType;
@@ -82,16 +81,14 @@ public class PluggableLens extends PipePluggable {
 
     public PluggableLens(PluggableDefinition def, IPipeHolder holder, Direction side, FriendlyByteBuf buffer) {
         super(def, holder, side);
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        colour = MessageUtil.readEnumOrNull(buf, DyeColor.class);
-        isFilter = buf.readBoolean();
+        colour = MessageUtil.readEnumOrNull(buffer, DyeColor.class);
+        isFilter = buffer.readBoolean();
     }
 
     @Override
     public void writeCreationPayload(FriendlyByteBuf buffer) {
-    	PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        MessageUtil.writeEnumOrNull(buf, colour);
-        buf.writeBoolean(isFilter);
+        MessageUtil.writeEnumOrNull(buffer, colour);
+        buffer.writeBoolean(isFilter);
     }
 
     // Pluggable methods
