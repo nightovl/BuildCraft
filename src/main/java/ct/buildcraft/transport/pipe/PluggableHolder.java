@@ -8,23 +8,20 @@ package ct.buildcraft.transport.pipe;
 
 import java.io.IOException;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.InvalidInputDataException;
 import ct.buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
 import ct.buildcraft.api.transport.pipe.PipeApi;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
-
 import ct.buildcraft.lib.misc.data.IdAllocator;
-import ct.buildcraft.lib.net.PacketBufferBC;
-
 import ct.buildcraft.transport.tile.TilePipeHolder;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.network.NetworkEvent;
 
 public final class PluggableHolder {
     // TODO: Networking is kinda sub-par at the moment for pluggables

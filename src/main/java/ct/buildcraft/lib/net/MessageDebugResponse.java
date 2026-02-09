@@ -12,8 +12,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import io.netty.buffer.ByteBuf;
-
+import ct.buildcraft.lib.debug.ClientDebuggables;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 public class MessageDebugResponse {
@@ -27,30 +28,29 @@ public class MessageDebugResponse {
         this.right.addAll(right);
     }
 
-    public static void toBytes(MessageDebugResponse msg, ByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        buf.writeInt(msg.left.size());
-        msg.left.forEach(buf::writeUtf);
-        buf.writeInt(msg.right.size());
-        msg.right.forEach(buf::writeUtf);
+    public static void toBytes(MessageDebugResponse msg, FriendlyByteBuf buffer) {
+        buffer.writeInt(msg.left.size());
+        msg.left.forEach(buffer::writeUtf);
+        buffer.writeInt(msg.right.size());
+        msg.right.forEach(buffer::writeUtf);
     }
 
-    public MessageDebugResponse(ByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
-        IntStream.range(0, buf.readInt())
-            .mapToObj(i -> new PacketBufferBC(buf).readString())
+    public MessageDebugResponse(FriendlyByteBuf buffer) {
+        IntStream.range(0, buffer.readInt())
+            .mapToObj(i -> buffer.readUtf())
             .forEach(left::add);
-        IntStream.range(0, buf.readInt())
-            .mapToObj(i -> new PacketBufferBC(buf).readString())
+        IntStream.range(0, buffer.readInt())
+            .mapToObj(i -> buffer.readUtf())
             .forEach(right::add);
     }
 
     public static final BiConsumer<MessageDebugResponse, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
-/*        ClientDebuggables.SERVER_LEFT.clear();
+    	if(ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT)
+    		return;
+        ClientDebuggables.SERVER_LEFT.clear();
         ClientDebuggables.SERVER_LEFT.addAll(message.left);
         ClientDebuggables.SERVER_RIGHT.clear();
         ClientDebuggables.SERVER_RIGHT.addAll(message.right);
-        return null;*/
     	ctx.get().setPacketHandled(true);
     };
 }

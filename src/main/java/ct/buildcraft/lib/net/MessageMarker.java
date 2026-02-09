@@ -33,19 +33,18 @@ public class MessageMarker {
     public MessageMarker() {}
     
     public MessageMarker(FriendlyByteBuf buf) {
-        PacketBufferBC packet = PacketBufferBC.asPacketBufferBc(buf);
-        add = packet.readBoolean();
-        multiple = packet.readBoolean();
-        connection = packet.readBoolean();
-        cacheId = packet.readShort();
+        add = buf.readBoolean();
+        multiple = buf.readBoolean();
+        connection = buf.readBoolean();
+        cacheId = buf.readShort();
         if (multiple) {
-            count = packet.readShort();
+            count = buf.readShort();
         } else {
             count = 1;
         }
         
         for (int i = 0; i < count; i++) {
-            positions.add(MessageUtil.readBlockPos(packet));
+            positions.add(MessageUtil.readBlockPos(buf));
         }
     }
 
@@ -53,16 +52,15 @@ public class MessageMarker {
     public static void toBytes(MessageMarker msg, FriendlyByteBuf buf) {
         msg.count = msg.positions.size();
         msg.multiple = msg.count != 1;
-        PacketBufferBC packet = PacketBufferBC.asPacketBufferBc(buf);
-        packet.writeBoolean(msg.add);
-        packet.writeBoolean(msg.multiple);
-        packet.writeBoolean(msg.connection);
-        packet.writeShort(msg.cacheId);
+        buf.writeBoolean(msg.add);
+        buf.writeBoolean(msg.multiple);
+        buf.writeBoolean(msg.connection);
+        buf.writeShort(msg.cacheId);
         if (msg.multiple) {
-            packet.writeShort(msg.count);
+            buf.writeShort(msg.count);
         }
         for (BlockPos pos : msg.positions) {
-            MessageUtil.writeBlockPos(packet, pos);
+            MessageUtil.writeBlockPos(buf, pos);
         }
     }
 

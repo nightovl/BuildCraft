@@ -7,11 +7,11 @@ import javax.annotation.Nullable;
 import ct.buildcraft.api.facades.FacadeType;
 import ct.buildcraft.api.facades.IFacade;
 import ct.buildcraft.api.facades.IFacadePhasedState;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 
 public class FacadeInstance implements IFacade {
@@ -61,9 +61,9 @@ public class FacadeInstance implements IFacade {
         return nbt;
     }
 
-    public static FacadeInstance readFromBuffer(PacketBufferBC buf) {
+    public static FacadeInstance readFromBuffer(FriendlyByteBuf buf) {
         boolean isHollow = buf.readBoolean();
-        int count = buf.readFixedBits(5);
+        int count = buf.readShort();
         FacadePhasedState[] states = new FacadePhasedState[count];
         for (int i = 0; i < count; i++) {
             states[i] = FacadePhasedState.readFromBuffer(buf);
@@ -71,9 +71,9 @@ public class FacadeInstance implements IFacade {
         return new FacadeInstance(states, isHollow);
     }
 
-    public void writeToBuffer(PacketBufferBC buf) {
+    public void writeToBuffer(FriendlyByteBuf buf) {
         buf.writeBoolean(isHollow);
-        buf.writeFixedBits(phasedStates.length, 5);
+        buf.writeShort(phasedStates.length);
         for (FacadePhasedState phasedState : phasedStates) {
             phasedState.writeToBuffer(buf);
         }

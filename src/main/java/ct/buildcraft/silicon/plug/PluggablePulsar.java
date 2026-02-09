@@ -32,7 +32,6 @@ import ct.buildcraft.lib.expression.node.value.NodeVariableObject;
 import ct.buildcraft.lib.misc.MathUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.lib.misc.data.ModelVariableData;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.BCSiliconStatements;
 import ct.buildcraft.silicon.client.model.key.KeyPlugPulsar;
@@ -168,16 +167,14 @@ public class PluggablePulsar extends PipePluggable {
         }
     }
 
-    private void writeData(FriendlyByteBuf b) {
-        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(b);
+    private void writeData(FriendlyByteBuf buffer) {
         buffer.writeBoolean(isPulsing());
         buffer.writeBoolean(gateEnabledTicks > 0 || gateSinglePulses > 0);
         buffer.writeBoolean(manuallyEnabled);
         buffer.writeByte(pulseStage);
     }
 
-    private void readData(FriendlyByteBuf b) {
-        PacketBufferBC buffer = PacketBufferBC.asPacketBufferBc(b);
+    private void readData(FriendlyByteBuf buffer) {
         isPulsing = buffer.readBoolean();
         autoEnabled = buffer.readBoolean();
         manuallyEnabled = buffer.readBoolean();

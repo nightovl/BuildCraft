@@ -37,7 +37,6 @@ import ct.buildcraft.api.transport.pipe.PipeEventActionActivate;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.data.IdAllocator;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.statement.ActionWrapper;
 import ct.buildcraft.lib.statement.ActionWrapper.ActionWrapperExternal;
 import ct.buildcraft.lib.statement.ActionWrapper.ActionWrapperInternal;
@@ -53,6 +52,7 @@ import ct.buildcraft.transport.wire.WorldSavedDataWireSystems;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.LogicalSide;
@@ -177,7 +177,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
 
     // Networking
 
-    public GateLogic(PluggableGate pluggable, PacketBufferBC buffer) {
+    public GateLogic(PluggableGate pluggable, FriendlyByteBuf buffer) {
         this(pluggable, new GateVariant(buffer));
 
         MessageUtil.readBooleanArray(buffer, triggerOn);
@@ -200,7 +200,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
 
     }
 
-    public void writeCreationToBuf(PacketBufferBC buffer) {
+    public void writeCreationToBuf(FriendlyByteBuf buffer) {
         variant.writeToBuffer(buffer);
 
         MessageUtil.writeBooleanArray(buffer, triggerOn);
@@ -213,7 +213,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
         }
     }
 
-    public void readPayload(PacketBufferBC buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
+    public void readPayload(FriendlyByteBuf buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
         int id = buffer.readUnsignedByte();
         if (id == NET_ID_CHANGE) {
             boolean isAction = buffer.readBoolean();

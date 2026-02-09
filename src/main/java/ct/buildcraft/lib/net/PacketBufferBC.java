@@ -38,7 +38,7 @@ public class PacketBufferBC extends FriendlyByteBuf {
     /** Returns the given {@link ByteBuf} as {@link PacketBufferBC}. if the given instance is already a
      * {@link PacketBufferBC} then the given buffer is returned (note that this may result in unexpected consequences if
      * multiple read/write Boolean methods are called on the given buffer before you called this). */
-    public static PacketBufferBC asPacketBufferBc(ByteBuf buf) {
+    public static PacketBufferBC asFriendlyByteBufBc(ByteBuf buf) {
         if (buf instanceof PacketBufferBC) {
             return (PacketBufferBC) buf;
         } else {

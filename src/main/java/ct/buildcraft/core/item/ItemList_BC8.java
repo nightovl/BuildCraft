@@ -61,7 +61,6 @@ public class ItemList_BC8 extends Item implements IList, MenuProvider {
         return ListHandler.hasItems(StackUtil.asNonNull(stack)) ? 1 : 0;
     }*/
     
-    
     // IList
 
     @Override

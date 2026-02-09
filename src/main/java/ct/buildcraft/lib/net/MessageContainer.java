@@ -42,7 +42,7 @@ public class MessageContainer {
         windowId = buf.readInt();
         msgId = buf.readUnsignedShort();
         int payloadSize = buf.readUnsignedShort();
-        payload = new PacketBufferBC(buf.readBytes(payloadSize));
+        payload = new FriendlyByteBuf(buf.readBytes(payloadSize));
     }
 
     public static void toBytes(MessageContainer msg, FriendlyByteBuf buf) {

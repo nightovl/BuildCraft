@@ -6,10 +6,10 @@ import ct.buildcraft.api.facades.IFacadePhasedState;
 import ct.buildcraft.api.facades.IFacadeState;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -57,7 +57,7 @@ public class FacadePhasedState implements IFacadePhasedState {
         return nbt;
     }
 
-    public static FacadePhasedState readFromBuffer(PacketBufferBC buf) {
+    public static FacadePhasedState readFromBuffer(FriendlyByteBuf buf) {
         BlockState state = MessageUtil.readBlockState(buf);
         DyeColor colour = MessageUtil.readEnumOrNull(buf, DyeColor.class);
         FacadeBlockStateInfo info = FacadeStateManager.validFacadeStates.get(state);
@@ -67,7 +67,7 @@ public class FacadePhasedState implements IFacadePhasedState {
         return new FacadePhasedState(info, colour);
     }
 
-    public void writeToBuffer(PacketBufferBC buf) {
+    public void writeToBuffer(FriendlyByteBuf buf) {
         try {
             MessageUtil.writeBlockState(buf, stateInfo.state);
         } catch (Throwable t) {

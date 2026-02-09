@@ -7,6 +7,7 @@ package ct.buildcraft.lib;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
+import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.lib.client.model.ModelHolderRegistry;
 import ct.buildcraft.lib.client.model.json.VariablePartLed;
 import ct.buildcraft.lib.client.reload.LibConfigChangeListener;
@@ -17,9 +18,12 @@ import ct.buildcraft.lib.client.render.MarkerRenderer;
 import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry;
+import ct.buildcraft.lib.debug.ClientDebuggables;
+import ct.buildcraft.lib.item.ItemDebugger;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.misc.FakePlayerProvider;
 import ct.buildcraft.lib.misc.MessageUtil;
+import ct.buildcraft.lib.net.MessageDebugRequest;
 import ct.buildcraft.lib.net.MessageDebugResponse;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageMarker;
@@ -27,10 +31,14 @@ import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -188,10 +196,10 @@ public class BCLibEventDist {
         if (event.phase == Phase.END) {
             BuildCraftObjectCaches.onClientTick();
             MessageUtil.postClientTick();
-/*            Minecraft mc = Minecraft.getInstance();
-            LocalPlayer player = mc.play
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
             if (player != null && ItemDebugger.isShowDebugInfo(player)) {
-                HitResult mouseOver er;= mc.hitResult;
+                HitResult mouseOver = mc.hitResult;
                 if (mouseOver != null) {
                     IDebuggable debuggable = ClientDebuggables.getDebuggableObject(mouseOver);
                     if (debuggable instanceof BlockEntity) {
@@ -201,7 +209,7 @@ public class BCLibEventDist {
                         // TODO: Support entities!
                     }
                 }
-            }*/
+            }
         }
     }
 }

@@ -10,64 +10,65 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import ct.buildcraft.lib.net.MessageManager;
-import ct.buildcraft.lib.net.PacketBufferBC;
-
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 /**
- * Signifies a client to server request for the value of a cached object, given its ID.
+ * Signifies a client to server request for the value of a cached object, given
+ * its ID.
  */
 public class MessageObjectCacheRequest {
 
-    private int cacheId;
+	private int cacheId;
 
-    private int[] ids;
+	private int[] ids;
 
-    @SuppressWarnings("unused")
-    public MessageObjectCacheRequest() {
-    }
+	@SuppressWarnings("unused")
+	public MessageObjectCacheRequest() {
+	}
 
-    MessageObjectCacheRequest(NetworkedObjectCache<?> cache, int[] ids) {
-        this.cacheId = BuildCraftObjectCaches.CACHES.indexOf(cache);
-        this.ids = ids;
-        if (ids.length > Short.MAX_VALUE) {
-            throw new IllegalStateException("Tried to request too many ID's! (" + ids.length + ")");
-        }
-    }
+	MessageObjectCacheRequest(NetworkedObjectCache<?> cache, int[] ids) {
+		this.cacheId = BuildCraftObjectCaches.CACHES.indexOf(cache);
+		this.ids = ids;
+		if (ids.length > Short.MAX_VALUE) {
+			throw new IllegalStateException("Tried to request too many ID's! (" + ids.length + ")");
+		}
+	}
 
-    public static void toBytes(MessageObjectCacheRequest msg, ByteBuf buf) {
-        buf.writeByte(msg.cacheId);
-        buf.writeShort(msg.ids.length);
-        for (int id : msg.ids) {
-            buf.writeInt(id);
-        }
-    }
+	public static void toBytes(MessageObjectCacheRequest msg, FriendlyByteBuf buf) {
+		buf.writeByte(msg.cacheId);
+		buf.writeShort(msg.ids.length);
+		for (int id : msg.ids) {
+			buf.writeInt(id);
+		}
+	}
 
-    public MessageObjectCacheRequest(ByteBuf buf) {
-        cacheId = buf.readByte();
-        int idCount = buf.readShort();
-        ids = new int[idCount];
-        for (int i = 0; i < idCount; i++) {
-            ids[i] = buf.readInt();
-        }
-    }
+	public MessageObjectCacheRequest(FriendlyByteBuf buf) {
+		cacheId = buf.readByte();
+		int idCount = buf.readShort();
+		ids = new int[idCount];
+		for (int i = 0; i < idCount; i++) {
+			ids[i] = buf.readInt();
+		}
+	}
 
-    public static final BiConsumer<MessageObjectCacheRequest, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
-        NetworkedObjectCache<?> cache = BuildCraftObjectCaches.CACHES.get(message.cacheId);
-        byte[][] values = new byte[message.ids.length][];
+	public static final BiConsumer<MessageObjectCacheRequest, Supplier<NetworkEvent.Context>> HANDLER = (message, ctx) -> {
+		ctx.get().enqueueWork(() -> {
+			NetworkedObjectCache<?> cache = BuildCraftObjectCaches.CACHES.get(message.cacheId);
+			byte[][] values = new byte[message.ids.length][];
 
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        for (int i = 0; i < values.length; i++) {
-            int id = message.ids[i];
-            cache.writeObjectServer(id, buffer);
-            values[i] = new byte[buffer.readableBytes()];
-            buffer.readBytes(values[i]);
-            buffer.clear();
-        }
-        MessageManager.sendTo(new MessageObjectCacheResponse(message.cacheId, message.ids, values), ctx.get().getSender());
-        return ;
-    };
+			FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+			for (int i = 0; i < values.length; i++) {
+				int id = message.ids[i];
+				cache.writeObjectServer(id, buffer);
+				values[i] = new byte[buffer.readableBytes()];
+				buffer.readBytes(values[i]);
+				buffer.clear();
+			}
+			MessageManager.sendTo(new MessageObjectCacheResponse(message.cacheId, message.ids, values),
+					ctx.get().getSender());
+		});
+		ctx.get().setPacketHandled(true);
+	};
 }

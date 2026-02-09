@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Side;
-
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.mj.ILaserTarget;
 import ct.buildcraft.api.mj.MjAPI;
@@ -21,7 +19,6 @@ import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.api.tiles.TilesAPI;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.data.AverageLong;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.core.BlockPos;

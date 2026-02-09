@@ -10,17 +10,6 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.Direction;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.util.thread.SidedThreadGroups;
-import net.minecraftforge.network.NetworkEvent;
-
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
@@ -28,15 +17,21 @@ import ct.buildcraft.api.transport.pipe.PipeBehaviour;
 import ct.buildcraft.api.transport.pipe.PipeEventActionActivate;
 import ct.buildcraft.api.transport.pipe.PipeEventHandler;
 import ct.buildcraft.api.transport.pipe.PipeEventStatement;
-
 import ct.buildcraft.lib.block.VanillaRotationHandlers;
 import ct.buildcraft.lib.misc.EntityUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.collect.OrderedEnumMap;
-import ct.buildcraft.lib.net.PacketBufferBC;
-
 import ct.buildcraft.transport.BCTransportStatements;
 import ct.buildcraft.transport.statements.ActionPipeDirection;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
+import net.minecraftforge.network.NetworkEvent;
 
 public abstract class PipeBehaviourDirectional extends PipeBehaviour {
     public static final OrderedEnumMap<Direction> ROTATION_ORDER = VanillaRotationHandlers.ROTATE_FACING;

@@ -21,12 +21,9 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.StatementMouseClick;
 import ct.buildcraft.lib.misc.ColourUtil;
-import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.StackUtil;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.transport.BCTransportSprites;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -76,8 +73,7 @@ public class TriggerParameterSignal implements IStatementParameter {
         }
     }
 
-    public static TriggerParameterSignal readFromBuf(FriendlyByteBuf buffer) {
-        PacketBufferBC buf = PacketBufferBC.asPacketBufferBc(buffer);
+    public static TriggerParameterSignal readFromBuf(FriendlyByteBuf buf) {
         DyeColor colour = MessageUtil.readEnumOrNull(buf, DyeColor.class);
         if (colour == null) {
             return EMPTY;

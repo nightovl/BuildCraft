@@ -17,6 +17,8 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableList;
+
 import ct.buildcraft.api.core.IStackFilter;
 import ct.buildcraft.api.inventory.IItemTransactor;
 import ct.buildcraft.api.transport.IInjectable;
@@ -35,15 +37,12 @@ import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.misc.data.DelayedList;
-import ct.buildcraft.lib.net.PacketBufferBC;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.transport.BCTransportStatements;
 import ct.buildcraft.transport.net.MessageMultiPipeItem.TravellingItemData;
 import ct.buildcraft.transport.net.PipeItemMessageQueue;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.pipe.behaviour.PipeBehaviourStone;
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -147,7 +146,7 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
     void sendItemDataToClient(TravellingItem item) {
         final int stackId = BuildCraftObjectCaches.storeItemStack(item.stack);
         // sendCustomPayload(NET_CREATE_ITEM, (buffer) -> {
-        // PacketBufferBC buf = PacketBufferBC.asFriendlyByteBufBc(buffer);
+        // FriendlyByteBuf buf = FriendlyByteBuf.asFriendlyByteBufBc(buffer);
         // buf.writeInt(stackId);
         // buf.writeShort(item.stack.getCount());
         // buf.writeBoolean(item.toCenter);
