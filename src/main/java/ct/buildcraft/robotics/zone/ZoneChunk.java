@@ -10,13 +10,12 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point2i;
-
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec2;
 
 public class ZoneChunk {
     public BitSet property;
@@ -64,12 +63,12 @@ public class ZoneChunk {
         }
     }
 
-    public List<Point2i> getAll() {
-        ImmutableList.Builder<Point2i> builder = ImmutableList.builder();
+    public List<Vec2> getAll() {
+        ImmutableList.Builder<Vec2> builder = ImmutableList.builder();
         for (int zChunk = 0; zChunk < 16; zChunk++) {
             for (int xChunk = 0; xChunk < 16; xChunk++) {
                 if (get(xChunk, zChunk)) {
-                    builder.add(new Point2i(xChunk, zChunk));
+                    builder.add(new Vec2(xChunk, zChunk));
                 }
             }
         }

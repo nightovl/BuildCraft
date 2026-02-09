@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import javax.vecmath.Point2i;
-
 import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.api.core.IZone;
@@ -22,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class ZonePlan implements IZone {
@@ -73,18 +72,18 @@ public class ZonePlan implements IZone {
         }
     }
 
-    public List<Point2i> getAll() {
-        ImmutableList.Builder<Point2i> builder = ImmutableList.builder();
+    public List<Vec2> getAll() {
+        ImmutableList.Builder<Vec2> builder = ImmutableList.builder();
         for (int zChunk = 0; zChunk < 16; zChunk++) {
             for (int xChunk = 0; xChunk < 16; xChunk++) {
                 if (get(xChunk, zChunk)) {
-                    builder.add(new Point2i(xChunk, zChunk));
+                    builder.add(new Vec2(xChunk, zChunk));
                 }
             }
         }
         chunkMapping.forEach((chunkPos, zoneChunk) -> {
-            List<Point2i> zoneChunkAll = zoneChunk.getAll();
-            zoneChunkAll.forEach(p -> p.add(new Point2i(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ())));
+            List<Vec2> zoneChunkAll = zoneChunk.getAll();
+            zoneChunkAll.forEach(p -> p.add(new Vec2(chunkPos.getMinBlockX(), chunkPos.getMinBlockZ())));
             builder.addAll(zoneChunkAll);
         });
         return builder.build();
@@ -92,7 +91,7 @@ public class ZonePlan implements IZone {
 
     public ZonePlan getWithOffset(int offsetX, int offsetY) {
         ZonePlan zonePlan = new ZonePlan();
-        getAll().forEach(p -> zonePlan.set(p.x + offsetX, p.y + offsetY, true));
+        getAll().forEach(p -> zonePlan.set((int)p.x + offsetX, (int)p.y + offsetY, true));
         return zonePlan;
     }
 

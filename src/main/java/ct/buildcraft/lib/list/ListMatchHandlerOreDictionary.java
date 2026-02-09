@@ -6,22 +6,17 @@
 
 package ct.buildcraft.lib.list;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
 import ct.buildcraft.api.lists.ListMatchHandler;
-import ct.buildcraft.api.lists.ListMatchHandler.Type;
 import net.minecraft.core.NonNullList;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class ListMatchHandlerOreDictionary extends ListMatchHandler {
     private static int getUppercaseCount(String s) {
@@ -43,7 +38,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
         if (type == Type.CLASS) {
         	if(oreIds.anyMatch(target::is))
         		return true;
-        } else {
+ /*       } else {
             // Always pick only the longest OreDictionary string for matching.
             // It's ugly, but should give us the most precise result for the
             // cases in which a given stone is also used for crafting equivalents.
@@ -60,7 +55,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
                         }
                     }
                 }
-            }
+            }*/
         }
 
         return false;
@@ -103,7 +98,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
             }
             return stacks;
         }*/
-
+/*
         String[] oreNames = new String[oreIds.length];
         for (int i = 0; i < oreIds.length; i++) {
             oreNames[i] = OreDictionary.getOreName(oreIds[i]);
@@ -141,7 +136,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
                 stacks.addAll(wll);
             }
         }
-
+*///TODO
         return stacks;
     }
 }
