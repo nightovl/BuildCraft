@@ -4,18 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import ct.buildcraft.api.core.BCLog;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.world.entity.Entity;
-//import net.minecraft.advancements.AdvancementManager;
-//import net.minecraft.advancements.PlayerAdvancements;
-//import net.minecraft.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
 //import net.minecraft.entity.player.PlayerMP;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
+//import net.minecraft.advancements.AdvancementManager;
+//import net.minecraft.advancements.PlayerAdvancements;
+//import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 //import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -41,7 +41,7 @@ public class AdvancementUtil {
                 tracker.setPlayer(playerMP);
                 tracker.award(advancement, "code_trigger");
             } else if (UNKNOWN_ADVANCEMENTS.add(advancementName)) {
-//                BCLog.logger.warn("[lib.advancement] Attempted to trigger undefined advancement: " + advancementName);
+                BCLog.logger.warn("[lib.advancement] Attempted to trigger undefined advancement: " + advancementName);
             }
         }
     }

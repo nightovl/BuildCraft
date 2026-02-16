@@ -6,7 +6,7 @@
 
 package ct.buildcraft.factory.client.render;
 
-import ct.buildcraft.factory.blockEntity.TileMiner;
+import ct.buildcraft.factory.tile.TileMiner;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8.LaserType;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;

@@ -46,4 +46,9 @@ public final class BCLog {
     public static void d(String s) {
     	logger.debug(new Exception().getStackTrace()[1].getClassName() + " : " + s);
     }
+    
+    public static void d(boolean flag) {
+    	if(flag)
+    		logger.debug(new Exception().getStackTrace()[1].getClassName() + " : Catched!");
+    }
 }

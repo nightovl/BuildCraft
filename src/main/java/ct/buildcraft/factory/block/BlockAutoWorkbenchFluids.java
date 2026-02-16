@@ -6,7 +6,7 @@
 
 package ct.buildcraft.factory.block;
 
-import ct.buildcraft.factory.blockEntity.TileAutoWorkbenchFluids;
+import ct.buildcraft.factory.tile.TileAutoWorkbenchFluids;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.transport.tile.TileFilteredBuffer;

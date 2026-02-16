@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.IAreaProvider;
 import ct.buildcraft.api.enums.EnumSnapshotType;
@@ -333,7 +334,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
 
     @Override
     public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
-        super.readPayload(id, buffer, side, ctx);
+    	super.readPayload(id, buffer, side, ctx);
         if (side == LogicalSide.CLIENT) {
             if (id == NET_RENDER_DATA) {
                 readPayload(NET_BOX, buffer, side, ctx);

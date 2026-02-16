@@ -13,17 +13,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public enum DefaultPipeConnection implements ICustomPipeConnection {
     INSTANCE;
 
     @Override
     public float getExtension(Level world, BlockPos pos, Direction face, BlockState state) {
-        AABB bb = state.getCollisionShape(world, pos).bounds();
-        if (bb == null) {
+        VoxelShape shape = state.getCollisionShape(world, pos);
+        if (shape.isEmpty()) {
             return 0;
         }
-
+        AABB bb = shape.bounds();
         switch (face) {
             case DOWN:
                 return (float) bb.minY;

@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange;
+import ct.buildcraft.factory.tile.TileHeatExchange;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import net.minecraft.core.BlockPos;
@@ -97,7 +97,6 @@ public class BlockHeatExchange extends BlockBCTile_Neptune implements ICustomPip
     @Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
 			boolean p_60514_) {
-    	
         Direction thisFacing = state.getValue(PROP_FACING);
 
         boolean connectLeft = doesNeighbourConnect(level, pos, thisFacing, thisFacing.getClockWise());
@@ -105,7 +104,7 @@ public class BlockHeatExchange extends BlockBCTile_Neptune implements ICustomPip
 
         boolean connectRight = doesNeighbourConnect(level, pos, thisFacing, thisFacing.getCounterClockWise());
         state = state.setValue(PROP_CONNECTED_RIGHT, connectRight);
-        //state = state.setValue(PROP_CONNECTED_Y, false);
+        state = state.setValue(PROP_CONNECTED_Y, false);//CHECK
         level.setBlock(pos, state, 2);
 		super.neighborChanged(state, level, pos, block, fromPos, p_60514_);
 	}

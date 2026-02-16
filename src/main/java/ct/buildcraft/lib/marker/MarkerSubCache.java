@@ -337,6 +337,5 @@ public abstract class MarkerSubCache<C extends MarkerConnection<C>> {
 
 	public void setDirty(boolean isDirty) {
 		this.isDirty = isDirty;
-		BCLog.d(""+isDirty);
 	}
 }

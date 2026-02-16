@@ -9,7 +9,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.lib.tile.TileBC_Neptune;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -113,8 +112,6 @@ public abstract class BlockBCTile_Neptune extends BlockBCBase_Neptune implements
 		super.neighborChanged(state, level, pos, neighbor, fromPos, harvest);
 
 	}
-	
-	
 	
 	//Only Update for tileEntity changed
 	@Override

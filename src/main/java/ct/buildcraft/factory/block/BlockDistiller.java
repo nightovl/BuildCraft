@@ -1,7 +1,7 @@
 package ct.buildcraft.factory.block;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileDistiller;
+import ct.buildcraft.factory.tile.TileDistiller;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 

@@ -53,7 +53,7 @@ public class BCBuildersConfig {
     	
         propBptStoreExternalThreshold = con_builder.defineInRange("bptStoreExternalThreshold", 20_000, 0, 100_000);
 
-        propQuarryFrameMinHeight = con_builder.comment("The minimum height that all quarry frames must be. A value of 1 will look strange when it drills the uppermost layer.")
+        propQuarryFrameMinHeight = con_builder.comment("The minimum height that all quarry frames must be. A value of -63 will look strange when it drills the uppermost layer.")
         		.defineInRange("quarryFrameMinHeight", 4, 1, 512);
 
 

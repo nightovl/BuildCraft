@@ -312,7 +312,10 @@ public final class BlockUtil {
 
     //check for Source block
     public static Fluid getFluidWithFlowing(Level world, BlockPos pos) {
-        FluidState fs = world.getBlockState(pos).getFluidState();
+    	BlockState state = world.getBlockState(pos);
+        FluidState fs = state.getFluidState();
+        if(state.getBlock() instanceof LiquidBlock liquidBlock)
+        	return liquidBlock.getFluid();
         if(!fs.isEmpty())
         	return Fluids.EMPTY;
         return fs.getType();

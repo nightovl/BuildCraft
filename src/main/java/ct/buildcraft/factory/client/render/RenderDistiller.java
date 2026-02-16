@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f;
 
 import ct.buildcraft.factory.BCFactorySprites;
 import ct.buildcraft.factory.block.BlockDistiller;
-import ct.buildcraft.factory.blockEntity.TileDistiller;
+import ct.buildcraft.factory.tile.TileDistiller;
 import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.client.render.fluid.FluidSpriteType;
 import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;

@@ -3,15 +3,14 @@ package ct.buildcraft.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import ct.buildcraft.core.client.render.RenderVolumeBoxes;
-import ct.buildcraft.lib.client.render.DetachedRenderer;
-import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.enums.EnumSpring;
 import ct.buildcraft.api.items.FluidItemDrops;
+import ct.buildcraft.core.client.RenderTickListener;
 import ct.buildcraft.core.client.model.ModelEngine;
 import ct.buildcraft.core.client.render.RenderEngine_BC8;
 import ct.buildcraft.core.client.render.RenderMarkerVolume;
+import ct.buildcraft.core.client.render.RenderVolumeBoxes;
 import ct.buildcraft.core.marker.PathCache;
 import ct.buildcraft.core.marker.VolumeCache;
 import ct.buildcraft.core.marker.volume.MessageVolumeBoxes;
@@ -20,15 +19,17 @@ import ct.buildcraft.energy.blockEntity.TileSpringOil;
 import ct.buildcraft.lib.BCLibEventDist;
 import ct.buildcraft.lib.CreativeTabManager;
 import ct.buildcraft.lib.CreativeTabManager.CreativeTabBC;
+import ct.buildcraft.lib.client.render.DetachedRenderer;
+import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.net.MessageManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;
 import net.minecraftforge.client.model.DynamicFluidContainerModel;
 import net.minecraftforge.common.MinecraftForge;
@@ -65,6 +66,9 @@ public class BCCore {
         MessageManager.registerMessageClass(BCModules.CORE, MessageVolumeBoxes.class, MessageVolumeBoxes.HANDLER, MessageVolumeBoxes::toBytes, MessageVolumeBoxes::new/*, Side.CLIENT*/);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCLibEventDist.class);
+		IEventBus eventBus = MinecraftForge.EVENT_BUS;
+		eventBus.addListener(RenderTickListener::renderOverlay);
+		eventBus.addListener(RenderTickListener::renderLast);
     }
 
     public void gatherData(GatherDataEvent event) {
@@ -93,6 +97,10 @@ public class BCCore {
     	public static final ResourceLocation CHAMBER = new ResourceLocation("buildcraftlib:blocks/engine/chamber_base");
     	public static final ResourceLocation TRUNK = new ResourceLocation("buildcraftcore:blocks/engine/trunk");
     	public static final ResourceLocation ENGINE_MODEL = new ResourceLocation("buildcraftlib:block/engine_base");
+    	
+    	public ClientModEvents() {
+
+		}
     	
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
@@ -137,7 +145,7 @@ public class BCCore {
         public static void RegisterItemColor(RegisterColorHandlersEvent.Item event) {
         	event.register(new DynamicFluidContainerModel.Colors(), BCCoreItems.FRAGILE_FLUID_SHARD.get());
         }
-        	
+        
     }
 
 

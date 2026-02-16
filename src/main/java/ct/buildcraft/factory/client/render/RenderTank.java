@@ -3,7 +3,7 @@
 package ct.buildcraft.factory.client.render;
 
 
-import ct.buildcraft.factory.blockEntity.TileTank;
+import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.client.render.fluid.FluidSpriteType;
 import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;

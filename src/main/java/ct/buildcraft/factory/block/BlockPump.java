@@ -7,7 +7,7 @@
 package ct.buildcraft.factory.block;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TilePump;
+import ct.buildcraft.factory.tile.TilePump;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 
 import net.minecraft.core.BlockPos;

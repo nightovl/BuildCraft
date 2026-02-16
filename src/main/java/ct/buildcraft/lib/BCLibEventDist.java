@@ -29,7 +29,6 @@ import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.MessageMarker;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import ct.buildcraft.lib.net.cache.MessageObjectCacheResponse;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
@@ -145,9 +144,8 @@ public class BCLibEventDist {
         PoseStack pose = event.getPoseStack();
         Matrix4f matrix = event.getProjectionMatrix();
         float partialTicks = event.getPartialTick();
-        Camera camera = event.getCamera();
         
-        DetachedRenderer.INSTANCE.renderWorldLastEvent(pose, matrix, player, partialTicks, camera);
+        DetachedRenderer.INSTANCE.renderWorldLastEvent(pose, matrix, player, partialTicks);
     }
 
     @SubscribeEvent

@@ -11,16 +11,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NotNull;
+
 import ct.buildcraft.api.BCModules;
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.InvalidInputDataException;
+import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.api.transport.pipe.IFlowItems;
 import ct.buildcraft.api.transport.pipe.IItemPipe;
 import ct.buildcraft.api.transport.pipe.IPipe;
@@ -41,7 +43,6 @@ import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.pipe.PipeEventBus;
 import ct.buildcraft.transport.pipe.PluggableHolder;
 import ct.buildcraft.transport.wire.WireManager;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -62,7 +63,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
-public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITickable, IDebuggable*/{
+public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebuggable{
 
     protected static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("pipe");
 
@@ -114,7 +115,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
     private final Set<PipeMessageReceiver> networkGuiUpdates = EnumSet.noneOf(PipeMessageReceiver.class);
     
     protected ModelData modeldata = ModelData.builder().with(ModelPipe.PipeTypeModelKey, this).build();
-//    private CompoundTag unknownData;
+    private CompoundTag unknownData;
 
     public TilePipeHolder(BlockPos pos, BlockState bs) {
     	super(BCTransportBlocks.PIPE_HOLDER_BE.get(), pos, bs);
@@ -160,13 +161,12 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
                 eventBus.registerHandler(pipe.behaviour);
                 eventBus.registerHandler(pipe.flow);
                 if (pipe.flow instanceof IFlowItems && BCModules.SILICON.isLoaded()) {
-                	BCLog.logger.debug("TilePipeHolder.load:called undone class : FilterEventHandler");
-//                    eventBus.registerHandler(FilterEventHandler.class);
+                    eventBus.registerHandler(FilterEventHandler.class);
                 }
             } catch (InvalidInputDataException e) {
                 // Unfortunately we can't throw an exception because then this tile won't persist :/
                 e.printStackTrace();
-//                unknownData = nbt.copy();
+                unknownData = nbt.copy();
             }
         }
         CompoundTag plugs = nbt.getCompound("plugs");
@@ -204,7 +204,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
         }
         scheduleRenderUpdate();
 
-        if (!level.isClientSide/* && hasOwner()*/) {
+        if (!level.isClientSide && hasOwner()) {
             AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT_PLACE_PIPE);
         }
     }
@@ -238,18 +238,21 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
         }
         wireManager.validate();
     }
-
+    
     @Override
-    public void onNeighbourBlockChanged(BlockState state, BlockPos neighbour) {
+	public void neighbourBlockChanged(BlockState state, BlockPos neighbor, boolean harvest) {
         if (level.isClientSide()) {
             return;
         }
         if (pipe != Pipe.EMPTY) {
             pipe.markForUpdate();
         }
-    }
+	}
 
-    
+	@Override
+    public void onNeighbourBlockChanged(BlockState state, BlockPos neighbour) {
+
+    }
     
     // ITickable
 
@@ -306,7 +309,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
 
         /* It's difficult to check to see if we actually have changed at all. So let's just always mark the chunk as
          * dirty instead of making every component do it indervidually. */
-//        markChunkDirty();
+//        markChunkDirty();//TODO
     }
 
     // Network
@@ -362,8 +365,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
                     eventBus.registerHandler(pipe.behaviour);
                     eventBus.registerHandler(pipe.flow);
                     if (pipe.flow instanceof IFlowItems && BCModules.SILICON.isLoaded()) {
-                    	BCLog.logger.debug("TilePipeHolder.load:called undone class : FilterEventHandler");
-//                        eventBus.registerHandler(FilterEventHandler.class);
+                        eventBus.registerHandler(FilterEventHandler.class);
                     }
                 } else if (pipe != Pipe.EMPTY) {
                     eventBus.unregisterHandler(pipe.behaviour);
@@ -589,13 +591,8 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
 		return modeldata;
 	}
 
-
-
-	
-	
-
     // Client side stuffs
-/*
+
     @Override
     public void getDebugInfo(List<String> left, List<String> right, Direction side) {
         if (pipe == Pipe.EMPTY) {
@@ -614,8 +611,4 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder/*, ITi
         }
     }
 
-    @Override
-    public boolean hasFastRenderer() {
-        return true;
-    }*/
 }

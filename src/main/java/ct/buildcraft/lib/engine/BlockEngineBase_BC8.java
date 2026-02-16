@@ -145,7 +145,7 @@ public abstract class BlockEngineBase_BC8<E extends Enum<E> & IEngineType & Stri
 			CollisionContext cc) {
 		TileEngineBase_BC8 tile = (TileEngineBase_BC8)lev.getBlockEntity(pos);
 		if(tile == null) 
-			return BASE_ENGINE_SHAPE_UP;
+			return Shapes.empty();
 		switch(tile.currentDirection) {
 		case UP:
 			return tile != null ? Shapes.or(BASE_ENGINE_SHAPE_UP, MOVING_SHAPE_UP.move(0.0d, tile.RenderProgress*1/2, 0.0d)) : BASE_ENGINE_SHAPE_UP;

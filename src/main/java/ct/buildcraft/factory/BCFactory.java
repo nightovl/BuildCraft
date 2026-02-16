@@ -1,12 +1,12 @@
 package ct.buildcraft.factory;
 
-import ct.buildcraft.factory.blockEntity.TileDistiller;
-import ct.buildcraft.factory.blockEntity.TileTank;
 import ct.buildcraft.factory.client.render.RenderDistiller;
 import ct.buildcraft.factory.client.render.RenderHeatExchange;
 import ct.buildcraft.factory.client.render.RenderMiningWell;
 import ct.buildcraft.factory.client.render.RenderPump;
 import ct.buildcraft.factory.client.render.RenderTank;
+import ct.buildcraft.factory.tile.TileDistiller;
+import ct.buildcraft.factory.tile.TileTank;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent.Pre;

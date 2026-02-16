@@ -57,15 +57,13 @@ public class SchematicBlockPipe implements ISchematicBlock {
                 DyeColor.class
             );
             Item item = (Item) PipeApi.pipeRegistry.getItemForPipe(definition);
-            if (item != null) {
-            	//to debug
+            ItemStack stack = new ItemStack(item, 1);
+            if (item != null&&color != null) {
             	CompoundTag tag = new CompoundTag();
             	tag.putInt("color", color.getId() + 1);
-    			ItemStack stack = new ItemStack(item, 1);
-    			if(color != null)
-    				stack.setTag(tag);
-                builder.add(stack);
+    			stack.setTag(tag);
             }
+            builder.add(stack);
             return builder.build();
         } catch (InvalidInputDataException e) {
             throw new RuntimeException(e);
@@ -93,6 +91,7 @@ public class SchematicBlockPipe implements ISchematicBlock {
             if (tileEntity != null) {
                 tileEntity.setLevel(world);
                 world.setBlockEntity(tileEntity);
+ //               world.updateNeighbourForOutputSignal(blockPos, BCTransportBlocks.pipeHolder.get());
 /*                if (tileRotation != Rotation.NONE) {
                     tileEntity(tileRotation);
                 }*/
@@ -110,6 +109,7 @@ public class SchematicBlockPipe implements ISchematicBlock {
             if (tileEntity != null) {
                 tileEntity.setLevel(world);
                 world.setBlockEntity(tileEntity);
+                world.updateNeighbourForOutputSignal(blockPos, BCTransportBlocks.pipeHolder.get());
 /*                if (tileRotation != Rotation.NONE) {
                     tileEntity.rotate(tileRotation);
                 }*/

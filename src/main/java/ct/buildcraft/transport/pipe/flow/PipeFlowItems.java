@@ -264,7 +264,7 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
         if (capability == PipeApi.CAP_INJECTABLE) {
             return LazyOptional.of(() -> this).cast();
         } else if (capability == CapUtil.CAP_ITEM_TRANSACTOR) {
-            return LazyOptional.of(() -> this).cast();
+            return LazyOptional.of(() -> ItemTransactorHelper.wrapInjectable(this, facing)).cast();
         } else {
             return super.getCapability(capability, facing);
         }

@@ -8,8 +8,7 @@ package ct.buildcraft.factory.block;
 
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
-import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileTank;
+import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
@@ -22,8 +21,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -114,16 +111,5 @@ public class BlockTank extends BlockBCTile_Neptune implements ICustomPipeConnect
 	public float getExtension(Level world, BlockPos pos, Direction face, BlockState state) {
 		return face.getAxis() == Axis.Y ? 0 : 2 / 16f;
 	}
-
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level lev, BlockState p_153213_,
-			BlockEntityType<T> bet) {
-		return bet == BCFactoryBlocks.ENTITYBLOCKTANK.get() ? ($0,pos,$1,BlockEntity) -> {
-			if(BlockEntity instanceof TileTank) {
-				((TileTank) BlockEntity).update();
-			}
-		} : null;
-	}
-	
 	
 }
