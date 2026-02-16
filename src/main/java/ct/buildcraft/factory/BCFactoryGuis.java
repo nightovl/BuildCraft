@@ -1,9 +1,12 @@
 package ct.buildcraft.factory;
 
-import ct.buildcraft.factory.client.gui.MenuAutoWorkbenchItems;
+import ct.buildcraft.factory.client.gui.GuiAutoCraftItems;
+import ct.buildcraft.factory.client.gui.GuiChute;
 import ct.buildcraft.factory.client.gui.MenuHeatExchange;
-import ct.buildcraft.factory.client.gui.ScreenAutoworkBenchItems;
 import ct.buildcraft.factory.client.gui.ScreenHeatExchange;
+import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
+import ct.buildcraft.factory.menu.ContainerChute;
+import ct.buildcraft.lib.gui.BCContainerFactory;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -19,15 +22,17 @@ public class BCFactoryGuis {
 	
 	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BCFactory.MODID);
 	
-    public static final RegistryObject<MenuType<MenuAutoWorkbenchItems>> MENU_AUTOWORK_BENCH_ITEM = MENUS.register("autoworkbench_item", () -> new MenuType<>(MenuAutoWorkbenchItems::new));
-    public static final RegistryObject<MenuType<MenuHeatExchange>> MENU_HEAT_EXCHANGE = MENUS.register("heat_exchange", () -> new MenuType<>(MenuHeatExchange::new));
-    
+    public static final RegistryObject<MenuType<ContainerAutoCraftItems>> MENU_AUTOWORK_BENCH_ITEM = MENUS.register("menu.autoworkbench_item", () -> BCContainerFactory.create(ContainerAutoCraftItems::create));
+    public static final RegistryObject<MenuType<MenuHeatExchange>> MENU_HEAT_EXCHANGE = MENUS.register("menu.heat_exchange", () -> new MenuType<>(MenuHeatExchange::new));
+    public static final RegistryObject<MenuType<ContainerChute>> MENU_CHUTE = MENUS.register("menu.chute", () -> BCContainerFactory.create(ContainerChute::new));
+
     @SubscribeEvent
     public static void clientInit(FMLClientSetupEvent event) {
         event.enqueueWork(
                 () -> {
-                	MenuScreens.register(MENU_AUTOWORK_BENCH_ITEM.get(), ScreenAutoworkBenchItems::new);
+                	MenuScreens.register(MENU_AUTOWORK_BENCH_ITEM.get(), GuiAutoCraftItems::new);
                 	MenuScreens.register(MENU_HEAT_EXCHANGE.get(), ScreenHeatExchange::new);
+                	MenuScreens.register(MENU_CHUTE.get(), GuiChute::new);
                 }
         );
     }

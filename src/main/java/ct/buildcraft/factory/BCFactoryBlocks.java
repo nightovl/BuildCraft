@@ -11,6 +11,7 @@ import ct.buildcraft.factory.block.BlockTank;
 import ct.buildcraft.factory.block.BlockTube;
 import ct.buildcraft.factory.block.BlockWaterGel;
 import ct.buildcraft.factory.tile.TileAutoWorkbenchItems;
+import ct.buildcraft.factory.tile.TileChute;
 import ct.buildcraft.factory.tile.TileDistiller;
 import ct.buildcraft.factory.tile.TileFloodGate;
 import ct.buildcraft.factory.tile.TileHeatExchange;
@@ -56,6 +57,8 @@ public class BCFactoryBlocks {
     		() -> BlockEntityType.Builder.of(TileHeatExchange::new, HEATEXCHANGE_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<TileAutoWorkbenchItems>> ENTITYBLOCKAUTOBENCH = BLOCK_ENTITYS.register("entity_autoworkbench_item", 
     		() -> BlockEntityType.Builder.of(TileAutoWorkbenchItems::new, AUTO_BENCH_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<TileChute>> ENTITYBLOCKCHUTE = BLOCK_ENTITYS.register("entity_chute", 
+    		() -> BlockEntityType.Builder.of(TileChute::new, CHUTE_BLOCK.get()).build(null));
     
     
     

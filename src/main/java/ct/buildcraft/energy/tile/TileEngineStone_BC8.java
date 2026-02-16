@@ -2,7 +2,7 @@
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-package ct.buildcraft.energy.blockEntity;
+package ct.buildcraft.energy.tile;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.core.client.render.RenderEngine_BC8;
 import ct.buildcraft.energy.BCEnergyBlocks;
-import ct.buildcraft.energy.client.gui.MenuEngineStone_BC8;
+import ct.buildcraft.energy.menu.ContainerEngineStone_BC8;
 import ct.buildcraft.lib.delta.DeltaInt;
 import ct.buildcraft.lib.delta.DeltaManager.EnumNetworkVisibility;
 import ct.buildcraft.lib.engine.EngineConnector;
@@ -23,13 +23,11 @@ import ct.buildcraft.lib.engine.TileEngineBase_BC8;
 import ct.buildcraft.lib.misc.InventoryUtil;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager.EnumAccess;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -232,7 +230,7 @@ public class TileEngineStone_BC8 extends TileEngineBase_BC8 implements MenuProvi
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory playerIncentory, Player p_39956_) {
-		return new MenuEngineStone_BC8(id, playerIncentory, invFuel, deltaFuelLeft.getContainerData(), ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerEngineStone_BC8(id, playerIncentory, invFuel, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 

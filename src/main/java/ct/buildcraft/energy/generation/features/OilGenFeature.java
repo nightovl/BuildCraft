@@ -1,9 +1,9 @@
 package ct.buildcraft.energy.generation.features;
 
 import java.util.List;
+
 import com.mojang.serialization.Codec;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
 	
-/*    private static final double DESERT_NOISE_FIELD_SCALE = 0.001;
+    private static final double DESERT_NOISE_FIELD_SCALE = 0.001;
     private static final double DESERT_NOISE_FIELD_THRESHOLD = 0.7;
     private static final double OCEAN_NOISE_FIELD_SCALE = 0.0005;
     private static final double OCEAN_NOISE_FIELD_THRESHOLD = 0.9;//*/
@@ -72,7 +72,6 @@ public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
                 OilGenStructure.Spring spring = null;
 //                world.getProfiler().endStartSection("gen");
                 for (OilGenStructure struct : structures) {
-                	BCLog.logger.debug("OilGenFeature:gen");
                     struct.generate(world, box);
                     if (struct instanceof OilGenStructure.Spring) {
                         spring = (OilGenStructure.Spring) struct;

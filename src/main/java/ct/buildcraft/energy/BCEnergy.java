@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import ct.buildcraft.core.BCCore;
-import ct.buildcraft.energy.generation.BCOverWorldRegion;
-import ct.buildcraft.energy.generation.BCSurfaceRuleData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,8 +20,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import terrablender.api.Regions;
-import terrablender.api.SurfaceRuleManager;
 
 @Mod(BCEnergy.MODID)
 public class BCEnergy {
@@ -52,7 +48,7 @@ public class BCEnergy {
         BCEnergyFluids.registry(modEventBus);
         BCEnergyBlocks.init(modEventBus);
         BCEnergyGuis.init();
-        BCEnergyBiomes.init(modEventBus);
+        BCEnergyWorldGen.preInit(modEventBus);
         BCEnergyConfig.preInit();
         ModLoadingContext.get().registerConfig(Type.COMMON, BCEnergyConfig.config);
         MinecraftForge.EVENT_BUS.register(this);
@@ -72,9 +68,9 @@ public class BCEnergy {
     	BCEnergyFluids.init();
     	BCEnergyRecipes.init();
     	BCEnergyConfig.reloadConfig(MODID);
-    	Regions.register(new BCOverWorldRegion(40));
-    	SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, BCSurfaceRuleData.oilDesertRule());
-    	event.enqueueWork(BCEnergyBiomes::registryFeature);
+//    	Regions.register(new BCOverWorldRegion(40));
+//    	SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, BCSurfaceRuleData.oilDesertRule());
+    	event.enqueueWork(BCEnergyWorldGen::registryFeature);
         
     }
     public void gatherData(GatherDataEvent event) {

@@ -1,4 +1,4 @@
-package ct.buildcraft.energy.blockEntity;
+package ct.buildcraft.energy.tile;
 
 import java.util.List;
 import java.util.Map;

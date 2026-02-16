@@ -405,6 +405,7 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
 	}
 
     @Override
+<<<<<<< HEAD
 	public void neighbourBlockChanged(BlockState state, BlockPos neighbor, boolean harvest) {
         if (neighbor.getY() != worldPosition.getY()) {
             // Heat exchange tiles can only be horizontally adjacent
@@ -415,6 +416,14 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
 
 	@Override
     public void onNeighbourBlockChanged(BlockState state, BlockPos nehighbour) {
+=======
+    public void onNeighbourBlockChanged(BlockState state, BlockPos nehighbour) {
+        if (nehighbour.getY() != worldPosition.getY()) {
+            // Heat exchange tiles can only be horizontally adjacent
+            return;
+        }
+        checkNeighbours = true;
+>>>>>>> refs/remotes/BuildCraft/main
     }
 
     @Override

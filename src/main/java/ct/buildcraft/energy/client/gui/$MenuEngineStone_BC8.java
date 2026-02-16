@@ -14,16 +14,16 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class MenuEngineStone_BC8 extends AbstractContainerMenu {
+public class $MenuEngineStone_BC8 extends AbstractContainerMenu {
 
 	private final ContainerLevelAccess access;
 	protected final ContainerData data;
 	
-	public MenuEngineStone_BC8(int containerId, Inventory playerInventory) {
+	public $MenuEngineStone_BC8(int containerId, Inventory playerInventory) {
 		this(containerId, playerInventory, new ItemStackHandler(1), new SimpleContainerData(2), ContainerLevelAccess.NULL);
 	}
 	
-	public MenuEngineStone_BC8(int containerId, Inventory playerInventory, IItemHandler dataInventory, ContainerData data, ContainerLevelAccess access) {
+	public $MenuEngineStone_BC8(int containerId, Inventory playerInventory, IItemHandler dataInventory, ContainerData data, ContainerLevelAccess access) {
 		super(BCEnergyGuis.MENU_STONE.get(), containerId);
 		this.access = ContainerLevelAccess.NULL;
 		this.data = data;

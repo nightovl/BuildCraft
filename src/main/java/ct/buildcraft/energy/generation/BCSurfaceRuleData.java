@@ -2,7 +2,7 @@ package ct.buildcraft.energy.generation;
 
 import com.google.common.collect.ImmutableList;
 
-import ct.buildcraft.energy.BCEnergyBiomes;
+import ct.buildcraft.energy.BCEnergyWorldGen;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 
 public class BCSurfaceRuleData {
-	private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
+/*	private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
 	private static final SurfaceRules.RuleSource WHITE_TERRACOTTA = makeStateRule(Blocks.WHITE_TERRACOTTA);
 	private static final SurfaceRules.RuleSource ORANGE_TERRACOTTA = makeStateRule(Blocks.ORANGE_TERRACOTTA);
 	private static final SurfaceRules.RuleSource TERRACOTTA = makeStateRule(Blocks.TERRACOTTA);
@@ -57,7 +57,7 @@ public class BCSurfaceRuleData {
 	      SurfaceRules.RuleSource surfacerules$rulesource = SurfaceRules.sequence(SurfaceRules.ifTrue(surfacerules$conditionsource8, GRASS_BLOCK), DIRT);
 	      SurfaceRules.RuleSource surfacerules$rulesource1 = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, SANDSTONE), SAND);
 	      SurfaceRules.RuleSource surfacerules$rulesource2 = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, STONE), GRAVEL);
-	      SurfaceRules.ConditionSource surfacerules$conditionsource14 = SurfaceRules.isBiome(BCEnergyBiomes.OIL_DESERT_KEY);
+//	      SurfaceRules.ConditionSource surfacerules$conditionsource14 = SurfaceRules.isBiome(BCEnergyWorldGen.OIL_DESERT_KEY);
 	      SurfaceRules.RuleSource surfacerules$rulesource3 = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.STONY_PEAKS), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.CALCITE, -0.0125D, 0.0125D), CALCITE), STONE)), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.STONY_SHORE), SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.GRAVEL, -0.05D, 0.05D), surfacerules$rulesource2), STONE)), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.WINDSWEPT_HILLS), SurfaceRules.ifTrue(surfaceNoiseAbove(1.0D), STONE)), SurfaceRules.ifTrue(surfacerules$conditionsource14, surfacerules$rulesource1), SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.DRIPSTONE_CAVES), STONE));
 	      SurfaceRules.RuleSource surfacerules$rulesource4 = SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.POWDER_SNOW, 0.45D, 0.58D), SurfaceRules.ifTrue(surfacerules$conditionsource8, POWDER_SNOW));
 	      SurfaceRules.RuleSource surfacerules$rulesource5 = SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.POWDER_SNOW, 0.35D, 0.6D), SurfaceRules.ifTrue(surfacerules$conditionsource8, POWDER_SNOW));
@@ -120,7 +120,7 @@ public class BCSurfaceRuleData {
 							.ifTrue(surfacerules$conditionsource9,
 									SurfaceRules.sequence(
 											SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, surfacerules$rulesource6),
-											SurfaceRules.ifTrue(surfacerules$conditionsource14,
+//											SurfaceRules.ifTrue(surfacerules$conditionsource14,
 													SurfaceRules.ifTrue(SurfaceRules.VERY_DEEP_UNDER_FLOOR,
 															SANDSTONE)))),
 					SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
@@ -132,7 +132,7 @@ public class BCSurfaceRuleData {
 		      ImmutableList.Builder<SurfaceRules.RuleSource> builder = ImmutableList.builder();
 /*	      if (false) {
 	         builder.add(SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.verticalGradient("bedrock_roof", VerticalAnchor.belowTop(5), VerticalAnchor.top())), BEDROCK));
-	      }*/
+	      }
 
 	      if (true) {
 	         builder.add(SurfaceRules.ifTrue(SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)), BEDROCK));
@@ -144,5 +144,5 @@ public class BCSurfaceRuleData {
 	      return SurfaceRules.sequence(builder.build().toArray((p_198379_) -> {
 	         return new SurfaceRules.RuleSource[p_198379_];
 	      }));
-	}
+	}*/
 }

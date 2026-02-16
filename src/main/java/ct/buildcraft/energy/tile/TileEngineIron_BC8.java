@@ -4,9 +4,10 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package ct.buildcraft.energy.blockEntity;
+package ct.buildcraft.energy.tile;
 
 import java.io.IOException;
+
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,16 +25,14 @@ import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.api.transport.pipe.IItemPipe;
 import ct.buildcraft.core.client.render.RenderEngine_BC8;
 import ct.buildcraft.energy.BCEnergyBlocks;
-import ct.buildcraft.energy.client.gui.MenuEngineIron_BC8;
+import ct.buildcraft.energy.menu.ContainerEngineIron_BC8;
 import ct.buildcraft.lib.engine.EngineConnector;
 import ct.buildcraft.lib.engine.TileEngineBase_BC8;
 import ct.buildcraft.lib.fluid.Tank;
-import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.EntityUtil;
 import ct.buildcraft.lib.misc.FluidUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +45,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -86,8 +84,6 @@ public class TileEngineIron_BC8 extends TileEngineBase_BC8 implements MenuProvid
     private double burnTime;
     private double residueAmount = 0;
     private IFuel currentFuel;
-    
-    private final ContainerData container = new TankContainerData(tankFuel, tankCoolant, tankResidue);
     
     public TileEngineIron_BC8(BlockPos pos, BlockState state) {
     	super(BCEnergyBlocks.ENGINE_IRON_TILE_BC8.get(), pos, state);
@@ -443,7 +439,7 @@ public class TileEngineIron_BC8 extends TileEngineBase_BC8 implements MenuProvid
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory playerIncentory, Player player) {
-		return new MenuEngineIron_BC8(id, playerIncentory, container, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerEngineIron_BC8(id, playerIncentory, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

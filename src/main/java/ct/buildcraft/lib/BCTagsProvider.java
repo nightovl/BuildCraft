@@ -3,7 +3,7 @@ package ct.buildcraft.lib;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergy;
-import ct.buildcraft.energy.BCEnergyBiomes;
+import ct.buildcraft.energy.BCEnergyWorldGen;
 import ct.buildcraft.energy.BCEnergyFluids;
 import ct.buildcraft.factory.BCFactory;
 import ct.buildcraft.factory.BCFactoryBlocks;
@@ -54,8 +54,8 @@ public class BCTagsProvider {
 
 		@Override
 		protected void addTags() {
-			tag(BCEnergyBiomes.OIL_DESERT_KEY, Tags.Biomes.IS_HOT_OVERWORLD, Tags.Biomes.IS_DRY_OVERWORLD, Tags.Biomes.IS_SANDY, Tags.Biomes.IS_DESERT);
-			tag(BCEnergyBiomes.IS_OIL_BIOME).add(BCEnergyBiomes.OIL_DESERT_BIOME);
+//			tag(BCEnergyWorldGen.OIL_DESERT_KEY, Tags.Biomes.IS_HOT_OVERWORLD, Tags.Biomes.IS_DRY_OVERWORLD, Tags.Biomes.IS_SANDY, Tags.Biomes.IS_DESERT);
+//			tag(BCEnergyWorldGen.IS_OIL_BIOME).add(BCEnergyWorldGen.OIL_DESERT_BIOME);
 		}
 		
 	    @SafeVarargs

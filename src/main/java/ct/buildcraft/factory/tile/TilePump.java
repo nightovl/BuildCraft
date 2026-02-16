@@ -29,7 +29,7 @@ import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.core.BCCoreConfig;
 import ct.buildcraft.energy.BCEnergyFluids;
-import ct.buildcraft.energy.blockEntity.ITileOilSpring;
+import ct.buildcraft.energy.tile.ITileOilSpring;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.misc.AdvancementUtil;

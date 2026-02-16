@@ -28,7 +28,6 @@ import ct.buildcraft.api.mj.MjBattery;
 import ct.buildcraft.api.mj.MjCapabilityHelper;
 import ct.buildcraft.api.tiles.IDebuggable;
 import ct.buildcraft.builders.BCBuildersBlocks;
-import ct.buildcraft.builders.gui.MenuBuilder;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.menu.ContainerBuilder;
 import ct.buildcraft.builders.snapshot.Blueprint;
@@ -44,9 +43,6 @@ import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.fluid.TankManager;
 import ct.buildcraft.lib.gui.ItemProvider;
-import ct.buildcraft.lib.gui.TankContainerData;
-import ct.buildcraft.lib.gui.containerData.MutliProviderData;
-import ct.buildcraft.lib.gui.containerData.SingleProviderData;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.BoundingBoxUtil;
 import ct.buildcraft.lib.misc.CapUtil;
@@ -73,17 +69,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
-import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -91,8 +85,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
 
 public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileForTemplateBuilder, ITileForBlueprintBuilder, MenuProvider {
     public static final IdAllocator IDS = TileBC_Neptune.IDS.makeChild("builder");
@@ -131,7 +123,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     
     private boolean shouldInit = false;
     
-    private final ContainerData tankData;
 //    private final ContainerData blueprintData = new SingleProviderData(() -> snapshotType == null ? -1 : snapshotType.ordinal());
 /*    private final ContainerData remainingDisplayRequiredData = 
     		new MutliProviderData((index) -> {
@@ -175,7 +166,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             };
             tankManager.add(tanks[i]);
         }
-        tankData = new TankContainerData(tanks);
         caps.addProvider(new MjCapabilityHelper(new MjBatteryReceiver(battery)));
         caps.addCapabilityInstance(CapUtil.CAP_FLUIDS, tankManager, EnumPipePart.VALUES);
     }
@@ -560,7 +550,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new ContainerBuilder(id, inv, invSnapshot, invResources, tankData, invRequire, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerBuilder(id, inv, invSnapshot, invResources, invRequire, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

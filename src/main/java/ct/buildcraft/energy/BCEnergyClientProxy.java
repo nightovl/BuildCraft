@@ -7,9 +7,8 @@
 package ct.buildcraft.energy;
 
 import ct.buildcraft.core.client.render.RenderEngine_BC8;
-import ct.buildcraft.energy.client.gui.ScreenEngineIron;
-import ct.buildcraft.energy.client.gui.ScreenEngineStone;
-
+import ct.buildcraft.energy.client.gui.GuiEngineIron_BC8;
+import ct.buildcraft.energy.client.gui.GuiEngineStone_BC8;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -27,8 +26,8 @@ public abstract class BCEnergyClientProxy {
     	
         event.enqueueWork(
                 () -> {
-                	MenuScreens.register(BCEnergyGuis.MENU_STONE.get(), ScreenEngineStone::new);
-                	MenuScreens.register(BCEnergyGuis.MENU_IRON.get(), ScreenEngineIron::new);}
+                	MenuScreens.register(BCEnergyGuis.MENU_STONE.get(), GuiEngineStone_BC8::new);
+                	MenuScreens.register(BCEnergyGuis.MENU_IRON.get(), GuiEngineIron_BC8::new);}
             );
     }
     
