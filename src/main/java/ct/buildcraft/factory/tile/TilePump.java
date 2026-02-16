@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package ct.buildcraft.factory.blockEntity;
+package ct.buildcraft.factory.tile;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -29,7 +29,7 @@ import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.core.BCCoreConfig;
 import ct.buildcraft.energy.BCEnergyFluids;
-import ct.buildcraft.energy.blockEntity.ITileOilSpring;
+import ct.buildcraft.energy.tile.ITileOilSpring;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.misc.AdvancementUtil;

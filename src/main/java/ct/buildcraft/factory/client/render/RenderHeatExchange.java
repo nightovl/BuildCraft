@@ -5,10 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
 import ct.buildcraft.factory.block.BlockHeatExchange;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange.EnumProgressState;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange.ExchangeSectionEnd;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange.ExchangeSectionStart;
+import ct.buildcraft.factory.tile.TileHeatExchange;
+import ct.buildcraft.factory.tile.TileHeatExchange.EnumProgressState;
+import ct.buildcraft.factory.tile.TileHeatExchange.ExchangeSectionEnd;
+import ct.buildcraft.factory.tile.TileHeatExchange.ExchangeSectionStart;
 import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.client.render.fluid.FluidSpriteType;
 import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;

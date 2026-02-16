@@ -5,7 +5,7 @@ import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.tools.IToolWrench;
 import ct.buildcraft.core.BCCore;
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileTank;
+import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
 import net.minecraft.core.BlockPos;

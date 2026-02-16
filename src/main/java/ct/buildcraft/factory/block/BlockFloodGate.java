@@ -5,8 +5,8 @@ import java.util.Map;
 
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.EntityBlockFloodGate;
-import ct.buildcraft.factory.blockEntity.TileFloodGate;
+import ct.buildcraft.factory.tile.EntityBlockFloodGate;
+import ct.buildcraft.factory.tile.TileFloodGate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

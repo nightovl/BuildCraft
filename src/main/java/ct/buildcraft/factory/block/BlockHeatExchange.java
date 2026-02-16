@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange;
+import ct.buildcraft.factory.tile.TileHeatExchange;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 import net.minecraft.core.BlockPos;

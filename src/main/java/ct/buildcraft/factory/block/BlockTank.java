@@ -9,7 +9,7 @@ package ct.buildcraft.factory.block;
 import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileTank;
+import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;

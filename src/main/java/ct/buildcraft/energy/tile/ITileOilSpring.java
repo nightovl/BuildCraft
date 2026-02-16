@@ -1,4 +1,4 @@
-package ct.buildcraft.energy.blockEntity;
+package ct.buildcraft.energy.tile;
 
 import com.mojang.authlib.GameProfile;
 

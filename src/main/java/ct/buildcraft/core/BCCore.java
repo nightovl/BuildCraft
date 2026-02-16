@@ -16,7 +16,7 @@ import ct.buildcraft.core.marker.PathCache;
 import ct.buildcraft.core.marker.VolumeCache;
 import ct.buildcraft.core.marker.volume.MessageVolumeBoxes;
 import ct.buildcraft.energy.BCEnergyFluids;
-import ct.buildcraft.energy.blockEntity.TileSpringOil;
+import ct.buildcraft.energy.tile.TileSpringOil;
 import ct.buildcraft.lib.BCLibEventDist;
 import ct.buildcraft.lib.CreativeTabManager;
 import ct.buildcraft.lib.CreativeTabManager.CreativeTabBC;

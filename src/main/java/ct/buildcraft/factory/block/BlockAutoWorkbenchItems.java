@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.factory.block;
 
-import ct.buildcraft.factory.blockEntity.TileAutoWorkbenchItems;
+import ct.buildcraft.factory.tile.TileAutoWorkbenchItems;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;

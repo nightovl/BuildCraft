@@ -14,7 +14,7 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.factory.BCFactorySprites;
-import ct.buildcraft.factory.blockEntity.TilePump;
+import ct.buildcraft.factory.tile.TilePump;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8.LaserRow;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8.LaserType;
 import ct.buildcraft.lib.client.render.tile.RenderPartCube;

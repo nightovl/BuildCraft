@@ -7,7 +7,7 @@ import ct.buildcraft.api.enums.EnumSpring;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.core.block.BlockSpring;
 import ct.buildcraft.energy.BCEnergyFluids;
-import ct.buildcraft.energy.blockEntity.TileSpringOil;
+import ct.buildcraft.energy.tile.TileSpringOil;
 import ct.buildcraft.lib.BCLib;
 import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.VecUtil;
@@ -38,9 +38,6 @@ public abstract class OilGenStructure {
         Box intersect = box.getIntersect(within);
         if (intersect != null) {
             generateWithin(world, intersect);
-        }
-        else {
-        	BCLog.logger.debug("OilGenStructure:fail to generate by box "+ box +" for "+within);
         }
     }
 

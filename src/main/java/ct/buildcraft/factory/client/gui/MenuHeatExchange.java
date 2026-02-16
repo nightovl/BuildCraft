@@ -2,7 +2,7 @@ package ct.buildcraft.factory.client.gui;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.BCFactoryGuis;
-import ct.buildcraft.factory.blockEntity.TileHeatExchange;
+import ct.buildcraft.factory.tile.TileHeatExchange;
 import ct.buildcraft.lib.fluid.Tank;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

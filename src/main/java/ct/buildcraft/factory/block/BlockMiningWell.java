@@ -7,7 +7,7 @@
 package ct.buildcraft.factory.block;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.blockEntity.TileMiningWell;
+import ct.buildcraft.factory.tile.TileMiningWell;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
 

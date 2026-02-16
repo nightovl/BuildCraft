@@ -1,4 +1,4 @@
-package ct.buildcraft.factory.blockEntity;
+package ct.buildcraft.factory.tile;
 
 import java.io.IOException;
 import java.util.ArrayDeque;

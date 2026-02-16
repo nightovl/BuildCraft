@@ -2,10 +2,11 @@
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-package ct.buildcraft.factory.blockEntity;
+package ct.buildcraft.factory.tile;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.client.gui.MenuAutoWorkbenchItems;
+import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
+import ct.buildcraft.lib.gui.ItemProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -24,7 +25,8 @@ public class TileAutoWorkbenchItems extends TileAutoWorkbenchBase implements Men
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuAutoWorkbenchItems(id, inventory, crafting, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerAutoCraftItems(id, inventory, invResult, invBlueprint, invMaterialFilter, 
+				invMaterials, new ItemProvider(i -> resultClient, 1), ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

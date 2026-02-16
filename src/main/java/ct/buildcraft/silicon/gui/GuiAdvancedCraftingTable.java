@@ -21,7 +21,6 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -106,9 +105,9 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         widthTooNarrow = this.width < SIZE_X + 176;
         if (recipeBook != null) {
             recipeBook.init(width, height, minecraft, widthTooNarrow, container.tile.getWorkbenchCrafting().getCraftingMenu(menu));
-            titleLabelX = recipeBook.updateScreenPosition(width, imageWidth);
+            leftPos = recipeBook.updateScreenPosition(width, imageWidth);
             recipeButton =
-                new ImageButton(imageWidth + 5, height / 2 - 90, 20, 18, 0, 168, 19, VANILLA_CRAFTING_TABLE, this::onPress);
+                new ImageButton(leftPos + 5, height / 2 - 90, 20, 18, 0, 168, 19, VANILLA_CRAFTING_TABLE, this::onPress);
             addRenderableWidget(recipeButton);
         }
     }
@@ -135,10 +134,10 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         } else {
             super.render(pose, mouseX, mouseY, partialTicks);
             recipeBook.render(pose, mouseX, mouseY, partialTicks);
-            recipeBook.renderGhostRecipe(pose, this.titleLabelX, this.titleLabelY, true, partialTicks);
+            recipeBook.renderGhostRecipe(pose, this.leftPos, this.topPos, true, partialTicks);
         }
 
-        recipeBook.renderTooltip(pose, this.titleLabelX, this.titleLabelY, mouseX, mouseY);
+        recipeBook.renderTooltip(pose, this.leftPos, this.topPos, mouseX, mouseY);
     }
 
 
@@ -170,8 +169,8 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         if (button == recipeButton && recipeBook != null) {
             recipeBook.initVisuals();
             recipeBook.toggleVisibility();
-            titleLabelX = recipeBook.updateScreenPosition(width, imageWidth);
-            recipeButton.setPosition(this.titleLabelX + 5, this.height / 2 - 90);
+            leftPos = recipeBook.updateScreenPosition(width, imageWidth);
+            recipeButton.setPosition(this.leftPos + 5, this.height / 2 - 90);
         }
     }
     
@@ -200,13 +199,6 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         return true;
 	}
 
-    
-    @Override
-	public boolean handleComponentClicked(Style p_96592_) {
-		// TODO Auto-generated method stub
-		return super.handleComponentClicked(p_96592_);
-	}
-
 	@Override
     protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
         super.slotClicked(slot, slotId, mouseButton, type);
@@ -215,7 +207,6 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         }
     }
 	
-
 	@Override
 	protected boolean isHovering(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
         if (recipeBook == null) {
@@ -232,7 +223,7 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
         }
         boolean flag =
             mouseX < _guiLeft || mouseY < _guiTop || mouseX >= _guiLeft + imageWidth || mouseY >= _guiTop + imageHeight;
-        return recipeBook.hasClickedOutside(mouseX, mouseY, titleLabelX, titleLabelY, imageWidth, imageHeight, p_97761_) && flag;
+        return recipeBook.hasClickedOutside(mouseX, mouseY, leftPos, topPos, imageWidth, imageHeight, p_97761_) && flag;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package ct.buildcraft.energy.blockEntity;
+package ct.buildcraft.energy.tile;
 
 import ct.buildcraft.core.blockEntity.TileEngineBase;
 import ct.buildcraft.core.client.render.RenderEngine;

@@ -9,9 +9,8 @@ import ct.buildcraft.core.blockEntity.TileEngineCreative;
 import ct.buildcraft.core.blockEntity.TileEngineRedstone_BC8;
 import ct.buildcraft.core.blockEntity.TileMarkerPath;
 import ct.buildcraft.core.blockEntity.TileMarkerVolume;
-import ct.buildcraft.energy.blockEntity.TileEngineIron_BC8;
-import ct.buildcraft.energy.blockEntity.TileEngineStone_BC8;
-
+import ct.buildcraft.energy.tile.TileEngineIron_BC8;
+import ct.buildcraft.energy.tile.TileEngineStone_BC8;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;

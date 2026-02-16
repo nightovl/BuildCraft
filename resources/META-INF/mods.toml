@@ -192,13 +192,6 @@ Lets you craft dirt into diamonds. This is a traditional mod that has existed fo
     versionRange="[8.0.0.0]"
     ordering="NONE"
     side="BOTH"
-
-[[dependencies.buildcraftenergy]]
-    modId="terrablender"
-    mandatory=true
-    versionRange="[2.0.1.128,)"
-    ordering="NONE"
-    side="BOTH"
     
 #builders    
 [[mods]]

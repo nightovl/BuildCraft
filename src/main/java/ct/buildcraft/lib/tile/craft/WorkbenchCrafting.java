@@ -390,6 +390,8 @@ public class WorkbenchCrafting extends CraftingContainer {
         protected InnerRecipeBookMenu(AbstractContainerMenu menu) {
 			super(menu.getType(), menu.containerId);
 			this.menu = menu;
+			for(int i=0;i<menu.slots.size();i++)
+				this.slots.add(i, menu.slots.get(i));
 		}
         
 		@Override
@@ -450,7 +452,6 @@ public class WorkbenchCrafting extends CraftingContainer {
 		@Override
 		public Slot getSlot(int p_38854_) {
 			return menu.getSlot(p_38854_);
-		//	return super.getSlot(p_38854_);
 		}
 		
 		

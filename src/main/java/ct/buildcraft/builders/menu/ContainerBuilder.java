@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import ct.buildcraft.builders.BCBuildersGuis;
 import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.lib.gui.ContainerBCTile;
-import ct.buildcraft.lib.gui.TankContainerData;
 import ct.buildcraft.lib.gui.slot.SlotBase;
 import ct.buildcraft.lib.gui.slot.SlotDisplay;
 import ct.buildcraft.lib.gui.widget.WidgetFluidTank;
@@ -20,26 +19,22 @@ import ct.buildcraft.lib.tile.item.IItemHandlerAdv;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.items.IItemHandler;
 
 public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
-    public final List<WidgetFluidTank> widgetTanks;// = new ArrayList<WidgetFluidTank>(4);
-//    public final ContainerData remainingDisplayRequiredData;
+    public final List<WidgetFluidTank> widgetTanks;
     
 	public ContainerBuilder(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
 		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(27),
-				new SimpleContainerData(4 * TankContainerData.LEN), new ItemHandlerSimple(24), CreateClientLevelAccess(buf));
+				new ItemHandlerSimple(24), CreateClientLevelAccess(buf));
 	}
 
 
     public ContainerBuilder(int containerId, Inventory playerInventory, IItemHandlerAdv invSnapshot, IItemHandlerAdv invResources, 
-    		ContainerData tanks, IItemHandler invRequire, /*ContainerData remainingDisplayRequiredData,*/ ContainerLevelAccess access) {
+    		IItemHandler invRequire, ContainerLevelAccess access) {
     	super(BCBuildersGuis.MENU_BUILDER.get(), playerInventory, containerId, access);
 
- //   	this.remainingDisplayRequiredData = remainingDisplayRequiredData;
         addFullPlayerInventory(140);
 
         addSlot(new SlotBase(invSnapshot, 0, 80, 27));
@@ -53,13 +48,6 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
                 .map(tank -> new WidgetFluidTank(this, tank))
                 .map(this::addWidget)
                 .collect(Collectors.toList());
-/*        addDataSlots(tanks);
-        for(int point =0;point * TankContainerData.LEN < tanks.getCount();point++) {
-        	WidgetFluidTank widgetFluidTank = new WidgetFluidTank(this, tanks, point);
-        	widgetTanks.add(widgetFluidTank);
-        	addWidget(widgetFluidTank);
-        }*/
-        
 
         for(int y = 0; y < 6; y++) {
             for(int x = 0; x < 4; x++) {
@@ -67,12 +55,4 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
             }
         }
     }
-
-
- /*   private ItemStack getDisplay(int index) {
-        return blueprintData.get(0) == EnumSnapshotType.BLUEPRINT.ordinal() &&
-                index < remainingDisplayRequiredData.getCount()/2
-                ? new ItemStack(((ForgeRegistry<Item>)ForgeRegistries.ITEMS).getValue(remainingDisplayRequiredData.get(index <<1 + 1)),remainingDisplayRequiredData.get(index <<1))
-                : ItemStack.EMPTY;
-    }*/
 }

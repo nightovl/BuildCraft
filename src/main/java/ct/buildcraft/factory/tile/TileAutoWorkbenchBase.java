@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package ct.buildcraft.factory.blockEntity;
+package ct.buildcraft.factory.tile;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -13,13 +13,11 @@ import javax.annotation.Nonnull;
 
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.mj.IMjConnector;
-import ct.buildcraft.api.mj.IMjReceiver;
 import ct.buildcraft.api.mj.IMjRedstoneReceiver;
 import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.api.mj.MjCapabilityHelper;
 import ct.buildcraft.api.tiles.IHasWork;
 import ct.buildcraft.api.tiles.TilesAPI;
-import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.MathUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
@@ -32,11 +30,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -160,7 +156,7 @@ public abstract class TileAutoWorkbenchBase extends TileBC_Neptune
         return MathUtil.interp(partialTicks, powerStoredLast, powerStored) / POWER_REQUIRED;
     }
 
-    public CraftingContainer getWorkbenchCrafting() {
+    public WorkbenchCrafting getWorkbenchCrafting() {
         return crafting;
     }
 

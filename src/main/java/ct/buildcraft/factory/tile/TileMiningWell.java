@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package ct.buildcraft.factory.blockEntity;
+package ct.buildcraft.factory.tile;
 
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.SafeTimeTracker;

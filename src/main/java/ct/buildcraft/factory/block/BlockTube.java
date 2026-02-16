@@ -7,8 +7,8 @@
 package ct.buildcraft.factory.block;
 
 import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.factory.blockEntity.TileMiner;
-import ct.buildcraft.factory.blockEntity.TilePump;
+import ct.buildcraft.factory.tile.TileMiner;
+import ct.buildcraft.factory.tile.TilePump;
 import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.misc.BlockUtil;
 import net.minecraft.core.BlockPos;

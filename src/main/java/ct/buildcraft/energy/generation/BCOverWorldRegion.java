@@ -1,27 +1,8 @@
 package ct.buildcraft.energy.generation;
 
-import java.util.List;
-import java.util.function.Consumer;
+public class BCOverWorldRegion/* extends Region */{
 
-import com.mojang.datafixers.util.Pair;
-
-import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.energy.BCEnergyBiomes;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.biome.Climate.ParameterPoint;
-import terrablender.api.ParameterUtils.Continentalness;
-import terrablender.api.ParameterUtils.Erosion;
-import terrablender.api.ParameterUtils.Weirdness;
-import terrablender.api.Region;
-import terrablender.api.RegionType;
-
-public class BCOverWorldRegion extends Region {
-
-	public static final ResourceLocation NAME = new ResourceLocation("buildcraft:overworld");
+/*	public static final ResourceLocation NAME = new ResourceLocation("buildcraft:overworld");
 
 	public BCOverWorldRegion(int weight) {
 		super(NAME, RegionType.OVERWORLD, weight);
@@ -33,9 +14,9 @@ public class BCOverWorldRegion extends Region {
 			BCEnergyBiomes.OIL_BIOME_REPLACEMENT.forEach((a) -> b.replaceBiome(a.getFirst(), BCEnergyBiomes.OIL_DESERT_KEY))
 /*			addMidSlice((a) -> {
 				b.replaceBiome(a.getFirst(), a.getSecond());
-			}, Weirdness.MID_SLICE_VARIANT_ASCENDING.parameter());*/);
+			}, Weirdness.MID_SLICE_VARIANT_ASCENDING.parameter());*///)*
 //		addMidSlice(mapper, Weirdness.MID_SLICE_VARIANT_ASCENDING.parameter());
-	}
+/*	}
 
 	private void addDesertOil(Registry<Biome> registry, Consumer<Pair<ParameterPoint, ResourceKey<Biome>>> mapper) {
 	}
@@ -64,5 +45,5 @@ public class BCOverWorldRegion extends Region {
 				Climate.Parameter.point(0.0F), p_187186_, p_187187_), p_187188_));
 		p_187181_.accept(Pair.of(Climate.parameters(p_187182_, p_187183_, p_187184_, p_187185_,
 				Climate.Parameter.point(1.0F), p_187186_, p_187187_), p_187188_));
-	}
+	}*/
 }
