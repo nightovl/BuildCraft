@@ -3,12 +3,13 @@ package ct.buildcraft.api.enums;
 import ct.buildcraft.api.core.IEngineType;
 
 import net.minecraft.util.StringRepresentable;
+import net.minecraftforge.common.IExtensibleEnum;
 
-public enum EnumEngineType implements IEngineType,StringRepresentable {
-    WOOD("core", "wood"),
-    STONE("energy", "stone"),
-    IRON("energy", "iron"),
-    CREATIVE("energy", "creative");
+public enum EnumEngineType implements IEngineType, StringRepresentable, IExtensibleEnum {
+    WOOD("buildcraftcore", "wood"),
+    STONE("buildcraftenergy", "stone"),
+    IRON("buildcraftenergy", "iron"),
+    CREATIVE("buildcraftenergy", "creative");
 
     public final String unlocalizedTag;
     public final String resourceLocation;
@@ -17,7 +18,7 @@ public enum EnumEngineType implements IEngineType,StringRepresentable {
 
     EnumEngineType(String mod, String loc) {
         unlocalizedTag = loc;
-        resourceLocation = "buildcraft" + mod + ":blocks/engine/inv/" + loc;
+        resourceLocation = mod + ":blocks/engine/inv/" + loc;
     }
 
     @Override
@@ -35,6 +36,12 @@ public enum EnumEngineType implements IEngineType,StringRepresentable {
             meta = 0;
         }
         return VALUES[meta];
+    }
+    
+    /*IExtensibleEnum*/
+    public static EnumEngineType create(String name, String mod, String loc)
+    {
+        throw new IllegalStateException("Enum not extended");
     }
 
 

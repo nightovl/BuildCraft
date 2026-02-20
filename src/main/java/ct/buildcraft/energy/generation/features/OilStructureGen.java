@@ -24,10 +24,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 public class OilStructureGen {
     /** Random number, used to differentiate generators */
@@ -65,7 +67,9 @@ public class OilStructureGen {
         int x = cx * 16 + 8 + rand.nextInt(16);
         int z = cz * 16 + 8 + rand.nextInt(16);
 
-        Holder<Biome> biome = world.getBiome(new BlockPos(x, 0, z));
+        Holder<Biome> biome = world.getBiome(new BlockPos(x, 0, z));//TODO
+        ServerChunkCache serverchunkcache = world.getLevel().getChunkSource();
+        ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
         ResourceLocation key = biome.unwrapKey().get().location();
 //        if(!"buildcraftenergy:oil_desert".equals(key.location().toString())) {
 //        	BCLog.logger.debug("OilGenFeature:fail");

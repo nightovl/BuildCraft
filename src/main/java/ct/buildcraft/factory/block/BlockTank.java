@@ -10,6 +10,7 @@ import ct.buildcraft.api.properties.BuildCraftProperties;
 import ct.buildcraft.api.transport.pipe.ICustomPipeConnection;
 import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
+import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -79,9 +80,8 @@ public class BlockTank extends BlockBCTile_Neptune implements ICustomPipeConnect
 	
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-		return 0;
-/*		return level.getBlockEntity(pos) instanceof TileTank tile ? 
-				(tile.getFluidForRender(0) instanceof FluidStackInterp f) ? f.fluid.getFluid().getFluidType().getLightLevel() : 0 : 0;*///TODO
+		return level.getBlockEntity(pos) instanceof TileTank tile ? 
+				(tile.getFluidForRender(0) instanceof FluidStackInterp f) ? f.fluid.getFluid().getFluidType().getLightLevel() : 0 : 0;///TODO
 	}
 
 	@Override
