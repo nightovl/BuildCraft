@@ -133,7 +133,7 @@ public class BCEnergyWorldGen {
 //    	getReplaceMentFromOverworldBiomeBuilder();
 //    	saveBiomeReplaceMent();
     	if(!loadBiomeReplaceMent()) {
-    		getReplaceMentFromOverworldBiomeBuilder();LightBlock
+    		getReplaceMentFromOverworldBiomeBuilder();
     		saveBiomeReplaceMent();
     	}
     }
