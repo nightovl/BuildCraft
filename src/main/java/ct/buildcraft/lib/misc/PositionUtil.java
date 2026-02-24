@@ -453,7 +453,7 @@ public class PositionUtil {
         final int az = Math.abs(difference.getZ());
 
         int count = ax + ay + az;
-        BlockPos current = from;
+        BlockPos.MutableBlockPos current = from.mutable();
         final int ddx = difference.getX() > 0 ? 1 : -1;
         final int ddy = difference.getY() > 0 ? 1 : -1;
         final int ddz = difference.getZ() > 0 ? 1 : -1;
@@ -472,17 +472,17 @@ public class PositionUtil {
             if (dx >= count) {
                 changed = true;
                 dx -= count;
-                current = current.offset(ddx, 0, 0);
+                current.move(ddx, 0, 0);
             }
             if (dy >= count) {
                 changed = true;
                 dy -= count;
-                current = current.offset(0, ddy, 0);
+                current.move(0, ddy, 0);
             }
             if (dz >= count) {
                 changed = true;
                 dz -= count;
-                current = current.offset(0, 0, ddz);
+                current.move(0, 0, ddz);
             }
 
             if (changed) {

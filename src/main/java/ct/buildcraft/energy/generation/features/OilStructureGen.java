@@ -20,16 +20,18 @@ import ct.buildcraft.lib.misc.RandUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.RandomState;
 
 public class OilStructureGen {
     /** Random number, used to differentiate generators */
@@ -42,6 +44,10 @@ public class OilStructureGen {
     	= CacheBuilder.newBuilder().expireAfterAccess(20, TimeUnit.SECONDS).build(CacheLoader.from(OilStructureGen::genCache));
     
     private static WorldGenLevel level;
+    
+    private static Climate.Sampler sampler;
+    
+    public static int worldHeight = 384;
 
     private enum GenType {
         LARGE,
@@ -62,6 +68,17 @@ public class OilStructureGen {
     /*this will not use the cache, only use for testing*/
     protected static List<OilGenStructure> getStructures(WorldGenLevel world, int cx, int cz, boolean log) {
         RandomSource rand = RandUtil.createRandomForChunk(world, cx, cz, MAGIC_GEN_NUMBER);
+        
+        ServerLevel serverlevel = level.getLevel();
+		DimensionType dimensionType = serverlevel.dimensionType();
+        worldHeight = dimensionType.height();
+        int bottomY = dimensionType.minY();
+        if (sampler == null) {
+            ServerChunkCache serverchunkcache = serverlevel.getChunkSource();
+            RandomState randomstate = serverchunkcache.randomState();
+            sampler = randomstate.sampler();
+        }
+        sampler.weirdness();
 
         // shift to world coordinates
         int x = cx * 16 + 8 + rand.nextInt(16);
@@ -188,9 +205,9 @@ public class OilStructureGen {
 
             // Generate a spring at the very bottom
             if (type == GenType.LARGE) {
-                structures.add(createTube(new BlockPos(x, 1, z), wellY, radius, Axis.Y));
-                if (BCCoreBlocks.SPRING != null) {
-                    structures.add(createSpring(new BlockPos(x, 0, z)));
+                structures.add(createTube(new BlockPos(x, bottomY+1, z), wellY, radius, Axis.Y));
+                if (BCCoreBlocks.SPRING.isPresent()) {
+                    structures.add(createSpring(new BlockPos(x, bottomY, z)));
                 }
             }
         }
@@ -231,7 +248,7 @@ public class OilStructureGen {
     }
 
     public static OilGenStructure createTendril(BlockPos center, int lakeRadius, int radius, RandomSource rand) {
-        BlockPos start = center.offset(-radius, 0, -radius);
+        BlockPos.MutableBlockPos start = center.mutable().move(-radius, 0, -radius);
         int diameter = radius * 2 + 1;
         boolean[][] pattern = new boolean[diameter][diameter];
 

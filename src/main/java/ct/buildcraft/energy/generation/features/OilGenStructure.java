@@ -13,7 +13,9 @@ import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -59,7 +61,6 @@ public abstract class OilGenStructure {
     }
 
     public static void setOil(WorldGenLevel world, BlockPos pos) {
-    	BCLog.logger.debug("OilGenStruecutre:generate oil for "+pos);
         world.setBlock(pos, crudeOil.createLegacyBlock(), 2);
         world.scheduleTick(pos, crudeOil.getType(), 0);
     }
@@ -74,7 +75,7 @@ public abstract class OilGenStructure {
         IS_FOR_LAKE {
             @Override
             public boolean canReplace(WorldGenLevel world, BlockPos pos) {
-                return ALWAYS.canReplace(world, pos);
+                return ALWAYS.canReplace(world, pos);//TODO
             }
         };
         public abstract boolean canReplace(WorldGenLevel world, BlockPos pos);
@@ -162,16 +163,17 @@ public abstract class OilGenStructure {
             this.depth = depth;
         }
 
-        public static PatternTerrainHeight create(BlockPos start, ReplaceType replaceType, boolean[][] pattern,
+        public static PatternTerrainHeight create(BlockPos.MutableBlockPos start, ReplaceType replaceType, boolean[][] pattern,
             int depth) {
-            BlockPos min = VecUtil.replaceValue(start, Axis.Y, 1);
-            BlockPos max = min.offset(pattern.length - 1, 255, pattern.length == 0 ? 0 : pattern[0].length - 1);
+            BlockPos.MutableBlockPos min = start.setY(1);
+            BlockPos.MutableBlockPos max = min.move(pattern.length - 1, 255, pattern.length == 0 ? 0 : pattern[0].length - 1);
             Box box = new Box(min, max);
             return new PatternTerrainHeight(box, replaceType, pattern, depth);
         }
 
         @Override
         protected void generateWithin(WorldGenLevel world, Box intersect) {
+        	MutableBlockPos pos = new MutableBlockPos();
             for (int x = intersect.min().getX(); x <= intersect.max().getX(); x++) {
                 int px = x - box.min().getX();
 
@@ -179,13 +181,14 @@ public abstract class OilGenStructure {
                     int pz = z - box.min().getZ();
 
                     if (pattern[px][pz]) {
-                        BlockPos upper = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE/*Maybe*/, new BlockPos(x, 0, z)).below();
+                        BlockPos.MutableBlockPos upper = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos.set(x, 0, z)).mutable().move(0, -1, 0);//TODO CHECK
+                        int h = upper.getY();
                         if (canReplaceForOil(world, upper)) {
                             for (int y = 0; y < 5; y++) {
-                                world.setBlock(upper.above(y), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                                world.setBlock(upper.setY(y+h), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                             }
                             for (int y = 0; y < depth; y++) {
-                                setOilIfCanReplace(world, upper.below(y));
+                                setOilIfCanReplace(world, upper.setY(h-y));
                             }
                         }
                     }
@@ -208,7 +211,6 @@ public abstract class OilGenStructure {
     }
 
     public static class Spout extends OilGenStructure {
-        // FIXME (AlexIIL): This won't support cubic chunks - we'll have to do this differently in compat
         // TODO: Use a terrain generator from mc terrain generation to get the height of the world
         // A hook will go in compat for help when using cubic chunks or a different type of terrain generator
         public final BlockPos start;
@@ -224,9 +226,8 @@ public abstract class OilGenStructure {
         }
 
         private static Box createBox(BlockPos start) {
-            // Only a block 1 x 256 x 1 -- that way we area only called once.
-            // FIXME: This 256 will need to be rethought for cubic chunk support
-            return new Box(start, VecUtil.replaceValue(start, Axis.Y, 256));
+            // Only a block 1 x level.getHeight()(default 384) x 1 -- that way we area only called once.
+            return new Box(start, VecUtil.replaceValue(start, Axis.Y, OilStructureGen.worldHeight));
         }
 
         @Override
@@ -240,7 +241,7 @@ public abstract class OilGenStructure {
                 if (state.isAir()) {
                     continue;
                 }
-                if (BlockUtil.getFluidWithoutFlowing(state) != Fluids.EMPTY) {//TO DEBUG!
+                if (BlockUtil.getFluidWithoutFlowing(state) != Fluids.EMPTY) {//TODO CHECK!
                     break;
                 }
                 if (state.getMaterial().blocksMotion()) {
@@ -290,7 +291,7 @@ public abstract class OilGenStructure {
         public void generate(WorldGenLevel world, int count) {
             BlockState state = BCCoreBlocks.SPRING.get().defaultBlockState();
             state = state.setValue(BlockSpring.SPRING_TYPE, EnumSpring.OIL);
-            BCLog.logger.debug("OilGenStruecutre:1 generate spring for "+pos);
+            //BCLog.logger.debug("OilGenStruecutre:1 generate spring for "+pos);
             world.setBlock(pos, state, 2);
             BlockEntity tile = world.getBlockEntity(pos);
             TileSpringOil spring;
@@ -300,10 +301,11 @@ public abstract class OilGenStructure {
             } else {
                 BCLog.logger.warn("[energy.gen.oil] Setting the blockstate didn't also set the tile at " + pos);
                 spring = new TileSpringOil(pos, state);
-/*                spring.setLevel(world);
-                world.setBlockEntity(spring);*/
+                ServerLevel level = world.getLevel();
+                spring.setLevel(level);
+                level.setBlockEntity(spring);
             }
-//          spring.totalSources = count;
+            spring.totalSources = count;
             if (BCLib.DEV) {
                 BCLog.logger.info("[energy.gen.oil] Generated TileSpringOil as " + System.identityHashCode(tile));
             }
