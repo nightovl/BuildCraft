@@ -10,6 +10,7 @@ import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.tile.TileQuarry;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
 import ct.buildcraft.lib.block.IBlockWithFacing;
+import ct.buildcraft.lib.misc.AdvancementUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -84,13 +85,6 @@ public class BlockQuarry extends BlockBCTile_Neptune implements IBlockWithFacing
     public boolean canBeRotated(LevelAccessor world, BlockPos pos, BlockState state) {
         return false;
     }
-    
-
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
-			CollisionContext p_60575_) {
-		return super.getCollisionShape(state, level, pos, p_60575_);
-	}
 
 	@Override
 	public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest,
@@ -111,7 +105,7 @@ public class BlockQuarry extends BlockBCTile_Neptune implements IBlockWithFacing
 	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		super.setPlacedBy(world, pos, state, placer, stack);
         if (placer instanceof Player) {
-//            AdvancementUtil.unlockAdvancement((Player) placer, ADVANCEMENT);
+        	AdvancementUtil.unlockAdvancement((Player) placer, ADVANCEMENT);
         }
 	}
 

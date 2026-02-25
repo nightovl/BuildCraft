@@ -69,7 +69,7 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
     private static final int[] REBUILD_DELAYS = { 16, 32, 64, 128, 256 };
 
     private final Tank tank = new Tank("tank", 2 * FluidType.BUCKET_VOLUME, this);
-    public final Set<Direction> openLogicalSides = EnumSet.copyOf(BlockFloodGate.CONNECTED_MAP.keySet());
+    public final Set<Direction> openSides = EnumSet.copyOf(BlockFloodGate.CONNECTED_MAP.keySet());
     public final Deque<BlockPos> queue = new ArrayDeque<>();
     private final Map<BlockPos, List<BlockPos>> paths = new HashMap<>();
     private int delayIndex = 0;
@@ -98,7 +98,7 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
         Set<BlockPos> checked = new HashSet<>();
         checked.add(worldPosition);
         List<BlockPos> nextPosesToCheck = new ArrayList<>();
-        for (Direction face : openLogicalSides) {
+        for (Direction face : openSides) {
             BlockPos offset = worldPosition.offset(face.getNormal());
             nextPosesToCheck.add(offset);
             paths.put(offset, ImmutableList.of(offset));
@@ -228,7 +228,7 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
         super.saveAdditional(nbt);
         byte b = 0;
         for (Direction face : Direction.values()) {
-            if (openLogicalSides.contains(face)) {
+            if (openSides.contains(face)) {
                 b |= 1 << face.get3DDataValue();
             }
         }
@@ -243,9 +243,9 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
             byte sides = ((NumericTag) open).getAsByte();
             for (Direction face : Direction.values()) {
                 if (((sides >> face.get3DDataValue()) & 1) == 1) {
-                    openLogicalSides.add(face);
+                    openSides.add(face);
                 } else {
-                    openLogicalSides.remove(face);
+                    openSides.remove(face);
                 }
             }
         } else if (open instanceof ByteArrayTag) {
@@ -254,9 +254,9 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
             BitSet bitSet = BitSet.valueOf(bytes);
             for (Direction face : Direction.values()) {
                 if (bitSet.get(face.get3DDataValue())) {
-                    openLogicalSides.add(face);
+                    openSides.add(face);
                 } else {
-                    openLogicalSides.remove(face);
+                    openSides.remove(face);
                 }
             }
         }
@@ -270,7 +270,7 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
         if (side == LogicalSide.SERVER) {
             if (id == NET_RENDER_DATA) {
                 // tank.writeToBuffer(buffer);
-                MessageUtil.writeEnumSet(buffer, openLogicalSides, Direction.class);
+                MessageUtil.writeEnumSet(buffer, openSides, Direction.class);
             }
         }
     }
@@ -282,9 +282,9 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
             if (id == NET_RENDER_DATA) {
                 // tank.readFromBuffer(buffer);
                 EnumSet<Direction> _new = MessageUtil.readEnumSet(buffer, Direction.class);
-                if (!_new.equals(openLogicalSides)) {
-                    openLogicalSides.clear();
-                    openLogicalSides.addAll(_new);
+                if (!_new.equals(openSides)) {
+                    openSides.clear();
+                    openSides.addAll(_new);
                     redrawBlock();
                 }
             }
@@ -302,7 +302,7 @@ public class TileFloodGate extends TileBC_Neptune implements IDebuggable {
     @Override
     public void getDebugInfo(List<String> left, List<String> right, Direction side) {
         left.add("fluid = " + tank.getDebugString());
-        left.add("open sides = " + openLogicalSides.stream().map(Enum::name).collect(Collectors.joining(", ")));
+        left.add("open sides = " + openSides.stream().map(Enum::name).collect(Collectors.joining(", ")));
         left.add("delay = " + getCurrentDelay());
         left.add("tick = " + tick);
         left.add("queue size = " + queue.size());

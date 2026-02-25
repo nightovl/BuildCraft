@@ -25,7 +25,6 @@ import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.VecUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,10 +34,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -183,7 +182,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
     }
 
     public void updateSnapshot() {
-//        tile.getWorldBC().profiler.startSection("init");
+        tile.getWorldBC().getProfiler().push("init");
         checkResults = new byte[
             getBuildingInfo().box.size().getX() *
                 getBuildingInfo().box.size().getY() *
@@ -220,7 +219,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
             )))
             .mapToInt(this::posToIndex)
             .toArray();
-//        tile.getWorldBC().profiler.endSection();
+        tile.getWorldBC().getProfiler().pop();
     }
 
     public void resourcesChanged() {
@@ -251,7 +250,8 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
     /**
      * @return true is building is finished, false otherwise
      */
-    public boolean tick() {
+    @SuppressWarnings("resource")
+	public boolean tick() {
     	Level level = tile.getWorldBC();
         if (level.isClientSide) {
             prevClientBreakTasks.clear();
@@ -293,17 +293,17 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
 
         boolean checkResultsChanged = false;
 
-//        tile.getWorldBC().profiler.startSection("scan");
+        tile.getWorldBC().getProfiler().push("scan");
         for (int i = 0; i < CHECKS_PER_TICK; i++) {
             if (check(indexToPos(currentCheckIndex))) {
                 checkResultsChanged = true;
             }
             currentCheckIndex = (currentCheckIndex + 1) % checkOrder.length;
         }
-//        tile.getWorldBC().profiler.endSection();
+        tile.getWorldBC().getProfiler().pop();
 
-//        tile.getWorldBC().profiler.startSection("remove tasks");
-//        tile.getWorldBC().profiler.startSection("break");
+        tile.getWorldBC().getProfiler().push("remove tasks");
+        tile.getWorldBC().getProfiler().push("break");
         for (Iterator<BreakTask> iterator = breakTasks.iterator(); iterator.hasNext(); ) {
             BreakTask breakTask = iterator.next();
             if (checkResults[posToIndex(breakTask.pos)] == CHECK_RESULT_CORRECT) {
@@ -311,8 +311,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                 cancelBreakTask(breakTask);
             }
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.startSection("place");
+        tile.getWorldBC().getProfiler().popPush("place");
         for (Iterator<PlaceTask> iterator = placeTasks.iterator(); iterator.hasNext(); ) {
             PlaceTask placeTask = iterator.next();
             if (checkResults[posToIndex(placeTask.pos)] == CHECK_RESULT_CORRECT) {
@@ -320,13 +319,13 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                 cancelPlaceTask(placeTask);
             }
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.endSection();
+        tile.getWorldBC().getProfiler().pop();
+        tile.getWorldBC().getProfiler().pop();
 
         boolean isDone = true;
 
-//        tile.getWorldBC().profiler.startSection("add tasks");
-//        tile.getWorldBC().profiler.startSection("break");
+        tile.getWorldBC().getProfiler().push("add tasks");
+        tile.getWorldBC().getProfiler().push("break");
         if (tile.canExcavate()) {
             Set<Integer> breakTasksIndexes = breakTasks.stream()
                 .map(breakTask -> posToIndex(breakTask.pos))
@@ -352,8 +351,8 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
         } else {
             leftToBreak = 0;
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.startSection("place");
+        tile.getWorldBC().getProfiler().pop();
+        tile.getWorldBC().getProfiler().push("place");
         {
             Set<Integer> placeTasksIndexes = placeTasks.stream()
                 .map(placeTask -> posToIndex(placeTask.pos))
@@ -390,10 +389,10 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                     .forEach(placeTasks::add);
             }
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.endSection();
+        tile.getWorldBC().getProfiler().pop();
+        tile.getWorldBC().getProfiler().pop();
 
-//        tile.getWorldBC().profiler.startSection("do tasks");
+        tile.getWorldBC().getProfiler().push("do tasks");
         long max = Math.min(
             (long) (
                 MAX_POWER_PER_TICK *
@@ -402,7 +401,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
             ),
             MAX_POWER_PER_TICK
         );
-//        tile.getWorldBC().profiler.startSection("break");
+        tile.getWorldBC().getProfiler().push("break");
         if (!breakTasks.isEmpty()) {
             for (Iterator<BreakTask> iterator = breakTasks.iterator(); iterator.hasNext(); ) {
                 BreakTask breakTask = iterator.next();
@@ -418,7 +417,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                     )
                 );
                 if (breakTask.power >= target) {
-//                    tile.getWorldBC().profiler.startSection("work");
+                    tile.getWorldBC().getProfiler().push("work");
                     tile.getWorldBC().destroyBlockProgress(
                         breakTask.pos.hashCode(),
                         breakTask.pos,
@@ -430,7 +429,7 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                         new ItemStack(Items.DIAMOND_PICKAXE),
                         tile.getOwner()
                     );
-//                    tile.getWorldBC().profiler.endSection();
+                    tile.getWorldBC().getProfiler().pop();
                     if (!stacks.isPresent()) {
                         cancelBreakTask(breakTask);
                     }
@@ -439,18 +438,17 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                     }
                     iterator.remove();
                 } else {
-//                    tile.getWorldBC().profiler.startSection("work");
+                    tile.getWorldBC().getProfiler().push("work");
                     tile.getWorldBC().destroyBlockProgress(
                         breakTask.pos.hashCode(),
                         breakTask.pos,
                         (int) ((breakTask.power * 9) / target)
                     );
-//                    tile.getWorldBC().profiler.endSection();
+                    tile.getWorldBC().getProfiler().pop();
                 }
             }
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.startSection("place");
+        tile.getWorldBC().getProfiler().popPush("place");
         if (!placeTasks.isEmpty()) {
             for (Iterator<PlaceTask> iterator = placeTasks.iterator(); iterator.hasNext(); ) {
                 PlaceTask placeTask = iterator.next();
@@ -463,11 +461,11 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                     )
                 );
                 if (placeTask.power >= target) {
-//                    tile.getWorldBC().profiler.startSection("work");
+                    tile.getWorldBC().getProfiler().push("work");
                     if (!doPlaceTask(placeTask)) {
                         cancelPlaceTask(placeTask);
                     }
-//                    tile.getWorldBC().profiler.endSection();
+                    tile.getWorldBC().getProfiler().pop();
                     if (check(placeTask.pos)) {
                         checkResultsChanged = true;
                     }
@@ -475,8 +473,8 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
                 }
             }
         }
-//        tile.getWorldBC().profiler.endSection();
-//        tile.getWorldBC().profiler.endSection();
+        tile.getWorldBC().getProfiler().pop();
+        tile.getWorldBC().getProfiler().pop();
 
         if (checkResultsChanged) {
             afterChecks();

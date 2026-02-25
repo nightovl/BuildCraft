@@ -3,6 +3,7 @@ package ct.buildcraft.core.item;
 import ct.buildcraft.api.blocks.CustomRotationHelper;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.tools.IToolWrench;
+import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.core.BCCore;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.tile.TileTank;
@@ -47,15 +48,16 @@ public class ItemWrench extends Item implements IToolWrench{
 		//DEBUG
         var f = world.getBlockEntity(pos);
       //  if(f!=null)
-        BCLog.logger.info(""+(f==null));
-		if(world.getBlockEntity(pos) instanceof TileTank tile) {
-			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench"+tile.tank.getFluidType().getFluidType().getDescriptionId());
+        BCLog.logger.info("isTile? :"+(f!=null));
+		if(world.getBlockEntity(pos) instanceof TileBuilder tile) {
+			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench :"+(tile.path != null));
 			return InteractionResult.CONSUME;
 		}//*/
         InteractionResult result = CustomRotationHelper.INSTANCE.attemptRotateBlock(world, pos, state, side);
 
         if (result == InteractionResult.SUCCESS) {
             wrenchUsed(player, hand, player.getItemInHand(hand), BlockHitResult.miss(c, side, pos));
+            //world.updateNeighbourForOutputSignal(pos, state.getBlock());
         }
         SoundUtil.playSlideSound(world, pos, state, result);
 
@@ -70,7 +72,7 @@ public class ItemWrench extends Item implements IToolWrench{
 
 	@Override
 	public void wrenchUsed(Player player, InteractionHand hand, ItemStack wrench, HitResult rayTrace) {
-//        AdvancementUtil.unlockAdvancement(player, ADVANCEMENT);
+//        AdvancementUtil.unlockAdvancement(player, ADVANCEMENT);/TODO
         player.swingingArm = hand;
 	}
 

@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.api.core.BCDebugging;
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.IAreaProvider;
 import ct.buildcraft.api.mj.MjAPI;
@@ -75,9 +74,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Message;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.level.material.Fluid;
@@ -389,8 +388,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
         miningBox.reset();
         int minY = max.getY() - 1 - BCCoreConfig.miningMaxDepth;
         if (level.isOutsideBuildHeight(new BlockPos(min.getX(), minY, min.getZ()))) {
-            // TODO: Ask cubic chunks's world for the actual minimum height, rather than just assume 0!
-            minY = 0;
+            minY = level.getMinBuildHeight();
         }
         miningBox.setMin(new BlockPos(min.getX() + 1, minY, min.getZ() + 1));
         miningBox.setMax(new BlockPos(max.getX() - 1, max.getY() - 1, max.getZ() - 1));
@@ -460,7 +458,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-//        BCBuildersEventDist.INSTANCE.validateQuarry(this);
+//        BCBuildersEventDist.INSTANCE.validateQuarry(this);//TODO
     }
 
     @Override

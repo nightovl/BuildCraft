@@ -337,7 +337,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     }
 
     public InteractionResult onActivated(Player player, InteractionHand hand, BlockHitResult hit) {
-		return InteractionResult.PASS;
+		return tankManager.onActivated(player, worldPosition, hand);
     }
 
     //Only called when neighbor tile changed

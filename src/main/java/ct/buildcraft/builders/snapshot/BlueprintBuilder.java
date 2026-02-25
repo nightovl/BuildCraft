@@ -118,7 +118,7 @@ public class BlueprintBuilder extends SnapshotBuilder<ITileForBlueprintBuilder> 
                     ) &&
                     FluidUtilBC.mergeSameFluids(requiredFluids).stream()
                         .allMatch(stack ->
-                            FluidUtilBC.areFluidStackEqual(stack, tile.getTankManager().drain(stack, FluidAction.EXECUTE))
+                            FluidUtilBC.areFluidStackEqual(stack, tile.getTankManager().drain(stack, FluidAction.SIMULATE))
                         )
             )
                 ?

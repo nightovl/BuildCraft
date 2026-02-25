@@ -10,6 +10,7 @@ import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.PipeEventHandler;
 import ct.buildcraft.api.transport.pipe.PipeEventItem;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
+import ct.buildcraft.transport.pipe.Pipe;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 
@@ -21,7 +22,7 @@ public class FilterEventHandler {
                 continue;
             }
             IPipe neighbour = event.holder.getNeighbourPipe(side);
-            if (neighbour == null) {
+            if (neighbour == Pipe.EMPTY) {
                 continue;
             }
             PipePluggable neighbourPlug = neighbour.getHolder().getPluggable(side.getOpposite());

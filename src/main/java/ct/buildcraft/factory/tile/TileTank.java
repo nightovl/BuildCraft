@@ -27,10 +27,9 @@ import ct.buildcraft.lib.fluid.FluidSmoother.FluidStackInterp;
 import ct.buildcraft.lib.fluid.Tank;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.CapUtil;
+import ct.buildcraft.lib.misc.FluidUtilBC;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
-
-import ct.buildcraft.lib.misc.FluidUtilBC;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -42,7 +41,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -160,11 +158,9 @@ public class TileTank extends TileBC_Neptune implements IDebuggable, IFluidHandl
 	public InteractionResult onActivated(Player player, InteractionHand hand, BlockHitResult hit) {
         int amountBefore = tank.getFluidAmount();
         isPlayerInteracting = true;
-        Level level = player.level;
-//        boolean didChange = FluidUtil.interactWithFluidHandler(player, hand, this);
         boolean didChange = FluidUtilBC.onTankActivated(player, worldPosition, hand, this);
         isPlayerInteracting = false;
-        if (didChange && !level.isClientSide && amountBefore < tank.getFluidAmount()) {
+        if (didChange && !player.level.isClientSide && amountBefore < tank.getFluidAmount()) {
             AdvancementUtil.unlockAdvancement(player, ADVANCEMENT_STORE_FLUIDS);
         }
         return didChange ? InteractionResult.SUCCESS : InteractionResult.PASS;

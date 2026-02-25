@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.IPathProvider;
 import ct.buildcraft.api.enums.EnumOptionalSnapshotType;
@@ -283,6 +284,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     		updateBasePoses();
     		shouldInit = false;
     	}
+
 //        level.profiler.startSection("main");
 //        level.profiler.startSection("power");
         battery.tick(getLevel(), getBlockPos());
@@ -343,7 +345,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
     @Override
     public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide side, NetworkEvent.Context ctx) throws IOException {
-        super.readPayload(id, buffer, side, ctx);
+    	super.readPayload(id, buffer, side, ctx);
         if (side == LogicalSide.CLIENT) {
             if (id == NET_RENDER_DATA) {
                 path = new ArrayList<>();
@@ -426,10 +428,16 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 .ifPresent(builder -> builder.deserializeNBT(nbt.getCompound("builder")));
         }
 	}
+	
+    @Override
+	public void onLoad() {
+		super.onLoad();
+		this.onSlotChange(invSnapshot, 0, invSnapshot.getStackInSlot(0), invSnapshot.getStackInSlot(0));//TODO:find a better way
+	}
 
     // Rendering
 
-    @OnlyIn(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
     public Box getBox() {
         return currentBox;
     }

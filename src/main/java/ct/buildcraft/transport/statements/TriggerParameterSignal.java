@@ -28,6 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -126,8 +128,8 @@ public class TriggerParameterSignal implements IStatementParameter {
         if (colour == null) {
             return Component.empty();
         }
-        return (Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive")));
-    //        ColourUtil.getTextFullTooltip(colour));
+        MutableComponent result = Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive"));
+        return colour == null ? result : result.withStyle(Style.EMPTY.withColor(colour.getTextColor()));
     }
 
     @Override

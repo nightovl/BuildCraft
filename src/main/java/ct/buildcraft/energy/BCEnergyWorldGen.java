@@ -134,8 +134,8 @@ public class BCEnergyWorldGen {
     public static void init() {
 //		BiomeManager.addAdditionalOverworldBiomes(OIL_DEEP_OCEAN_KEY);
 //		BiomeManager.addAdditionalOverworldBiomes(OIL_DESERT_KEY);
-		BiomeManager.addBiome(BiomeType.DESERT, new BiomeEntry(OIL_DESERT_KEY, 10));
-		BiomeManager.addBiome(BiomeType.DESERT_LEGACY, new BiomeEntry(OIL_DESERT_KEY, 10));
+		BiomeManager.addBiome(BiomeType.DESERT, new BiomeEntry(OIL_DESERT_KEY, 10));//USELESS
+		BiomeManager.addBiome(BiomeType.DESERT_LEGACY, new BiomeEntry(OIL_DESERT_KEY, 10));//USELESS
 		
 	}
     

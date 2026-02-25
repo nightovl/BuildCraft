@@ -27,7 +27,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
@@ -84,7 +83,7 @@ public class OilStructureGen {
         int x = cx * 16 + 8 + rand.nextInt(16);
         int z = cz * 16 + 8 + rand.nextInt(16);
 
-        Holder<Biome> biome = world.getBiome(new BlockPos(x, seaLevel, z));
+        Holder<Biome> biome = world.getBiome(new BlockPos(x, 0, z));//TODO
         ResourceLocation key = biome.unwrapKey().get().location();
 //        if(!"buildcraftenergy:oil_desert".equals(key.location().toString())) {
 //        	BCLog.logger.debug("OilGenFeature:fail");

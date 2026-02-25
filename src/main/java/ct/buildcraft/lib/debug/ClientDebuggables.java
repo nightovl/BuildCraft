@@ -29,14 +29,14 @@ public class ClientDebuggables {
 
     @Nullable
     public static IDebuggable getDebuggableObject(HitResult mouseOver) {
+        if (mouseOver == null) {
+            return null;
+        }
         Minecraft mc = Minecraft.getInstance();
         if (mc.options.reducedDebugInfo().get() ||
             mc.player.isReducedDebugInfo() ||
             !mc.options.renderDebug ||
             !ItemDebugger.isShowDebugInfo(mc.player)) {
-            return null;
-        }
-        if (mouseOver == null) {
             return null;
         }
         HitResult.Type type = mouseOver.getType();

@@ -80,7 +80,7 @@ public class FluidUtilBC {
                     found = true;
                 }
             }
-            if (!found) {
+            if (!found&&!toAdd.isEmpty()) {
                 stacks.add(toAdd.copy());
             }
         });

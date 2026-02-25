@@ -116,7 +116,7 @@ public class BCDebugging {
             log.append("=true\" to your launch config as a VM argument (").append(type).append(").");
             BCLog.logger.info(log.toString());
         }
-        return false;
+        return true;//TODO
     }
 
     private static String getProp(String string) {

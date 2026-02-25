@@ -14,7 +14,9 @@ import java.util.Map;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
+
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
@@ -40,8 +42,8 @@ public enum DetachedRenderer {
         }
 
         @Override
-        public void glPre(PoseStack pose, Matrix4f matrix, Camera camera) {
-            if (pre != null) pre.glPre(pose, matrix, camera);
+        public void glPre(PoseStack pose, Matrix4f matrix, float partialTicks) {
+            if (pre != null) pre.glPre(pose, matrix, partialTicks);
         }
 
         @Override
@@ -52,7 +54,7 @@ public enum DetachedRenderer {
 
     @FunctionalInterface
     public interface IGlPre {
-        void glPre(PoseStack pose, Matrix4f matrix, Camera camera);
+        void glPre(PoseStack pose, Matrix4f matrix, float partialTicks);
     }
 
     @FunctionalInterface
@@ -77,12 +79,12 @@ public enum DetachedRenderer {
         renders.get(type).add(renderer);
     }
 
-    public void renderWorldLastEvent(PoseStack pose, Matrix4f matrix, Player player, float partialTicks, Camera camera) {
+    public void renderWorldLastEvent(PoseStack pose, Matrix4f matrix, Player player, float partialTicks) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         for (RenderMatrixType type : RenderMatrixType.values()) {
             List<IDetachedRenderer> rendersForType = this.renders.get(type);
             if (rendersForType.isEmpty()) continue;
-            type.glPre(pose, matrix, camera);
+            type.glPre(pose, matrix, partialTicks);
             for (IDetachedRenderer render : rendersForType) {
                 render.render(pose, matrix, player, partialTicks);
             }
@@ -91,15 +93,12 @@ public enum DetachedRenderer {
 
     }
 
-    public static void fromWorldOriginPre(PoseStack pose, Matrix4f matrix, Camera camera) {
+    public static void fromWorldOriginPre(PoseStack pose, Matrix4f matrix, float partialTicks) {
     	pose.pushPose();
-
+    	Minecraft mc = Minecraft.getInstance();
+    	Camera camera = mc.gameRenderer.getMainCamera();
         Vec3 diff = Vec3.ZERO;
         diff = diff.subtract(camera.getPosition());
-//        diff = diff.subtract(player.getEyePosition(partialTicks));
-//        diff = diff.add(0, player.getEyeHeight() - Player.CROUCH_BB_HEIGHT, 0);
-        
- //       BCLog.logger.debug("yo " + diff.y);
         pose.translate(diff.x, diff.y, diff.z);
     }
 
