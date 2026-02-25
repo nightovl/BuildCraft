@@ -1,20 +1,18 @@
 package ct.buildcraft.core.item;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
+
 import ct.buildcraft.api.items.IItemFluidShard;
 import ct.buildcraft.core.BCCore;
-import ct.buildcraft.core.client.render.RenderFragileItem;
 import ct.buildcraft.lib.fluid.BCFluid;
 import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
@@ -27,7 +25,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -53,8 +50,6 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
         // Never allow this to be displayed in a creative tab -- we don't want to list every single fluid...
     }
-    
-	
 
 	@Override
 	public String getDescriptionId() {
@@ -226,16 +221,5 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
 		public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
 			return false;
 		}
-    }
-    
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-      consumer.accept(new IClientItemExtensions() {
-
-        @Override
-        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-          return RenderFragileItem.INSTANCE;
-        }
-      });
     }
 }

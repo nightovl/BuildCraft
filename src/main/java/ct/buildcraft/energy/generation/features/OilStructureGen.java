@@ -3,6 +3,7 @@ package ct.buildcraft.energy.generation.features;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -14,26 +15,24 @@ import com.google.common.collect.ImmutableList;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergyConfig;
+import ct.buildcraft.energy.BCEnergyWorldGen;
 import ct.buildcraft.energy.generation.features.OilGenStructure.GenByPredicate;
 import ct.buildcraft.energy.generation.features.OilGenStructure.ReplaceType;
 import ct.buildcraft.lib.misc.RandUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.RandomState;
 
 public class OilStructureGen {
@@ -50,7 +49,9 @@ public class OilStructureGen {
     
     private static Climate.Sampler sampler;
     
-    public static int worldHeight = 384;
+    public static int worldHeight = -1;//384
+    public static int seaLevel = -1;//63
+    public static int bottomY = -1;//-64
 
     private enum GenType {
         LARGE,
@@ -60,7 +61,7 @@ public class OilStructureGen {
     }
     //TODO change to Lambda
     private static List<OilGenStructure> genCache(int key){
-    	return getStructures(level, key&0x0000FFFF, key&0xFFFF0000, false);
+    	return getStructures(level, key&0x0000FFFF, (key>>16)&0x0000FFFF, false);
     }
     
     public static List<OilGenStructure> getStructures(WorldGenLevel world, int cx, int cz) {
@@ -70,32 +71,28 @@ public class OilStructureGen {
 
     /*this will not use the cache, only use for testing*/
     protected static List<OilGenStructure> getStructures(WorldGenLevel world, int cx, int cz, boolean log) {
-        RandomSource rand = RandUtil.createRandomForChunk(world, cx, cz, MAGIC_GEN_NUMBER);
+        Random rand = RandUtil.createRandomForChunk(world, cx, cz, MAGIC_GEN_NUMBER);
         
-        ServerLevel serverlevel = level.getLevel();
-		DimensionType dimensionType = serverlevel.dimensionType();
-        worldHeight = dimensionType.height();
-        int bottomY = dimensionType.minY();
-        if (sampler == null) {
-            ServerChunkCache serverchunkcache = serverlevel.getChunkSource();
-            RandomState randomstate = serverchunkcache.randomState();
-            sampler = randomstate.sampler();
+        ServerLevel serverlevel = world.getLevel();
+        if(worldHeight == -1) {
+        	DimensionType dimensionType = serverlevel.dimensionType();
+        	worldHeight = dimensionType.height();
+        	seaLevel = serverlevel.getSeaLevel();  
+        	bottomY = dimensionType.minY();
         }
-        sampler.weirdness();
-
         // shift to world coordinates
         int x = cx * 16 + 8 + rand.nextInt(16);
         int z = cz * 16 + 8 + rand.nextInt(16);
 
-        Holder<Biome> biome = world.getBiome(new BlockPos(x, 0, z));
+        Holder<Biome> biome = world.getBiome(new BlockPos(x, seaLevel, z));
         ResourceLocation key = biome.unwrapKey().get().location();
 //        if(!"buildcraftenergy:oil_desert".equals(key.location().toString())) {
 //        	BCLog.logger.debug("OilGenFeature:fail");
 //        	return ImmutableList.of();
 //        }
 
-        // Do not generate oil in excluded biomes
-        boolean isExcludedBiome = BCEnergyConfig.excludedBiomes.contains(key);
+        // Do nsot generate oil in excluded biomes
+        boolean isExcludedBiome = BCEnergyConfig.excludedBiomes.contains(key);//TODO
         if (isExcludedBiome/* == BCEnergyConfig.excludedBiomesIsBlackList*/) {
             if (DEBUG_OILGEN_BASIC & log){//log) {
                 BCLog.logger.info(
@@ -115,14 +112,28 @@ public class OilStructureGen {
             }
             return ImmutableList.of();
         }
+        
 
         boolean oilBiome = BCEnergyConfig.surfaceDepositBiomes.contains(key);
 
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= BCEnergyConfig.oilWellGenerationRate;
-        if (BCEnergyConfig.excessiveBiomes.contains(key)) {
-            bonus *= 30.0;
+        if (BCEnergyWorldGen.isTerraBlenderLoaded&&false) {
+	        if (BCEnergyConfig.excessiveBiomes.contains(key))
+	            bonus *= 30.0;
         }
+	    else if(BCEnergyConfig.excessiveVanillaBiomes.contains(key)){
+	        if (sampler == null) {
+	            ServerChunkCache serverchunkcache = serverlevel.getChunkSource();
+	            RandomState randomstate = serverchunkcache.randomState();
+	            sampler = randomstate.sampler();
+	        }
+	        DensityFunction.SinglePointContext densityfunction$singlepointcontext = new DensityFunction.SinglePointContext(x&0xFFFFFFFC, seaLevel&0xFFFFFFFC, z&0xFFFFFFFC);
+	        boolean flag = sampler.weirdness().compute(densityfunction$singlepointcontext) > 0;
+	        if(flag) {
+	        	bonus *= 30.0;
+	        }
+	    }
         final GenType type;
         if (rand.nextDouble() <= BCEnergyConfig.largeOilGenProb * bonus) {
             // 0.04%
@@ -142,7 +153,7 @@ public class OilStructureGen {
             }
             return ImmutableList.of();
         }
-        if (/*DEBUG_OILGEN_BASIC*/false & log) {
+        if (DEBUG_OILGEN_BASIC & true) {
             BCLog.logger.info(
                 "[energy.oilgen] Generating an oil well (" + type.name().toLowerCase(Locale.ROOT)
                     + ") in " + toStr(world) + " chunk " + cx + ", " + cz + " at " + x + ", " + z
@@ -162,11 +173,11 @@ public class OilStructureGen {
             lakeRadius = 2;
             tendrilRadius = 5 + rand.nextInt(10);
         }
-        structures.add(createTendril(new BlockPos(x, 62, z), lakeRadius, tendrilRadius, rand));
+        structures.add(createTendril(new BlockPos(x, seaLevel -1, z), lakeRadius, tendrilRadius, rand));
 
         if (type != GenType.LAKE) {
             // Generate a spherical cave deposit
-            int wellY = 20 + rand.nextInt(10);
+            int wellY = bottomY + 20 + rand.nextInt(10);
 
             int radius;
             if (type == GenType.LARGE) {
@@ -248,7 +259,7 @@ public class OilStructureGen {
         return new GenByPredicate(box, ReplaceType.ALWAYS, tester);
     }
 
-    public static OilGenStructure createTendril(BlockPos center, int lakeRadius, int radius, RandomSource rand) {
+    public static OilGenStructure createTendril(BlockPos center, int lakeRadius, int radius, Random rand) {
         BlockPos.MutableBlockPos start = center.mutable().move(-radius, 0, -radius);
         int diameter = radius * 2 + 1;
         boolean[][] pattern = new boolean[diameter][diameter];
@@ -286,7 +297,7 @@ public class OilStructureGen {
         return OilGenStructure.PatternTerrainHeight.create(start, ReplaceType.IS_FOR_LAKE, pattern, depth);
     }
 
-    private static void fillPatternIfProba(RandomSource rand, float proba, int x, int z, boolean[][] pattern) {
+    private static void fillPatternIfProba(Random rand, float proba, int x, int z, boolean[][] pattern) {
         if (rand.nextFloat() <= proba) {
             pattern[x][z] = isSet(pattern, x, z - 1) | isSet(pattern, x, z + 1) //
                 | isSet(pattern, x - 1, z) | isSet(pattern, x + 1, z);

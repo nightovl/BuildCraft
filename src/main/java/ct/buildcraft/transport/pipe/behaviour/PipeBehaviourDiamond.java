@@ -6,31 +6,28 @@
 
 package ct.buildcraft.transport.pipe.behaviour;
 
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.network.NetworkHooks;
-
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.PipeBehaviour;
-
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
-import ct.buildcraft.transport.client.gui.MenuPipeDiamond;
 import ct.buildcraft.transport.client.render.RenderPipeHolder;
+import ct.buildcraft.transport.container.ContainerDiamondPipe;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.network.NetworkHooks;
 
 public abstract class PipeBehaviourDiamond extends PipeBehaviour implements MenuProvider{
 
@@ -101,14 +98,14 @@ public abstract class PipeBehaviourDiamond extends PipeBehaviour implements Menu
     public boolean onPipeActivate(Player player, BlockHitResult trace, Level level,
         EnumPipePart part) {
         if (!level.isClientSide()) {
-        	NetworkHooks.openScreen((ServerPlayer)player, this);
+        	NetworkHooks.openScreen((ServerPlayer)player, this, pipe.getHolder().getPipePos());
         }
         return true;
     }
     
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuPipeDiamond(id, inventory, filters, ContainerLevelAccess.create(pipe.getHolder().getPipeWorld(), pipe.getHolder().getPipePos()));
+		return new ContainerDiamondPipe(id, inventory, filters, this);
 	}
 
 	@Override

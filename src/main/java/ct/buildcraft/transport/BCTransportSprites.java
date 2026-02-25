@@ -7,17 +7,14 @@
 package ct.buildcraft.transport;
 
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 
-import ct.buildcraft.api.transport.pipe.PipeDefinition;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
 import ct.buildcraft.lib.misc.ColourUtil;
 import ct.buildcraft.transport.client.model.PipeBaseModelGenStandard;
 import ct.buildcraft.transport.pipe.PipeRegistry;
 import ct.buildcraft.transport.pipe.behaviour.PipeBehaviourEmzuli.SlotIndex;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;

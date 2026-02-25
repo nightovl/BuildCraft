@@ -10,10 +10,9 @@ import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerFiltered;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager.EnumAccess;
-import ct.buildcraft.transport.BCTransportBlocks;
-import ct.buildcraft.transport.client.gui.MenuFilteredBuffer;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
-
+import ct.buildcraft.transport.BCTransportBlocks;
+import ct.buildcraft.transport.container.ContainerFilteredBuffer_BC8;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -38,7 +37,7 @@ public class TileFilteredBuffer extends TileBC_Neptune implements MenuProvider{
     
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuFilteredBuffer(id, inventory, invFilter, invMain, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerFilteredBuffer_BC8(id, inventory, invFilter, invMain, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

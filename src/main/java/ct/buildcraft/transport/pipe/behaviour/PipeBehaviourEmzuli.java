@@ -26,9 +26,8 @@ import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.transport.BCTransportStatements;
-import ct.buildcraft.transport.client.gui.MenuPipeEmzuli;
+import ct.buildcraft.transport.container.ContainerEmzuliPipe_BC8;
 import ct.buildcraft.transport.statements.ActionExtractionPreset;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,8 +37,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -83,7 +80,7 @@ public class PipeBehaviourEmzuli extends PipeBehaviourWood implements MenuProvid
     private final EnumSet<SlotIndex> activeSlots;
     private final byte[] activatedTtl = new byte[SlotIndex.VALUES.length];
     private SlotIndex currentSlot = null;
-    private ContainerData data = new ContainerData() {
+/*    private ContainerData data = new ContainerData() {
 		@Override
 		public int get(int index) {
 			DyeColor color = slotColours.get(SlotIndex.values()[index]);
@@ -100,7 +97,7 @@ public class PipeBehaviourEmzuli extends PipeBehaviourWood implements MenuProvid
 		public int getCount() {
 			return 4;
 		}
-    };
+    };*/
 
     private final IStackFilter filter = this::filterMatches;
 
@@ -259,7 +256,7 @@ public class PipeBehaviourEmzuli extends PipeBehaviourWood implements MenuProvid
     
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuPipeEmzuli(id, inventory, invFilters, data, ContainerLevelAccess.create(pipe.getHolder().getPipeWorld(), pipe.getHolder().getPipePos()));
+		return new ContainerEmzuliPipe_BC8(id, inventory, invFilters, this);
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import ct.buildcraft.lib.client.render.MarkerRenderer;
 import ct.buildcraft.lib.client.render.fluid.FluidRenderer;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry;
+import ct.buildcraft.lib.debug.BCAdvDebugging;
 import ct.buildcraft.lib.debug.ClientDebuggables;
 import ct.buildcraft.lib.item.ItemDebugger;
 import ct.buildcraft.lib.marker.MarkerCache;
@@ -185,7 +186,7 @@ public class BCLibEventDist {
     @SubscribeEvent
     public static void serverTick(ServerTickEvent event) {
         if (event.phase == Phase.END) {
-//            BCAdvDebugging.INSTANCE.onServerPostTick();
+            BCAdvDebugging.INSTANCE.onServerPostTick();
             MessageUtil.postServerTick();
         }
     }

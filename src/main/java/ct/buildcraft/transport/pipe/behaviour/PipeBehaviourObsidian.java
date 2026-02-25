@@ -94,7 +94,7 @@ public class PipeBehaviourObsidian extends PipeBehaviour implements IMjRedstoneR
         }
         Direction openFace = getOpenFace();
         if (openFace != null) {
-            trySuckEntity(entity, openFace, Long.MAX_VALUE, FluidAction.SIMULATE);
+            trySuckEntity(entity, openFace, Long.MAX_VALUE, FluidAction.EXECUTE);
         }
     }
 
@@ -168,7 +168,7 @@ public class PipeBehaviourObsidian extends PipeBehaviour implements IMjRedstoneR
             }
             ItemStack extracted = transactor.extract(StackFilter.ALL, 1, max, simulate == FluidAction.SIMULATE);
             if (!extracted.isEmpty()) {
-                if (simulate == FluidAction.EXECUTE) {//DEBUG
+                if (simulate == FluidAction.EXECUTE) {
                     flowItem.insertItemsForce(extracted, faceFrom, null, INSERT_SPEED);
                 }
                 return power - powerReqPerItem * extracted.getCount();

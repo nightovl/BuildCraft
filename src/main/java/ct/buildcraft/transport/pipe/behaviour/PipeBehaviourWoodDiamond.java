@@ -23,8 +23,7 @@ import ct.buildcraft.lib.inventory.filter.StackFilter;
 import ct.buildcraft.lib.misc.EntityUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
-import ct.buildcraft.transport.client.gui.MenuPipeDiawood;
-
+import ct.buildcraft.transport.container.ContainerDiamondWoodPipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +36,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -145,8 +143,7 @@ public class PipeBehaviourWoodDiamond extends PipeBehaviourWood implements MenuP
             }
         }
         if (!player.level.isClientSide()) {
-        	NetworkHooks.openScreen((ServerPlayer)player, this);
- //           BCTransportGuis.PIPE_DIAMOND_WOOD.openGui(player, pipe.getHolder().getPipePos());
+        	NetworkHooks.openScreen((ServerPlayer)player, this, pipe.getHolder().getPipePos());
         }
         return true;
     }
@@ -259,7 +256,7 @@ public class PipeBehaviourWoodDiamond extends PipeBehaviourWood implements MenuP
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new MenuPipeDiawood(id, inventory, filters, modeData, modeData, ContainerLevelAccess.create(pipe.getHolder().getPipeWorld(), pipe.getHolder().getPipePos()));
+		return new ContainerDiamondWoodPipe(id, inventory, filters, this);
 	}
 
 	@Override

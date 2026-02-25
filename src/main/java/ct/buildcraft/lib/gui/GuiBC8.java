@@ -10,14 +10,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.gui.json.BuildCraftJsonGui;
 import ct.buildcraft.lib.gui.json.InventorySlotHolder;
 import ct.buildcraft.lib.gui.ledger.LedgerHelp;
-import ct.buildcraft.lib.gui.ledger.LedgerOwnership;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
 import ct.buildcraft.lib.misc.GuiUtil;
@@ -106,7 +104,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
 
     // Gui -- double -> int
 
-    public void drawTexturedModalRect(double posX, double posY, double textureX, double textureY, double width,
+    public void drawTexturedModalRect(PoseStack pose, double posX, double posY, double textureX, double textureY, double width,
         double height) {
         int x = Mth.floor(posX);
         int y = Mth.floor(posY);
@@ -114,7 +112,7 @@ public abstract class GuiBC8<C extends MenuBC_Neptune> extends AbstractContainer
         int v = Mth.floor(textureY);
         int w = Mth.floor(width);
         int h = Mth.floor(height);
-        drawTexturedModalRect(x, y, u, v, w, h);
+        blit(pose, x, y, u, v, w, h);
     }
 
     public void drawString(PoseStack pose, Font fontRenderer, String text, double x, double y, int colour) {

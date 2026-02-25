@@ -106,8 +106,7 @@ public class TileEngineStone_BC8 extends TileEngineBase_BC8 implements MenuProvi
     @Override
 	public InteractionResult onActivated(Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide) {
-//            BCEnergyGuis.openGUI(player, getBlockPos());
-        	NetworkHooks.openScreen(((net.minecraft.server.level.ServerPlayer)player), this);
+        	NetworkHooks.openScreen(((net.minecraft.server.level.ServerPlayer)player), this, worldPosition);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;

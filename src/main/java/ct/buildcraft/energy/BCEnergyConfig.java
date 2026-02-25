@@ -50,6 +50,7 @@ public class BCEnergyConfig {
     /** If false then {@link #excludedDimensions} should be treated as a whitelist rather than a blacklist. */
     public static boolean excludedDimensionsIsBlackList;
     public static final Set<ResourceLocation> excessiveBiomes = new HashSet<>();
+    public static final Set<ResourceLocation> excessiveVanillaBiomes = new HashSet<>();
     public static final Set<ResourceLocation> surfaceDepositBiomes = new HashSet<>();
     public static final Set<ResourceLocation> excludedBiomes = new HashSet<>();
     /** If false then {@link #excludedBiomes} should be treated as a whitelist rather than a blacklist. */
@@ -86,9 +87,8 @@ public class BCEnergyConfig {
 
     public static void preInit() {
         String[] _excessive = { //
-        		BCEnergy.MODID + ":oil_ocean", //
-                BCEnergy.MODID + ":oil_deep_desert",
-                "buildcraftenergy:oil_desert"//
+        		BCEnergy.MODID + ":oil_desert", //
+                BCEnergy.MODID + ":oil_deep_ocean"
             };
         ForgeConfigSpec.Builder con_builder = new ForgeConfigSpec.Builder();
 
@@ -252,6 +252,9 @@ public class BCEnergyConfig {
 /*            excludedDimensions.clear();
             excludedDimensions = new IntArrayList(propExcludedDimensions.get());*/
         	//excessiveBiomes.add(BCEnergyWorldGen.OIL_DESERT_KEY);
+            excessiveBiomes.forEach((name) ->{
+            	excessiveVanillaBiomes.add(new ResourceLocation(name.getPath().substring(4)));//remove "oil_"
+            });
         	
         	excludedBiomes.add(Biomes.NETHER_WASTES.location());
         	excludedBiomes.add(Biomes.SOUL_SAND_VALLEY.location());

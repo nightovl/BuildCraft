@@ -651,7 +651,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
                 MessageUtil.writeGameProfile(buffer, owner);
             }
         }
-        if (side == LogicalSide.CLIENT) {
+        if (side == LogicalSide.SERVER) {
             if (id == NET_RENDER_DATA) {
                 deltaManager.writeDeltaState(false, buffer);
             } else if (id == NET_GUI_DATA) {
@@ -685,9 +685,9 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
             );
             else if (id == NET_GUI_DELTA_CLEAR) deltaManager.receiveDeltaData(true, EnumDeltaMessage.SET_VALUE, buffer);
             else if (id == NET_REDRAW) redrawBlock();
-/*            else if (id == NET_ADV_DEBUG) {
+            else if (id == NET_ADV_DEBUG) {
                 BCAdvDebugging.setClientDebugTarget(this);
-            }*/
+            }
         }
     }
 

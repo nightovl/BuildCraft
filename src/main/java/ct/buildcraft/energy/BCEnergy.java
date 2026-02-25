@@ -29,7 +29,6 @@ public class BCEnergy {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     
-
     
     public BCEnergy() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -68,9 +67,12 @@ public class BCEnergy {
     	BCEnergyFluids.init();
     	BCEnergyRecipes.init();
     	BCEnergyConfig.reloadConfig(MODID);
-//    	Regions.register(new BCOverWorldRegion(40));
-//    	SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, BCSurfaceRuleData.oilDesertRule());
-    	event.enqueueWork(BCEnergyWorldGen::registryFeature);
+//    	event.enqueueWork(() -> 
+//    	if(BCEnergyWorldGen.isTerraBlenderLoaded) {
+//	    	Regions.register(new BCOverWorldRegion(40));
+//  	  	SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, BCSurfaceRuleData.oilDesertRule());
+//    	});
+    	//event.enqueueWork(BCEnergyWorldGen::registryFeature);
         
     }
     public void gatherData(GatherDataEvent event) {
@@ -83,7 +85,6 @@ public class BCEnergy {
     public void onServerStarting(ServerStartingEvent event)
     {
         // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
     }
     
 

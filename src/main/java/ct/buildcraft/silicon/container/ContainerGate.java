@@ -64,7 +64,7 @@ public class ContainerGate extends ContainerPipe {
                 IPipeHolder holder = (IPipeHolder) tile;
                 PipePluggable plug = holder.getPluggable(gateSide);
                 if (plug instanceof PluggableGate gate) {
-                    return new ContainerGate(containerId, playerInventory, access, gate.logic);
+                    return new ContainerGate(containerId, playerInventory, gate.logic);
                 }
             }
             BCLog.logger.error("ContainerGate.CreatClientMenu:Failed to creat menu");
@@ -72,8 +72,8 @@ public class ContainerGate extends ContainerPipe {
 		}, null);
 	}
     
-    public ContainerGate(int containerId, Inventory playerInventory, ContainerLevelAccess access, GateLogic logic) {
-        super(playerInventory, BCSiliconGuis.MENU_GATE.get(), containerId, access);
+    public ContainerGate(int containerId, Inventory playerInventory, GateLogic logic) {
+        super(playerInventory, BCSiliconGuis.MENU_GATE.get(), containerId, logic.getPipeHolder());
         this.gate = logic;
         gate.getPipeHolder().onPlayerOpen(playerInventory.player);
 
@@ -84,7 +84,7 @@ public class ContainerGate extends ContainerPipe {
         }
         slotHeight = s;
 
-        if (gate.getPipeHolder().getPipeWorld().isClientSide) {
+        if (gate.getPipeHolder().getPipeWorld().isClientSide()) {
             possibleTriggers = new TreeSet<>();
             possibleActions = new TreeSet<>();
         } else {

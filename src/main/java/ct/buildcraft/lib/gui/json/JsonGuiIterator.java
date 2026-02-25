@@ -30,9 +30,9 @@ public class JsonGuiIterator {
             JsonObject obj = element.getAsJsonObject();
             name = GsonHelper.getAsString(obj, "name", "index");
             start = GsonHelper.getAsString(obj, "start", "0");
-            step = GsonHelper.getAsString(obj, name, "step");
+            step = GsonHelper.getAsString(obj, "step");
             if (obj.has("while")) {
-                shouldContinue = GsonHelper.getAsString(obj, name, "while");
+                shouldContinue = GsonHelper.getAsString(obj, "while");
             } else {
                 String end = GsonHelper.getAsString(obj, "end");
                 shouldContinue = "step > 0 ? ($name <= $end) : ($name >= $end)"//

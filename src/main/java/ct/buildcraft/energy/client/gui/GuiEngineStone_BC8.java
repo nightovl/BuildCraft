@@ -61,7 +61,7 @@ public class GuiEngineStone_BC8 extends GuiBC8<ContainerEngineStone_BC8> {
             int flameHeight = (int) Math.ceil(amount * flameRect.getHeight());
 
             drawTexturedModalRect(//
-                    (int) flameRect.getX(),//
+                    pose, (int) flameRect.getX(),//
                     (int) (flameRect.getY() + flameRect.getHeight() - flameHeight),//
                     176, 14 - flameHeight, 14, flameHeight + 2);
         }

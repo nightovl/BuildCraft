@@ -4,15 +4,15 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.transport;
 
-import ct.buildcraft.transport.client.gui.MenuFilteredBuffer;
-import ct.buildcraft.transport.client.gui.MenuPipeDiamond;
-import ct.buildcraft.transport.client.gui.MenuPipeDiawood;
-import ct.buildcraft.transport.client.gui.MenuPipeEmzuli;
-import ct.buildcraft.transport.client.gui.ScreenFilteredBuffer;
-import ct.buildcraft.transport.client.gui.ScreenPipeDiamond;
-import ct.buildcraft.transport.client.gui.ScreenPipeDiawood;
-import ct.buildcraft.transport.client.gui.ScreenPipeEmzuli;
-
+import ct.buildcraft.lib.gui.BCContainerFactory;
+import ct.buildcraft.transport.container.ContainerDiamondPipe;
+import ct.buildcraft.transport.container.ContainerDiamondWoodPipe;
+import ct.buildcraft.transport.container.ContainerEmzuliPipe_BC8;
+import ct.buildcraft.transport.container.ContainerFilteredBuffer_BC8;
+import ct.buildcraft.transport.gui.GuiDiamondPipe;
+import ct.buildcraft.transport.gui.GuiDiamondWoodPipe;
+import ct.buildcraft.transport.gui.GuiEmzuliPipe_BC8;
+import ct.buildcraft.transport.gui.GuiFilteredBuffer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -29,19 +29,19 @@ public class BCTransportGuis {
     ,
     PIPE_EMZULI;*/
 	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BCTransport.MODID);
-    public static final RegistryObject<MenuType<MenuPipeDiawood>> MENU_PIPE_DIAMOND_WOOD = MENUS.register("pipe_diawood_menu", () -> new MenuType<>(MenuPipeDiawood::new));
-    public static final RegistryObject<MenuType<MenuPipeDiamond>> MENU_PIPE_DIAMOND = MENUS.register("pipe_diamond_menu", () -> new MenuType<>(MenuPipeDiamond::new));
-    public static final RegistryObject<MenuType<MenuFilteredBuffer>> MENU_FILTERED_BUFFER = MENUS.register("pipe_filtered_buffer", () -> new MenuType<>(MenuFilteredBuffer::new));
-    public static final RegistryObject<MenuType<MenuPipeEmzuli>> MENU_PIPE_EMZULI = MENUS.register("pipe_emzuli_menu", () -> new MenuType<>(MenuPipeEmzuli::new));
+    public static final RegistryObject<MenuType<ContainerDiamondWoodPipe>> MENU_PIPE_DIAMOND_WOOD = MENUS.register("pipe_diawood_menu", () -> BCContainerFactory.create(ContainerDiamondWoodPipe::create));
+    public static final RegistryObject<MenuType<ContainerDiamondPipe>> MENU_PIPE_DIAMOND = MENUS.register("pipe_diamond_menu",() -> BCContainerFactory.create(ContainerDiamondPipe::create));
+    public static final RegistryObject<MenuType<ContainerFilteredBuffer_BC8>> MENU_FILTERED_BUFFER = MENUS.register("pipe_filtered_buffer", () -> BCContainerFactory.create(ContainerFilteredBuffer_BC8::new));
+    public static final RegistryObject<MenuType<ContainerEmzuliPipe_BC8>> MENU_PIPE_EMZULI = MENUS.register("pipe_emzuli_menu", () -> BCContainerFactory.create(ContainerEmzuliPipe_BC8::create));
 
 
     public static void clientInit(FMLClientSetupEvent event) {
         event.enqueueWork(
                 () -> {
-                	MenuScreens.register(MENU_PIPE_DIAMOND_WOOD.get(), ScreenPipeDiawood::new);
-                	MenuScreens.register(MENU_PIPE_DIAMOND.get(), ScreenPipeDiamond::new);
-                	MenuScreens.register(MENU_FILTERED_BUFFER.get(), ScreenFilteredBuffer::new);
-                	MenuScreens.register(MENU_PIPE_EMZULI.get(), ScreenPipeEmzuli::new);
+                	MenuScreens.register(MENU_PIPE_DIAMOND_WOOD.get(), GuiDiamondWoodPipe::new);
+                	MenuScreens.register(MENU_PIPE_DIAMOND.get(), GuiDiamondPipe::new);
+                	MenuScreens.register(MENU_FILTERED_BUFFER.get(), GuiFilteredBuffer::new);
+                	MenuScreens.register(MENU_PIPE_EMZULI.get(), GuiEmzuliPipe_BC8::new);
                 }
         );
     }

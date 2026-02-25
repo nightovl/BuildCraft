@@ -60,7 +60,7 @@ public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
         int count = 0;
         int x = chunkX * 16 + 8;
         int z = chunkZ * 16 + 8;
-        BlockPos min = new BlockPos(x, 0, z);
+        BlockPos min = new BlockPos(x, world.dimensionType().minY(), z);
         Box box = new Box(min, min.offset(15, world.getHeight(), 15));
 
         for (int cdx = -MAX_CHUNK_RADIUS; cdx <= MAX_CHUNK_RADIUS; cdx++) {
@@ -68,7 +68,7 @@ public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
                 int cx = chunkX + cdx;
                 int cz = chunkZ + cdz;
 //                world.getProfiler().startSection("scan");
-                List<OilGenStructure> structures = OilStructureGen.getStructures(world, cx, cz, cdx == 0 && cdz == 0);
+                List<OilGenStructure> structures = OilStructureGen.getStructures(world, cx, cz/*, cdx == 0 && cdz == 0*/);
                 OilGenStructure.Spring spring = null;
 //                world.getProfiler().endStartSection("gen");
                 for (OilGenStructure struct : structures) {

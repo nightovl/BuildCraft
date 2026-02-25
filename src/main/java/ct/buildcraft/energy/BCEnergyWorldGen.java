@@ -21,12 +21,9 @@ import com.mojang.serialization.JsonOps;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.energy.generation.features.OilGenFeature;
 import ct.buildcraft.lib.misc.JsonUtil;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.biome.OverworldBiomes;
-import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -38,17 +35,13 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.Climate.ParameterPoint;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
-import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
 import net.minecraftforge.common.BiomeManager.BiomeType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -65,6 +58,8 @@ public class BCEnergyWorldGen {
     public static final Biome OIL_DEEP_OCEAN_BIOME;
     
     public static final OilGenFeature OIL_FEATURE = new OilGenFeature(NoneFeatureConfiguration.CODEC);
+    
+    public static final boolean isTerraBlenderLoaded = ModList.get().isLoaded("terrablender");
     
 //    public static Holder<ConfiguredFeature<NoneFeatureConfiguration, ?>> OIL_FEN_CON = FeatureUtils.register("buildcraftenergy:desert_oil", OIL_FEATURE);
     
