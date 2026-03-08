@@ -107,6 +107,7 @@ public class BCCore {
         {
         	BCCoreSprites.init();
         	DetachedRenderer.INSTANCE.addRenderer(RenderMatrixType.FROM_WORLD_ORIGIN, RenderVolumeBoxes.INSTANCE);
+        	event.enqueueWork(BCCoreItems::registerItemProperties);
         }
     	
         @SubscribeEvent

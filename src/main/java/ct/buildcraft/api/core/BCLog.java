@@ -51,4 +51,9 @@ public final class BCLog {
     	if(flag)
     		logger.debug(new Exception().getStackTrace()[1].getClassName() + " : Catched!");
     }
+    
+    public static void d(boolean flag, String msg) {
+    	if(flag)
+    		logger.debug(new Exception().getStackTrace()[1].getClassName() + " : "+msg);
+    }
 }

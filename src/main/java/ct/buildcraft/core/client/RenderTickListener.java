@@ -150,7 +150,7 @@ public class RenderTickListener {
         Item mainHandItem = mainHand.getItem();
         Item offHandItem = offHand.getItem();
 
-        if (mainHandItem == BCCoreItems.MAP_LOACTION.get()) {
+        if (mainHandItem == BCCoreItems.MAP_LOCATION.get()) {
             renderMapLocation(poseStack, matrix, mainHand);
         } else if (mainHandItem == BCCoreItems.MARKER_CONNECTOR.get() || offHandItem == BCCoreItems.MARKER_CONNECTOR.get()) {
             renderMarkerConnector(poseStack, matrix, world, player);
@@ -185,7 +185,7 @@ public class RenderTickListener {
             LaserBoxRenderer.renderLaserBoxStatic(poseStack, matrix, LAST_RENDERED_MAP_LOC, BuildCraftLaserManager.STRIPES_WRITE, true);
 
         } else if (type == MapLocationType.PATH) {
-            List<BlockPos> path = BCCoreItems.MAP_LOACTION.get().getPath(stack);
+            List<BlockPos> path = BCCoreItems.MAP_LOCATION.get().getPath(stack);
             if (path != null && path.size() > 1) {
                 BlockPos last = null;
                 for (BlockPos p : path) {

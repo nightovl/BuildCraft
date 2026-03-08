@@ -149,7 +149,7 @@ public class RenderHeatExchange implements BlockEntityRenderer<TileHeatExchange>
 	}
 	
 	private void renderOutline(FluidStackInterp forRender, float partialTicks, PoseStack matrix, VertexConsumer bb, int light, int overlay) {
-		if(forRender ==null)
+		if(forRender == null)
 			return;
 		FluidStack fluid = forRender.fluid;
         int blocklight0 = light&0x0000F0;

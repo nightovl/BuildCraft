@@ -152,10 +152,6 @@ public final class Pipe implements IPipe, IDebuggable {
     public void writePayload(FriendlyByteBuf buffer, LogicalSide side) {
         if (side == LogicalSide.SERVER) {
             buffer.writeByte(colour == null ? 0 : colour.getId() + 1);
-/*            buffer.writeBoolean(false);
-            buffer.writeInt(3000245);*/
-
-            
             for (Direction face : Direction.values()) {
                 Float con = connected.get(face);
                 if (con != null) {
@@ -179,14 +175,6 @@ public final class Pipe implements IPipe, IDebuggable {
             int nColour = buffer.readUnsignedByte();
             colour = nColour == 0 ? null : DyeColor.byId(nColour - 1);
 
-            //idk why,but only in this way it can work (maybe some netty data pack is broken
-/*            buffer.readBoolean();
-            if(buffer.readInt() != 3000245) {
-            	buffer.clear();
-            	return;
-            }*/
-            
-            
             for (Direction face : Direction.values()) {
                 if (buffer.readBoolean()) {
                     float dist = buffer.readFloat();

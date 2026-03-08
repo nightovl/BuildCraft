@@ -470,7 +470,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 							radius = VecUtil.replaceValue(radius, face.getAxis(), conSizes[i] / 2);
 							Vec3 min = center.subtract(radius);
 							Vec3 max = center.add(radius);
-							aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));
+							aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));//TODO cache this
 						}
 						shape = Shapes.or(shape, aabb);
 					}

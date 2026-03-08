@@ -81,13 +81,14 @@ public class BlockTank extends BlockBCTile_Neptune implements ICustomPipeConnect
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
 		return level.getBlockEntity(pos) instanceof TileTank tile ? 
-				(tile.getFluidForRender(0) instanceof FluidStackInterp f) ? f.fluid.getFluid().getFluidType().getLightLevel() : 0 : 0;///TODO
+				tile.tank.getFluid().getFluid().getFluidType().getLightLevel() : 0;//TODOoS
 	}
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
 			boolean p_60514_) {
-		boolean isTankBelow = level.getBlockState(pos.below())
+		boolean isTankBelow = level.getBlockState(pos.below()
+				)
 				.getBlock() instanceof ITankBlockConnector;
 		level.setBlockAndUpdate(pos, state.setValue(JOINED_BELOW, isTankBelow));
 		super.neighborChanged(state.setValue(JOINED_BELOW, isTankBelow), level, pos, block, fromPos, p_60514_);

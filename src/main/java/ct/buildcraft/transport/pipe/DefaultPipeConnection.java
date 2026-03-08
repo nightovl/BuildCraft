@@ -29,17 +29,17 @@ public enum DefaultPipeConnection implements ICustomPipeConnection {
             case DOWN:
                 return (float) bb.minY;
             case UP:
-                return 1 - (float) bb.maxY;
+                return 1f - (float) bb.maxY;
             case NORTH:
                 return (float) bb.minZ;
             case SOUTH:
-                return 1 - (float) bb.maxZ;
+                return 1f - (float) bb.maxZ;
             case WEST:
                 return (float) bb.minX;
             case EAST:
-                return 1 - (float) bb.maxX;
+                return 1f - (float) bb.maxX;
             default:
-                return 0;
+                return 0f;
         }
     }
 }

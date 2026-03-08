@@ -1,6 +1,0 @@
-{
-    "loader":"forge:fluid_container",
-    "parent": "forge:item/bucket_drip",
-    "fluid": "buildcraftenergy:blocks/fluids/light_fuel/fuel_light_searing_still",
-    "flip_gas": false
-}

@@ -3,6 +3,8 @@ package ct.buildcraft.core;
 import java.util.EnumMap;
 import ct.buildcraft.api.enums.EnumEngineType;
 import ct.buildcraft.api.enums.EnumSpring;
+import ct.buildcraft.api.items.IMapLocation.MapLocationType;
+import ct.buildcraft.builders.item.ItemSnapshot.EnumItemSnapshotType;
 import ct.buildcraft.core.item.ItemFragileFluidContainer;
 import ct.buildcraft.core.item.ItemMapLocation;
 import ct.buildcraft.core.item.ItemMarkerConnector;
@@ -11,6 +13,8 @@ import ct.buildcraft.core.item.ItemVolumeBox;
 import ct.buildcraft.core.item.ItemWrench;
 import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.item.MultiBlockItem;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -30,7 +34,7 @@ public class BCCoreItems {
     public static final RegistryObject<ItemPaintbrush_BC8> PAINT_BRUSH = ITEMS.register("paintbrush/clean", () -> new ItemPaintbrush_BC8(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB), null));
     public static final RegistryObject<ItemMarkerConnector> MARKER_CONNECTOR = ITEMS.register("marker_connector", () -> new ItemMarkerConnector(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
     public static final RegistryObject<ItemVolumeBox> VOLUME_BOX = ITEMS.register("volume_box", () -> new ItemVolumeBox(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
-    public static final RegistryObject<ItemMapLocation> MAP_LOACTION = ITEMS.register("map_location", () -> new ItemMapLocation(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
+    public static final RegistryObject<ItemMapLocation> MAP_LOCATION = ITEMS.register("map_location", () -> new ItemMapLocation(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
 
     
     public static final RegistryObject<ItemFragileFluidContainer> FRAGILE_FLUID_SHARD = ITEMS.register("fragile_fluid_shard", ItemFragileFluidContainer::new);
@@ -53,5 +57,15 @@ public class BCCoreItems {
 
     static void registry(IEventBus m) {
         ITEMS.register(m);
+    }
+    
+    public static void registerItemProperties() {
+    	ResourceLocation label = new ResourceLocation("buildcraftcore","map_type");
+    	ItemProperties.register(MAP_LOCATION.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
+    		return (MapLocationType.getFromStack(itemStack).meta + 2)/8f;
+    	});
+/*    	ItemProperties.register(TEMPLATE.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
+			return itemStack.getDamageValue() == ItemSchematicSingle.DAMAGE_CLEAN ? 0.0F : 1.0F;
+    	});*/
     }
 }

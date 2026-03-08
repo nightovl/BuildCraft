@@ -80,7 +80,7 @@ public enum PipeFlowRendererItems implements IPipeFlowRenderer<PipeFlowItems> {
             ItemStack stack = item.clientItemLink.get();
             if (stack != null && !stack.isEmpty()) {
             	matrix.translate(pos.x, -0.2f+pos.y, pos.z);
-            	itemRender.renderStatic(stack, TransformType.GROUND, lightc, OverlayTexture.NO_OVERLAY, matrix, buffer, 0);
+            	itemRender.renderStatic(stack, TransformType.GROUND, lightc, combinedOverlay, matrix, buffer, 0);
 //                itemRender.getModel(stack, world, null, combinedOverlay);
                 matrix.translate(-pos.x, 0.2f-pos.y, -pos.z);
 /*                ItemRenderUtil.renderItemStack(x + pos.x, y + pos.y, z + pos.z, //

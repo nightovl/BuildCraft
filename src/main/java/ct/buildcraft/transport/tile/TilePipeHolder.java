@@ -182,10 +182,12 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
             }
         }
     }
+    
+    
 
     // Misc
 
-    @Override
+	@Override
     public void onPlacedBy(LivingEntity placer, ItemStack stack) {
         super.onPlacedBy(placer, stack);
         Item item = stack.getItem();
@@ -208,7 +210,6 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
             AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT_PLACE_PIPE);
         }
     }
-
 
 	@Override
 	public void setRemoved() {
@@ -257,7 +258,6 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     // ITickable
 
     public void update() {
-//    	if(level.isClientSide) return;
         redstoneValues = new int[6];
         // Tick objects
         if (pipe != Pipe.EMPTY) {
@@ -308,8 +308,8 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         }
 
         /* It's difficult to check to see if we actually have changed at all. So let's just always mark the chunk as
-         * dirty instead of making every component do it indervidually. */
-//        markChunkDirty();//TODO
+         * dirty instead of making every component do it individually. */
+        markChunkDirty();//TODO
     }
 
     // Network

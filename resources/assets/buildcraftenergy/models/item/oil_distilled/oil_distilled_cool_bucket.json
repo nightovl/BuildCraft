@@ -1,6 +1,0 @@
-{
-    "loader":"forge:fluid_container",
-    "parent": "forge:item/bucket_drip",
-    "fluid": "buildcraftenergy:blocks/fluids/distilled_oil/oil_distiller_cool_still",
-    "flip_gas": false
-}

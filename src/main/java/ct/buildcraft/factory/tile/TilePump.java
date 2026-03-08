@@ -244,8 +244,10 @@ public class TilePump extends TileMiner {
 
     private boolean canDrain(BlockPos blockPos) {
         Fluid fluid = BlockUtil.getFluid(level, blockPos);
-        return tank.isEmpty() ? fluid != Fluids.EMPTY : fluid.isSource(fluid.defaultFluidState())&&FluidUtilBC.areFluidsEqual(fluid, tank.getFluidType());
-    }
+        //USE TO DEBUG
+        boolean flag = tank.isEmpty() ? fluid != Fluids.EMPTY : fluid.isSource(fluid.defaultFluidState())&&FluidUtilBC.areFluidsEqual(fluid, tank.getFluidType());
+        BCLog.d(flag, blockPos + " cannot drain, "+ fluid);
+        return flag;    }
 
     private void nextPos() {
         while (!queue.isEmpty()) {

@@ -298,7 +298,7 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
             }
             if (world.isClientSide()) {
                 // TODO: Client item advancing/intelligent stuffs
-                continue;
+                break;
             }
             if (item.toCenter) {
                 onItemReachCenter(item);

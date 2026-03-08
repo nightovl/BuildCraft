@@ -36,7 +36,7 @@ public enum PipeFlowRendererFluids implements IPipeFlowRenderer<PipeFlowFluids> 
 	public void render(PipeFlowFluids flow, float partialTicks, PoseStack matrix, MultiBufferSource buffer, int lightc,
 			int combinedOverlay) {
 		FluidStack forRender = flow.getFluidStackForRender();
-		if (forRender == null) {
+		if (forRender.isEmpty()) {
 			return;
 		}
 		VertexConsumer fluidBuffer = buffer.getBuffer(RenderType.cutoutMipped());
