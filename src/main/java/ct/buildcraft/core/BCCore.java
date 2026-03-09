@@ -69,6 +69,7 @@ public class BCCore {
 		IEventBus eventBus = MinecraftForge.EVENT_BUS;
 		eventBus.addListener(RenderTickListener::renderOverlay);
 		eventBus.addListener(RenderTickListener::renderLast);
+		BCCoreStatements.preInit();
     }
 
     public void gatherData(GatherDataEvent event) {

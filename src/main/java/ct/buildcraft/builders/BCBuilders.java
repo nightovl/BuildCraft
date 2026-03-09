@@ -60,6 +60,7 @@ public class BCBuilders {
     	
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCBuildersConfig.class);
+        BCBuildersStatements.preInit();
 
     }
 

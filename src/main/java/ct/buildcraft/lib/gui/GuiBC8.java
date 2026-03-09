@@ -16,6 +16,7 @@ import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.lib.gui.json.BuildCraftJsonGui;
 import ct.buildcraft.lib.gui.json.InventorySlotHolder;
 import ct.buildcraft.lib.gui.ledger.LedgerHelp;
+import ct.buildcraft.lib.gui.ledger.LedgerOwnership;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
 import ct.buildcraft.lib.gui.pos.IGuiArea;
 import ct.buildcraft.lib.misc.GuiUtil;

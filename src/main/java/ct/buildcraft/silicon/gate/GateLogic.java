@@ -467,7 +467,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
     }
 
     public void onTick() {
-        if (getPipeHolder().getPipeWorld().isClientSide) {
+        if (getPipeHolder().getPipeWorld().isClientSide()) {
             return;
         }
         resolveActions();
