@@ -59,7 +59,6 @@ public class BCSilicon {
         BCSiliconGuis.preInit(modEventBus);
         BCSiliconRecipes.preInit(modEventBus);
         
-        
 
 
         ModLoadingContext.get().registerConfig(Type.COMMON, BCSiliconConfig.config);
