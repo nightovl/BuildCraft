@@ -6,9 +6,12 @@
 
 package ct.buildcraft.transport.block;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 
 import javax.annotation.Nullable;
 
@@ -39,6 +42,7 @@ import ct.buildcraft.transport.item.ItemWire;
 import ct.buildcraft.transport.pipe.Pipe;
 import ct.buildcraft.transport.tile.TilePipeHolder;
 import ct.buildcraft.transport.wire.EnumWireBetween;
+import ct.buildcraft.transport.wire.WireManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -55,8 +59,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -82,19 +86,22 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
+import net.minecraftforge.common.ForgeMod;
 
 public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaintHandler, EntityBlock, IClientBlockExtensions {
 
-	public static final VoxelShape BOX_CENTER = Block.box(4.0D, 4.0D, 4.0D, 12.0D, 12.0D, 12.0D);
+	public static final VoxelShape BOX_CENTER = Shapes.box(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
 	public static final VoxelShape BOX_DOWN = Shapes.box(0.25D, 0, 0.25D, 0.75D, 0.25D, 0.75D);
 	public static final VoxelShape BOX_UP = Shapes.box(0.25D, 0.75D, 0.25, 0.75D, 1D, 0.75D);
 	public static final VoxelShape BOX_NORTH = Shapes.box(0.25D, 0.25D, 0, 0.75D, 0.75D, 0.25D);
@@ -104,6 +111,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 	public static final VoxelShape[] BOX_FACES = { BOX_DOWN, BOX_UP, BOX_NORTH, BOX_SOUTH, BOX_WEST, BOX_EAST };
 	
     private static final VoxelShape[] PIPE_SHAPE_CACHE = new VoxelShape[64];
+//    private static final VoxelShape EXPENDED_CENTER = Shapes.box(0.125D, 0.125D, 0.125D, 0.875D, 0.875D, 0.875D);
 
 	
 	private static final SingleSpriteSet spriteSet = new SingleSpriteSet(null);
@@ -171,151 +179,137 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 
 	@Override
 	public boolean hasDynamicShape() {
-		return true;
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext p_60558_) {
-		TilePipeHolder tile = getPipe(world, pos, false);
-		if (tile == null) {
-			return Shapes.block();
-		}
-		Minecraft mc = Minecraft.getInstance();
-		HitResult h = mc.hitResult;
-		if (!(h instanceof BlockHitResult))
-			return Shapes.block();
-		Vec3 carmpos = mc.cameraEntity.getEyePosition();
-		Vec3 location = ((BlockHitResult) h).getLocation();
-		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()));
-		int part = trace.subhit;
-//        BCLog.logger.debug(""+part);
-//        BCLog.logger.debug(trace.getLocation().toString());
-		/*
-		 * BlockHitResult trace = (BlockHitResult)h; int part =
-		 * computHitFacing(trace.getLocation().subtract(pos.getX(), pos.getY(),
-		 * pos.getZ()));
-		 */
-
-		if (part < 0 /* || !pos.equals(((BlockHitResult)h).getBlockPos()) */) {
-			// Perhaps we aren't the object the mouse is over
-			return Shapes.block();
-		}
-		VoxelShape aabb = Shapes.block();
-		if (part == 0) {
-			aabb = BOX_CENTER;
-		} else if (part < 1 + 6) {
-			aabb = BOX_FACES[part - 1];
-			Pipe pipe = tile.getPipe();
-			if (pipe != Pipe.EMPTY) {
-				Direction face = Direction.values()[part - 1];
-				float conSize = pipe.getConnectedDist(face);
-				if (conSize > 0 && conSize != 0.25f) {
-					Vec3 center = VecUtil.offset(new Vec3(0.5, 0.5, 0.5), face, 0.25 + (conSize / 2));
-					Vec3 radius = new Vec3(0.25, 0.25, 0.25);
-					radius = VecUtil.replaceValue(radius, face.getAxis(), conSize / 2);
-					Vec3 min = center.subtract(radius);
-					Vec3 max = center.add(radius);
-					aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));
-				}
-			}
-		} else if (part < 1 + 6 + 6) {
-			Direction side = Direction.values()[part - 1 - 6];
-			PipePluggable pluggable = tile.getPluggable(side);
-			if (pluggable != PipePluggable.EMPTY) {
-				aabb = pluggable.getBoundingBox();
-			}
-		} else if (part < 1 + 6 + 6 + 8) {
-			EnumWirePart wirePart = EnumWirePart.VALUES[part - 1 - 6 - 6];
-			aabb = wirePart.boundingBox;
-		} else if (part < 1 + 6 + 6 + 6 + 8 + 36) {
-			EnumWireBetween wireBetween = EnumWireBetween.VALUES[part - 1 - 6 - 6 - 8];
-			aabb = wireBetween.boundingBox;
-		}
-		if (part >= 1 + 6 + 6) {
-			return Shapes.empty();
-		} else {
-			return (aabb == Shapes.block() ? aabb : Shapes.create(aabb.bounds().inflate(1 / 32.0)));
-		}
-
+		return false;
 	}
 
 	@Nullable
 	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Player player) {
 		Vec3 start = player.getEyePosition();// .add(0, player.getEyeHeight(), 0);
 		// .getPositionVector().addVector(0, player.getEyeHeight(), 0);
-		double reachDistance = 5;
-		if (player instanceof ServerPlayer) {
-			reachDistance = ((ServerPlayer) player).getReachDistance();
-		}
+		double reachDistance = player.getReachDistance();
 		Vec3 end = start.add(player.getLookAngle().normalize().scale(reachDistance));
 		/*
 		 * BCLog.logger.debug(start.toString()); BCLog.logger.debug(end.toString());
 		 * BCLog.logger.debug(pos.toShortString()); BCLog.logger.debug("" +
 		 * player.getEyeHeight());
 		 */
-		return rayTrace(world, pos, start, end);
+		return rayTrace(world, pos, start, end, getAllShape(world, pos));
 	}
-
+	
 	@Nullable
-	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Vec3 start, Vec3 end) {
+	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Vec3 start, Vec3 end, List<VoxelShape> allShape) {
 		TilePipeHolder tile = getPipe(world, pos, false);
 		if (tile == null) {
 			return new BCBlockHitResult(Shapes.block().clip(start, end, pos), 400);
 		}
-
-		BlockHitResult result = getInteractionShape(world.getBlockState(pos), world, pos).clip(start, end, pos);
-		if (result == null) {
-//        	BCLog.logger.error("A error fired in BlockPipeHolder#rayTrace : the clip result was null!");
-			return new BCBlockHitResult(Shapes.block().clip(start, end, pos), 400);
+		BlockHitResult preResult = AABB.clip(BOX_CENTER.toAabbs(), start, end, pos);
+		Vec3 preClip = preResult == null ? null : preResult.getLocation();
+		double preDist = preClip == null ? Double.MAX_VALUE : Math.abs(end.z - preClip.z);
+		byte[] crossOctant = new byte[4];//zyx
+		double[] octant = new double[] {preDist, preDist, preDist, preDist, preDist, preDist, preDist, preDist};
+		Vec3 vec = end.subtract(start);
+		Vec3 dvec = vec.scale(0.001);
+		{
+			if(Mth.abs((float) vec.x) > 1e-4 && start.x * end.x<0) {
+				double y1 = (start.y * end.x - start.x * end.y)/vec.x;
+				double z1 = (start.z * end.x - start.x * end.z)/vec.x;
+				int octan1 = (dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
+				int octan2 = (~octan1)&0b1 | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
+				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x-dvec.x));
+			}
+			if(Mth.abs((float) vec.y) > 1e-4 && start.y * end.y<0) {
+				double x1 = (start.x * end.y - start.y * end.x)/vec.y;
+				double z1 = (start.z * end.y - start.y * end.z)/vec.y;
+				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
+				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (~octan1)&0b01 | (z1 - dvec.z > 0 ? 0b100 : 0);
+				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x - x1-dvec.x));
+			}
+			if(Mth.abs((float) vec.z) > 1e-4 && start.y * end.y<0) {
+				double x1 = (start.x * end.z - start.z * end.x)/vec.z;
+				double y1 = (start.y * end.z - start.z * end.y)/vec.z;
+				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (vec.z > 0 ? 0b100 : 0);
+				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | (~octan1)&0b100;
+				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x - x1-dvec.x));
+			}
 		}
-		int subHit = computSubhit(tile, result.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()));
-		if (subHit == 0) {
-//        	BCLog.logger.error("A error fired in BlockPipeHolder#rayTrace : the clip result was null!");
-			return new BCBlockHitResult(Shapes.block().clip(start, end, pos), 0);
+		double closest = preDist;
+		int closestOctant = 0b000;
+		boolean[] caculated = new boolean[6+8+36];
+		Arrays.fill(caculated, false);
+		do {
+			for(int i = 6;i<8;i++) {
+				if(closest > octant[i]) {
+					closest = octant[i];
+					closestOctant = i;
+				}
+			}
+			Direction[] plugs = new Direction[3];
+			EnumWirePart parts;
+			EnumWireBetween[] betweens = new EnumWireBetween[6];
+			int directionId = (closestOctant>>1|closestOctant<<2)&0b111;//xzy
+			for(int j = 0b0;j<0b100;j+=2,directionId>>=1)
+				plugs[j/2] = Direction.values()[directionId&0b1+j];
+			parts = EnumWirePart.VALUES[7 - closestOctant];
+			int octant1 = ~closestOctant;
+			betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
+			betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b100];
+			betweens[2] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1000];//Center
+			betweens[3] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11+0b1100+(octant1&0b1)<<2];//Between
+			betweens[4] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b1100+(octant1&0b10)<<1];
+			betweens[5] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1100+(octant1&0b100)];
+			for(Direction face : plugs) {
+				PipePluggable pluggable = tile.getPluggable(face);
+				if (pluggable != PipePluggable.EMPTY&&pluggable.getBoundingBox().bounds().contains(inside)) {
+					return face.ordinal() + 1 + 6;
+				}
+			}
+			WireManager wireManager = tile.getWireManager();
+			DyeColor dyeColor = wireManager.parts.get(parts);
+			if(dyeColor != null && parts.boundingBox.bounds().contains(inside))
+				return parts.ordinal() + 1 + 6 + 6;
+			for(EnumWireBetween between : betweens) {
+				if(wireManager.betweens.get(between) != null && between.boundingBox.bounds().contains(inside))
+					return between.ordinal() + 1 + 6 + 6 + 8;
+			}
+		}while(closest != preDist);
+/*		Direction[] plugs = new Direction[6];
+		EnumWirePart[] parts = new EnumWirePart[8];
+		ArrayList<EnumWireBetween> betweens = new ArrayList<EnumWireBetween>();
+		int partCount = 0;
+		for(int i =0;i<0b1000;i++){
+			if(octant[i] == preDist) continue;
+			int directionId = (i>>1|i<<2)&0b111;//xzy
+			for(int j = 0b0;j<0b100;j<<=1,directionId>>=1)
+				plugs[directionId&j] = Direction.values()[directionId&0b1+j];
+			parts[partCount++] = EnumWirePart.VALUES[7 - i];
+			//TODO
 		}
-		return new BCBlockHitResult(result, subHit);/**
-													 * This is the original method adapted into 1.19.2(Have not been
-													 * test!) A quick method has replaced it
-													 */
-		/*
-		 * TilePipeHolder tile = getPipe(world, pos, false); if (tile == null) { return
-		 * new BCBlockHitResult(Shapes.block().clip(end, start, pos), 400); }
-		 * BCBlockHitResult best = null; Pipe pipe = tile.getPipe(); boolean computed =
-		 * false; if (pipe != null) { computed = true; best = computeTageTrace(best,
-		 * pos, start, end, BOX_CENTER, 0); for (Direction face : Direction.values()) {
-		 * float conSize = pipe.getConnectedDist(face); if (conSize > 0) { VoxelShape
-		 * aabb = BOX_FACES[face.get3DDataValue()]; if (conSize != 0.25f) { Vec3 center
-		 * = VecUtil.offset(new Vec3(0.5, 0.5, 0.5), face, 0.25 + (conSize / 2)); Vec3
-		 * radius = new Vec3(0.25, 0.25, 0.25); radius = VecUtil.replaceValue(radius,
-		 * face.getAxis(), conSize / 2); Vec3 min = center.subtract(radius); Vec3 max =
-		 * center.add(radius); aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));
-		 * } best = computeTageTrace(best, pos, start, end, aabb, face.ordinal() + 1); }
-		 * } } for (Direction face : Direction.values()) { PipePluggable pluggable =
-		 * tile.getPluggable(face); if (pluggable != null) { VoxelShape bb =
-		 * pluggable.getBoundingBox(); best = computeTageTrace(best, pos, start, end,
-		 * bb, face.ordinal() + 1 + 6); computed = true; } } for (EnumWirePart part :
-		 * tile.getWireManager().parts.keySet()) { best = computeTageTrace(best, pos,
-		 * start, end, part.boundingBox, part.ordinal() + 1 + 6 + 6); computed = true; }
-		 * for (EnumWireBetween between : tile.getWireManager().betweens.keySet()) {
-		 * best = computeTageTrace(best, pos, start, end, between.boundingBox,
-		 * between.ordinal() + 1 + 6 + 6 + 8); computed = true; } if (!computed) {
-		 * return computeTageTrace(null, pos, start, end, Shapes.block(), 400); }
-		 * if(best == null) { BCLog.logger.
-		 * error("A error fired in BlockPipeHolder#rayTrace : the clip result was null!"
-		 * ); return new BCBlockHitResult(Shapes.block().clip(start, end, pos), 400); }
-		 * return best;
-		 */
+		BCBlockHitResult result = new BCBlockHitResult(preResult, 0);  
+		for(Direction face : plugs) {
+			PipePluggable pluggable = tile.getPluggable(face);
+			if(pluggable != PipePluggable.EMPTY) {
+				result = computeTrace(result, pos, start, end, pluggable.getBoundingBox(), partCount);
+			}
+		}
+		
+		return result;*/
+		for(var shape : allShape) {
+			
+		}
 	}
 
 	@Nullable
-	public static EnumWirePart rayTraceWire(BlockPos pos, Vec3 start, Vec3 end) {
+	public static EnumWirePart rayTraceWire(BlockPos pos, Vec3 start, Vec3 end) {//DEBUG
 		Vec3 realStart = start.subtract(pos.getX(), pos.getY(), pos.getZ());
 		Vec3 realEnd = end.subtract(pos.getX(), pos.getY(), pos.getZ());
 		EnumWirePart best = null;
 		double dist = 1000;
 		for (EnumWirePart part : EnumWirePart.VALUES) {
 			// to Debug
-			BlockHitResult trace = part.boundingBoxPossible.clip(realStart, realEnd, BlockPos.ZERO);
+			BlockHitResult trace = part.boundingBoxPossible.clip(start, end, pos);
 			if (trace != null) {
 				if (best == null) {
 					best = part;
@@ -332,15 +326,86 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		return best;
 	}
 
-	/*
-	 * private BCBlockHitResult computeTageTrace(BCBlockHitResult lastBest, BlockPos
-	 * pos, Vec3 start, Vec3 end, AABB aabb, int part) { Vec3 v = aabb.clip(start,
-	 * end).get(); if (v == null) { return lastBest; } BlockHitResult next = new
-	 * BlockHitResult(v, null, pos, false); BCBlockHitResult result = new
-	 * BCBlockHitResult(next, part); if (lastBest == null) { return result; } double
-	 * distLast = lastBest.result.getLocation().x - (start.x); double distNext = v.x
-	 * - (start.x); return distLast > distNext ? result : lastBest; }
-	 */
+    private BCBlockHitResult computeTrace(BCBlockHitResult lastBest, BlockPos pos, Vec3 start, Vec3 end,
+            VoxelShape aabb, int part) {
+    		BlockHitResult clip = aabb.clip(start, end, pos);
+            if (clip == null) {
+                return lastBest;
+            }
+            BCBlockHitResult next = new BCBlockHitResult(clip, part);
+            if (lastBest == null) {
+                return next;
+            }
+            double distLast = Math.abs(lastBest.result.getLocation().z - start.z);
+            double distNext = Math.abs(next.result.getLocation().z - start.z);
+            return distLast > distNext ? next : lastBest;
+    }
+    
+	@Nullable
+	public static Direction getPartSideHit(Direction facing, int part) {
+		if (part <= 0) {
+			return facing;
+		}
+		if (part <= 6) {
+			return Direction.values()[part - 1];
+		}
+		if (part <= 6 + 6) {
+			return Direction.values()[part - 1 - 6];
+		}
+		return null;
+	}
+    
+    @Nullable
+    public static EnumWirePart getWirePartHit(int subHit) {
+        if (subHit <= 6 + 6) {
+            return null;
+        } else if (subHit <= 6 + 6 + 8) {
+            return EnumWirePart.VALUES[subHit - 1 - 6 - 6];
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static EnumWireBetween getWireBetweenHit(int subHit) {
+        if (subHit <= 6 + 6 + 8) {
+            return null;
+        } else if (subHit <= 6 + 6 + 8 + EnumWireBetween.VALUES.length) {
+            return EnumWireBetween.VALUES[subHit - 1 - 6 - 6 - 8];
+        } else {
+            return null;
+        }
+    }
+    
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext collisionContext) {
+		TilePipeHolder tile = getPipe(world, pos, false);
+		if (tile == null || collisionContext == CollisionContext.empty()) {
+			return Shapes.block();
+		}
+		EntityCollisionContext context = (EntityCollisionContext)collisionContext;
+		Entity entity = context.getEntity();
+		double reachDistance = ForgeMod.REACH_DISTANCE.get().getDefaultValue();
+		if(entity == null)
+			return Shapes.block();
+		if(entity instanceof Player player)
+			reachDistance = player.getAttackRange();
+		Vec3 carmpos = entity.getEyePosition();
+		Vec3 vec31 = entity.getLookAngle();
+		Vec3 vec32 = carmpos.add(vec31.x * reachDistance, vec31.y * reachDistance, vec31.z * reachDistance);
+		
+		List<VoxelShape> allShape = getAllShape(world, pos);//TODO
+		BCBlockHitResult trace = rayTrace(world, pos, carmpos, vec32, allShape);
+		computHitOctant(carmpos)
+		computSubhit(tile, vec32, UPDATE_ALL);
+		return (aabb == Shapes.block() ? aabb : Shapes.create(aabb.bounds().inflate(1 / 32.0)));
+		//}
+
+	}
+	
+	private static int computHitOctant(Vec3 pos) {//zyx
+		return (int)((Double.doubleToRawLongBits(pos.z)>>61|0b100)|(Double.doubleToRawLongBits(pos.y)>>62|0b10)|(Double.doubleToRawLongBits(pos.x)>>63|0b1));
+	}
 
 	private static int computHitFacing(Vec3 clip) {
 		double x = clip.x;
@@ -375,79 +440,54 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		return 0;
 	}
 
-	private static int computSubhit(TilePipeHolder tile, Vec3 clip) {
-		int hitFacing = computHitFacing(clip);
-		if (hitFacing == 0)
-			return 0;
-		Direction face = Direction.from3DDataValue(hitFacing - 1);
-//		int subHit = hitFacing;
-		PipePluggable pluggable = tile.getPluggable(face);
-		if (pluggable != PipePluggable.EMPTY) {
-//			VoxelShape bb = pluggable.getBoundingBox();
-			return hitFacing += 6;
+	private static int computSubhit(TilePipeHolder tile, Vec3 inside, int octant) {//zyx
+		Direction[] plugs = new Direction[3];
+		EnumWirePart parts;
+		EnumWireBetween[] betweens = new EnumWireBetween[6];
+		int directionId = (octant>>1|octant<<2)&0b111;//xzy
+		for(int j = 0b0;j<0b100;j+=2,directionId>>=1)
+			plugs[j/2] = Direction.values()[directionId&0b1+j];
+		parts = EnumWirePart.VALUES[7 - octant];
+		int octant1 = ~octant;
+		betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
+		betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b100];
+		betweens[2] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1000];//Center
+		betweens[3] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11+0b1100+(octant1&0b1)<<2];//Between
+		betweens[4] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b1100+(octant1&0b10)<<1];
+		betweens[5] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1100+(octant1&0b100)];
+		for(Direction face : plugs) {
+			PipePluggable pluggable = tile.getPluggable(face);
+			if (pluggable != PipePluggable.EMPTY&&pluggable.getBoundingBox().bounds().contains(inside)) {
+				return face.ordinal() + 1 + 6;
+			}
 		}
-		if (!tile.getWireManager().parts.keySet().isEmpty()/*EnumWirePart part : tile.getWireManager().parts.keySet()*/) {
-			return hitFacing += 12;
+		WireManager wireManager = tile.getWireManager();
+		DyeColor dyeColor = wireManager.parts.get(parts);
+		if(dyeColor != null && parts.boundingBox.bounds().contains(inside))
+			return parts.ordinal() + 1 + 6 + 6;
+		for(EnumWireBetween between : betweens) {
+			if(wireManager.betweens.get(between) != null && between.boundingBox.bounds().contains(inside))
+				return between.ordinal() + 1 + 6 + 6 + 8;
 		}
-		if (!tile.getWireManager().betweens.keySet().isEmpty()) {
-			return hitFacing += 20;
-		}
-		return hitFacing;
+		return computHitFacing(inside);
 	}
 
-	@Nullable
-	public static Direction getPartSideHit(Direction facing, int part) {
-		if (part <= 0) {
-			return facing;
-		}
-		if (part <= 6) {
-			return Direction.values()[part - 1];
-		}
-		if (part <= 6 + 6) {
-			return Direction.values()[part - 1 - 6];
-		}
-		return null;
-	}
-
-	@Nullable
-	public static EnumWirePart getWirePartHit(int part) {
-		if (part <= 6 + 6) {
-			return null;
-		} else if (part <= 6 + 6 + 8) {
-			return EnumWirePart.VALUES[part - 1 - 6 - 6];
-		} else {
-			return null;
-		}
-	}
-
-	@Nullable
-	public static EnumWireBetween getWireBetweenHit(int part) {
-		if (part <= 6 + 6 + 8) {
-			return null;
-		} else if (part <= 6 + 6 + 8 + EnumWireBetween.VALUES.length) {
-			return EnumWireBetween.VALUES[part - 1 - 6 - 6 - 8];
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+	public List<VoxelShape> getAllShape(BlockGetter world, BlockPos pos) {
 		TilePipeHolder tile = getPipe(world, pos, false);
 		if (tile == null) {
-			return BOX_CENTER;
+			return List.of(BOX_CENTER);
 		}
+		List<VoxelShape> result = new ArrayList<VoxelShape>(51);
+		boolean added = false;
 		Pipe pipe = tile.getPipe();
 		VoxelShape shape = BOX_CENTER;
-		boolean computed = false;
 		if (pipe != Pipe.EMPTY) {
 			
-			computed = true;
+			added = true;
 			boolean canUseCache = true;
 			Direction[] direTogen = new Direction[6];
 			float[] conSizes = new float[6];
 			int len = 0;
-			
 			
 			for(int i=0;i<6;i++) {
 				Direction d = Direction.values()[i];
@@ -475,26 +515,37 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 						shape = Shapes.or(shape, aabb);
 					}
 				}
+			result.add(shape);//Base Pipe ,subHit [0,6]
 		}
 		for (Direction face : Direction.values()) {
 			PipePluggable pluggable = tile.getPluggable(face);
-			if (pluggable != PipePluggable.EMPTY) {
+			if(pluggable != PipePluggable.EMPTY) {
 				VoxelShape bb = pluggable.getBoundingBox();
-				shape = Shapes.or(shape, bb);
-				computed = true;
+				result.add(1 + face.get3DDataValue(), bb);//Pluggable ,subHit [7, 12]
 			}
 		}
 		for (EnumWirePart part : tile.getWireManager().parts.keySet()) {
-			shape = Shapes.or(shape, part.boundingBox);
-			computed = true;
+			result.add(1 + 6 + part.ordinal(), part.boundingBox);
+			added = true;
 		}
 		for (EnumWireBetween between : tile.getWireManager().betweens.keySet()) {
-			shape = Shapes.or(shape, between.boundingBox);
-			computed = true;
+			result.add(1 + 6 + 8 + between.ordinal(), between.boundingBox);
+			added = true;
 		}
-		if (computed)
-			return shape;
-		return BOX_CENTER;
+		if(added)
+			return result;
+		return List.of(Shapes.block());
+	}
+
+	@Override
+	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+		List<VoxelShape> allShape = getAllShape(world, pos);
+		VoxelShape voxelShape = allShape.get(0);
+		int lenth = allShape.size();
+		for(int i = 1;i < lenth;i++) {
+			voxelShape = Shapes.or(voxelShape, allShape.get(i));
+		}
+		return voxelShape;
 	}
 
 	// @Override
@@ -549,8 +600,8 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			return InteractionResult.PASS;
 		Vec3 carmpos = player.getEyePosition();
 		Vec3 location = re.getLocation();
-		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()));
-		int subHit = trace.subhit;
+		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()), getAllShape(world, pos));
+		int subHit = trace.subHit;
 		Direction realSide = subHit == 0 ? re.getDirection() : getPartSideHit(re.getDirection(), subHit);
 		if (realSide == null)
 			realSide = re.getDirection();
@@ -664,7 +715,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 
 		NonNullList<ItemStack> toDrop = NonNullList.create();
 		BCBlockHitResult t = rayTrace(world, pos, player);
-		int subHit = t.subhit;
+		int subHit = t.subHit;
 		BlockHitResult trace = t.result;
 		Direction side = null;
 		EnumWirePart part = null;
@@ -886,6 +937,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 	
     private static HitSpriteInfo getHitSpriteInfo(BlockHitResult target, TilePipeHolder pipeHolder) {
     	BlockPos pos = pipeHolder.getBlockPos();
+    	comp
         int p = computSubhit(pipeHolder, target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()));
         VoxelShape aabb = null;
         TextureAtlasSprite sprite = SpriteUtil.missingSprite();
@@ -1136,12 +1188,12 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 
 	/** a wrapper of {@link BlockHitResult} */
 	protected static class BCBlockHitResult {
-		int subhit;// as RayTraceResult in 1.12.2
+		int subHit;// as RayTraceResult in 1.12.2
 		public BlockHitResult result;
 
 		BCBlockHitResult(BlockHitResult result, int subHit) {
 			this.result = result;
-			this.subhit = subHit;
+			this.subHit = subHit;
 		}
 
 	}

@@ -5,10 +5,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +19,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +35,7 @@ import net.minecraftforge.network.NetworkEvent;
 @AutoRegisterCapability
 public abstract class PipePluggable {
 	public final static PipePluggable EMPTY = new PipePluggable(null,null,null) {
-		public VoxelShape getBoundingBox() {throw new UnsupportedOperationException();}};
+		public VoxelShape getBoundingBox() {return Shapes.empty();}};
 	
     public final PluggableDefinition definition;
     public final IPipeHolder holder;

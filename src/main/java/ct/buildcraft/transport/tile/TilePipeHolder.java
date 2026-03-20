@@ -90,11 +90,11 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     private int[] redstoneValues = new int[6];
     private int[] oldRedstoneValues = new int[] { -1, -1, -1, -1, -1, -1 };
 
-/*    static {
+    static {
         for (PipeMessageReceiver rec : PipeMessageReceiver.values()) {
             IDS.allocId("UPDATE_" + rec);
         }
-    }*/
+    }
 
     public static final int[] NET_UPDATE_PLUGS = { //
         NET_UPDATE_PLUG_DOWN, NET_UPDATE_PLUG_UP, //
@@ -116,6 +116,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     
     protected ModelData modeldata = ModelData.builder().with(ModelPipe.PipeTypeModelKey, this).build();
     private CompoundTag unknownData;
+    public int hitPart = 0;
 
     public TilePipeHolder(BlockPos pos, BlockState bs) {
     	super(BCTransportBlocks.PIPE_HOLDER_BE.get(), pos, bs);

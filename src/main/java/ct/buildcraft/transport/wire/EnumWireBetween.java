@@ -20,17 +20,17 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /** Holds all of the possible boxes that a wire can occupy - excluding the ones in EnumWirePart. */
 public enum EnumWireBetween {
     // Centre
-    X_UP_SOUTH(Axis.X, true, true),
-    X_UP_NORTH(Axis.X, true, false),
-    X_DOWN_SOUTH(Axis.X, false, true),
-    X_DOWN_NORTH(Axis.X, false, false),
+    X_UP_SOUTH(Axis.X, true, true),//000 x++
+    X_UP_NORTH(Axis.X, true, false),//001 x+-
+    X_DOWN_SOUTH(Axis.X, false, true),//010 x-+
+    X_DOWN_NORTH(Axis.X, false, false),//011 x--
 
-    Y_SOUTH_EAST(Axis.Y, true, true),
+    Y_SOUTH_EAST(Axis.Y, true, true),//100 yzx
     Y_SOUTH_WEST(Axis.Y, true, false),
     Y_NORTH_EAST(Axis.Y, false, true),
     Y_NORTH_WEST(Axis.Y, false, false),
 
-    Z_UP_EAST(Axis.Z, true, true),
+    Z_UP_EAST(Axis.Z, true, true),//200
     Z_UP_WEST(Axis.Z, true, false),
     Z_DOWN_EAST(Axis.Z, false, true),
     Z_DOWN_WEST(Axis.Z, false, false),
