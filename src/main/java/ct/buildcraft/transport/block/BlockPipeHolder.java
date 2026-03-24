@@ -6,12 +6,10 @@
 
 package ct.buildcraft.transport.block;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.function.IntFunction;
-import java.util.function.ToIntFunction;
 
 import javax.annotation.Nullable;
 
@@ -72,7 +70,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
@@ -184,127 +181,196 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 
 	@Nullable
 	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Player player) {
-		Vec3 start = player.getEyePosition();// .add(0, player.getEyeHeight(), 0);
-		// .getPositionVector().addVector(0, player.getEyeHeight(), 0);
+		Vec3 start = player.getEyePosition();
 		double reachDistance = player.getReachDistance();
 		Vec3 end = start.add(player.getLookAngle().normalize().scale(reachDistance));
-		/*
-		 * BCLog.logger.debug(start.toString()); BCLog.logger.debug(end.toString());
-		 * BCLog.logger.debug(pos.toShortString()); BCLog.logger.debug("" +
-		 * player.getEyeHeight());
-		 */
-		return rayTrace(world, pos, start, end, getAllShape(world, pos));
+		return rayTrace(world, pos, start, end);
+	}
+	
+	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Vec3 start, Vec3 end) {
+		Pipe pipe = getPipe(world, pos, false).getPipe();
+		VoxelShape centerShape = BOX_CENTER;
+		if (pipe != Pipe.EMPTY) {
+//			boolean canUseCache = true;
+			Direction[] direTogen = new Direction[6];
+			float[] conSizes = new float[6];
+			int len = 0;
+			
+			for(int i=0;i<6;i++) {
+				Direction d = Direction.values()[i];
+				conSizes[len] = pipe.getConnectedDist(Direction.values()[i]);
+				if(conSizes[len]>0) {
+//					canUseCache &= conSizes[len] == 0.25f;
+					direTogen[len++] = d;
+				}
+			}
+//			if(canUseCache)
+//				shape = getCachedPipeShape(direTogen, len);
+//			else
+			for (int i = 0; i < len; i++) {
+				Direction face = direTogen[i];
+				if (conSizes[i] > 0) {
+					VoxelShape aabb = BOX_FACES[face.get3DDataValue()];
+					if (conSizes[i] != 0.25f) {
+						Vec3 center = VecUtil.offset(new Vec3(0.5, 0.5, 0.5), face, 0.25 + (conSizes[i] / 2));
+						Vec3 radius = new Vec3(0.25, 0.25, 0.25);
+						radius = VecUtil.replaceValue(radius, face.getAxis(), conSizes[i] / 2);
+						Vec3 min = center.subtract(radius);
+						Vec3 max = center.add(radius);
+						aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));// TODO cache this
+					}
+					centerShape = Shapes.or(centerShape, aabb);
+				}
+			}
+		}
+		return rayTrace(world, pos, start, end, centerShape);
 	}
 	
 	@Nullable
-	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Vec3 start, Vec3 end, List<VoxelShape> allShape) {
+	public BCBlockHitResult rayTrace(BlockGetter world, BlockPos pos, Vec3 start, Vec3 end, VoxelShape centerShapes) {
 		TilePipeHolder tile = getPipe(world, pos, false);
 		if (tile == null) {
 			return new BCBlockHitResult(Shapes.block().clip(start, end, pos), 400);
 		}
-		BlockHitResult preResult = AABB.clip(BOX_CENTER.toAabbs(), start, end, pos);
-		Vec3 preClip = preResult == null ? null : preResult.getLocation();
-		double preDist = preClip == null ? Double.MAX_VALUE : Math.abs(end.z - preClip.z);
-		byte[] crossOctant = new byte[4];//zyx
-		double[] octant = new double[] {preDist, preDist, preDist, preDist, preDist, preDist, preDist, preDist};
+		BlockHitResult preResult = centerShapes.clip(start, end, pos);//TODO 
+		Vec3 preClip = preResult == null ? null : preResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+		double preDist = preClip == null ? Double.MAX_VALUE : Math.abs(start.x - preClip.x - pos.getX());
+		double maxX = start.x - end.x;
+		int sign = maxX > 0 ? 1 : -1;
+		double[] octant = new double[] {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
 		Vec3 vec = end.subtract(start);
 		Vec3 dvec = vec.scale(0.001);
 		{
-			if(Mth.abs((float) vec.x) > 1e-4 && start.x * end.x<0) {
-				double y1 = (start.y * end.x - start.x * end.y)/vec.x;
-				double z1 = (start.z * end.x - start.x * end.z)/vec.x;
+			Vec3 start0 = start.subtract(pos.getX(), pos.getY(), pos.getZ());
+			Vec3 end0 = end.subtract(pos.getX(), pos.getY(), pos.getZ());
+			if(Mth.abs((float) vec.x) > 1e-2) {
+				double y1 = (start0.y * end0.x - start0.x * end0.y)/vec.x;
+				double z1 = (start0.z * end0.x - start0.x * end0.z)/vec.x;
 				int octan1 = (dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
-				int octan2 = (~octan1)&0b1 | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
-				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x-dvec.x));
+				int octan2 = ((~octan1)&0b1) | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
+				octant[octan1] = Math.min(octant[octan1], sign*(start0.x+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x-dvec.x));
 			}
-			if(Mth.abs((float) vec.y) > 1e-4 && start.y * end.y<0) {
-				double x1 = (start.x * end.y - start.y * end.x)/vec.y;
-				double z1 = (start.z * end.y - start.y * end.z)/vec.y;
+			if(Mth.abs((float) vec.y) > 1e-2) {
+				double x1 = (start0.x * end0.y - start0.y * end0.x)/vec.y;
+				double z1 = (start0.z * end0.y - start0.y * end0.z)/vec.y;
 				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
-				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (~octan1)&0b01 | (z1 - dvec.z > 0 ? 0b100 : 0);
-				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x - x1-dvec.x));
+				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | ((~octan1)&0b10) | (z1 - dvec.z > 0 ? 0b100 : 0);
+				octant[octan1] = Math.min(octant[octan1], Math.abs(start0.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x - x1-dvec.x));
 			}
-			if(Mth.abs((float) vec.z) > 1e-4 && start.y * end.y<0) {
-				double x1 = (start.x * end.z - start.z * end.x)/vec.z;
-				double y1 = (start.y * end.z - start.z * end.y)/vec.z;
-				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (vec.z > 0 ? 0b100 : 0);
-				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | (~octan1)&0b100;
-				octant[octan1] = Math.min(octant[octan1], Math.abs(start.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start.x - x1-dvec.x));
+			if(Mth.abs((float) vec.z) > 1e-2) {
+				double x1 = (start0.x * end0.z - start0.z * end0.x)/vec.z;
+				double y1 = (start0.y * end0.z - start0.z * end0.y)/vec.z;
+				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (dvec.z > 0 ? 0b100 : 0);
+				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | ((~octan1)&0b100);
+				octant[octan1] = Math.min(octant[octan1], Math.abs(start0.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x - x1-dvec.x));
 			}
 		}
-		double closest = preDist;
-		int closestOctant = 0b000;
+		StringBuilder s = new StringBuilder();
+		for(int i =0 ;i<8;i++) {
+			if(octant[i] != Double.MAX_VALUE) {
+				s.append(i).append(", ");
+			}
+		}
+		BCLog.logger.debug(s);
+		double closest = Double.MAX_VALUE;
+		int closestOctant = -1;
 		boolean[] caculated = new boolean[6+8+36];
+		BlockHitResult bestResult = preResult;
+		int bestPart = 0;
+		double bestXDis = preDist;
 		Arrays.fill(caculated, false);
+		HashSet<Direction> set = new HashSet<Direction>();
 		do {
-			for(int i = 6;i<8;i++) {
+			closest = Double.MAX_VALUE;
+			for(int i = 0;i<8;i++) {
 				if(closest > octant[i]) {
 					closest = octant[i];
 					closestOctant = i;
 				}
 			}
+			if(closestOctant != -1)
+				octant[closestOctant] = Double.MAX_VALUE;
+			if(closestOctant == -1)
+				break;
 			Direction[] plugs = new Direction[3];
 			EnumWirePart parts;
 			EnumWireBetween[] betweens = new EnumWireBetween[6];
-			int directionId = (closestOctant>>1|closestOctant<<2)&0b111;//xzy
-			for(int j = 0b0;j<0b100;j+=2,directionId>>=1)
-				plugs[j/2] = Direction.values()[directionId&0b1+j];
-			parts = EnumWirePart.VALUES[7 - closestOctant];
-			int octant1 = ~closestOctant;
-			betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
-			betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b100];
-			betweens[2] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1000];//Center
-			betweens[3] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11+0b1100+(octant1&0b1)<<2];//Between
-			betweens[4] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b1100+(octant1&0b10)<<1];
-			betweens[5] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1100+(octant1&0b100)];
+			int directionId = (((closestOctant>>1)|(closestOctant<<2)))&0b111;//xzy
+			for(int j = 0b0;j<5;j+=2,directionId>>=1) {
+				plugs[j/2] = !caculated[(directionId&0b1)+j] ? Direction.values()[(directionId&0b1)+j] : null;
+				caculated[(directionId&0b1)+j] = true;
+//				BCLog.d(""+closestOctant + ":" + Direction.values()[(directionId&0b1)+j]);
+			}
+			parts = !caculated[6 + 7 - closestOctant] ? EnumWirePart.VALUES[7 - closestOctant] : null;
+			int octant1 = (~closestOctant)&0b111;
+			for(int i = 0;i<3;i++) {
+				int index = (((octant1>>(i&0b1))|(octant1>>(((~(i|(i>>>1)))&0b1)*2)))&0b11) + i *4;
+				betweens[i] = !caculated[6+8+index] ? EnumWireBetween.VALUES[index] : null;
+				caculated[6+8+index] = true;
+				index += 12 + 4*i + (((octant1&(0b1<<i))<<(2-i)));
+				betweens[i+3] = !caculated[6+8+index] ? EnumWireBetween.VALUES[index] : null;
+				caculated[6+8+index] = true;
+			}
+/*			betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
+			betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+4];
+			betweens[2] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+8];//Center
+			betweens[3] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11+12+(octant1&0b1)<<2];//Between
+			betweens[4] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+20+(octant1&0b10)<<1];
+			betweens[5] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+28+(octant1&0b100)];*/
 			for(Direction face : plugs) {
+				if(face == null) break;
+				set.add(face);
 				PipePluggable pluggable = tile.getPluggable(face);
-				if (pluggable != PipePluggable.EMPTY&&pluggable.getBoundingBox().bounds().contains(inside)) {
-					return face.ordinal() + 1 + 6;
+				if (pluggable != PipePluggable.EMPTY) {
+					BlockHitResult clip = pluggable.getBoundingBox().clip(start, end, pos);
+					if(clip == null) continue;
+					double distance = Math.abs(clip.getLocation().x - start.x);
+					if(distance < bestXDis) {
+						bestXDis = distance;
+						bestResult = clip;
+						bestPart = face.ordinal() + 1 + 6;
+					}
 				}
 			}
 			WireManager wireManager = tile.getWireManager();
-			DyeColor dyeColor = wireManager.parts.get(parts);
-			if(dyeColor != null && parts.boundingBox.bounds().contains(inside))
-				return parts.ordinal() + 1 + 6 + 6;
+			DyeColor dyeColor = parts == null ? null : wireManager.parts.get(parts);
+			if(dyeColor != null ) {
+				BlockHitResult clip = parts.boundingBox.clip(start, end, pos);
+				if(clip != null) {
+					double distance = Math.abs(clip.getLocation().x - start.x);
+					if(distance < bestXDis) {
+						bestXDis = distance;
+						bestResult = clip;
+						bestPart = parts.ordinal() + 1 + 6 + 6;
+					}
+				}
+			}
 			for(EnumWireBetween between : betweens) {
-				if(wireManager.betweens.get(between) != null && between.boundingBox.bounds().contains(inside))
-					return between.ordinal() + 1 + 6 + 6 + 8;
+				if(wireManager.betweens.get(between) != null){
+					BlockHitResult clip = between.boundingBox.clip(start, end, pos);
+					if(clip == null) continue;
+					double distance = Math.abs(clip.getLocation().x - start.x);
+					if(distance < bestXDis) {
+						bestXDis = distance;
+						bestResult = clip;
+						bestPart = between.ordinal() + 1 + 6 + 6 + 8;
+					}
+				}
 			}
-		}while(closest != preDist);
-/*		Direction[] plugs = new Direction[6];
-		EnumWirePart[] parts = new EnumWirePart[8];
-		ArrayList<EnumWireBetween> betweens = new ArrayList<EnumWireBetween>();
-		int partCount = 0;
-		for(int i =0;i<0b1000;i++){
-			if(octant[i] == preDist) continue;
-			int directionId = (i>>1|i<<2)&0b111;//xzy
-			for(int j = 0b0;j<0b100;j<<=1,directionId>>=1)
-				plugs[directionId&j] = Direction.values()[directionId&0b1+j];
-			parts[partCount++] = EnumWirePart.VALUES[7 - i];
-			//TODO
-		}
-		BCBlockHitResult result = new BCBlockHitResult(preResult, 0);  
-		for(Direction face : plugs) {
-			PipePluggable pluggable = tile.getPluggable(face);
-			if(pluggable != PipePluggable.EMPTY) {
-				result = computeTrace(result, pos, start, end, pluggable.getBoundingBox(), partCount);
-			}
-		}
-		
-		return result;*/
-		for(var shape : allShape) {
-			
-		}
+		}while(closest != Double.MAX_VALUE/* && bestResult == preResult*/);
+		BCLog.logger.debug(set.toString());
+		return bestResult == preResult ? (preResult == null ? null :
+			new BCBlockHitResult(preResult, computHitFacing(preClip)))
+				: new BCBlockHitResult(bestResult, bestPart);
 	}
 
 	@Nullable
 	public static EnumWirePart rayTraceWire(BlockPos pos, Vec3 start, Vec3 end) {//DEBUG
 		Vec3 realStart = start.subtract(pos.getX(), pos.getY(), pos.getZ());
-		Vec3 realEnd = end.subtract(pos.getX(), pos.getY(), pos.getZ());
+		//Vec3 realEnd = end.subtract(pos.getX(), pos.getY(), pos.getZ());
 		EnumWirePart best = null;
 		double dist = 1000;
 		for (EnumWirePart part : EnumWirePart.VALUES) {
@@ -326,21 +392,6 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		return best;
 	}
 
-    private BCBlockHitResult computeTrace(BCBlockHitResult lastBest, BlockPos pos, Vec3 start, Vec3 end,
-            VoxelShape aabb, int part) {
-    		BlockHitResult clip = aabb.clip(start, end, pos);
-            if (clip == null) {
-                return lastBest;
-            }
-            BCBlockHitResult next = new BCBlockHitResult(clip, part);
-            if (lastBest == null) {
-                return next;
-            }
-            double distLast = Math.abs(lastBest.result.getLocation().z - start.z);
-            double distNext = Math.abs(next.result.getLocation().z - start.z);
-            return distLast > distNext ? next : lastBest;
-    }
-    
 	@Nullable
 	public static Direction getPartSideHit(Direction facing, int part) {
 		if (part <= 0) {
@@ -394,17 +445,23 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		Vec3 vec31 = entity.getLookAngle();
 		Vec3 vec32 = carmpos.add(vec31.x * reachDistance, vec31.y * reachDistance, vec31.z * reachDistance);
 		
-		List<VoxelShape> allShape = getAllShape(world, pos);//TODO
-		BCBlockHitResult trace = rayTrace(world, pos, carmpos, vec32, allShape);
-		computHitOctant(carmpos)
-		computSubhit(tile, vec32, UPDATE_ALL);
-		return (aabb == Shapes.block() ? aabb : Shapes.create(aabb.bounds().inflate(1 / 32.0)));
-		//}
+		VoxelShape[] allShape = getAllShape(world, pos);//TODO
+		VoxelShape centerShape = allShape[0];
+		for(int i =1 ;i<7;i++) {
+				centerShape = allShape[i] != null ? Shapes.or(centerShape, allShape[i]) : centerShape;
+				
+		}
+		if(pos.getX() == -114&&pos.getZ() == -50) {
+			BCLog.d(false);
+		}
+		BCBlockHitResult trace = rayTrace(world, pos, carmpos, vec32, centerShape);
+		VoxelShape hitShape = trace != null ? allShape[trace.subHit] : null;
+		return (hitShape == null ? Shapes.empty() : Shapes.create(hitShape.bounds().inflate(1 / 32.0)));
 
 	}
 	
 	private static int computHitOctant(Vec3 pos) {//zyx
-		return (int)((Double.doubleToRawLongBits(pos.z)>>61|0b100)|(Double.doubleToRawLongBits(pos.y)>>62|0b10)|(Double.doubleToRawLongBits(pos.x)>>63|0b1));
+		return (int)(pos.z>0 ? 0b100 : 0|(pos.y>0 ? 0b10 : 0)|(pos.x>0 ? 0b1 : 0));
 	}
 
 	private static int computHitFacing(Vec3 clip) {
@@ -448,7 +505,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		for(int j = 0b0;j<0b100;j+=2,directionId>>=1)
 			plugs[j/2] = Direction.values()[directionId&0b1+j];
 		parts = EnumWirePart.VALUES[7 - octant];
-		int octant1 = ~octant;
+		int octant1 = (~octant)&0b111;
 		betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
 		betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b100];
 		betweens[2] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+0b1000];//Center
@@ -472,19 +529,19 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		return computHitFacing(inside);
 	}
 
-	public List<VoxelShape> getAllShape(BlockGetter world, BlockPos pos) {
+	public VoxelShape[] getAllShape(BlockGetter world, BlockPos pos) {
 		TilePipeHolder tile = getPipe(world, pos, false);
 		if (tile == null) {
-			return List.of(BOX_CENTER);
+			return new VoxelShape[] {BOX_CENTER};
 		}
-		List<VoxelShape> result = new ArrayList<VoxelShape>(51);
+		VoxelShape[] result = new VoxelShape[1+6+6+8+36];
 		boolean added = false;
 		Pipe pipe = tile.getPipe();
 		VoxelShape shape = BOX_CENTER;
 		if (pipe != Pipe.EMPTY) {
 			
 			added = true;
-			boolean canUseCache = true;
+//			boolean canUseCache = true;
 			Direction[] direTogen = new Direction[6];
 			float[] conSizes = new float[6];
 			int len = 0;
@@ -493,68 +550,69 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				Direction d = Direction.values()[i];
 				conSizes[len] = pipe.getConnectedDist(Direction.values()[i]);
 				if(conSizes[len]>0) {
-					canUseCache &= conSizes[len] == 0.25f;
+//					canUseCache &= conSizes[len] == 0.25f;
 					direTogen[len++] = d;
 				}
 			}
-			if(canUseCache)
-				shape = getCachedPipeShape(direTogen, len);
-			else
-				for (int i = 0;i < len; i++) {
-					Direction face = direTogen[i];
-					if (conSizes[i] > 0) {
-						VoxelShape aabb = BOX_FACES[face.get3DDataValue()];
-						if (conSizes[i] != 0.25f) {
-							Vec3 center = VecUtil.offset(new Vec3(0.5, 0.5, 0.5), face, 0.25 + (conSizes[i] / 2));
-							Vec3 radius = new Vec3(0.25, 0.25, 0.25);
-							radius = VecUtil.replaceValue(radius, face.getAxis(), conSizes[i] / 2);
-							Vec3 min = center.subtract(radius);
-							Vec3 max = center.add(radius);
-							aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));//TODO cache this
-						}
-						shape = Shapes.or(shape, aabb);
+//			if(canUseCache)
+//				shape = getCachedPipeShape(direTogen, len);
+//			else
+			result[0] = (shape);//Base Pipe ,subHit [0,6]
+			for (int i = 0; i < len; i++) {
+				Direction face = direTogen[i];
+				if (conSizes[i] > 0) {
+					VoxelShape aabb = BOX_FACES[face.get3DDataValue()];
+					if (conSizes[i] != 0.25f) {
+						Vec3 center = VecUtil.offset(new Vec3(0.5, 0.5, 0.5), face, 0.25 + (conSizes[i] / 2));
+						Vec3 radius = new Vec3(0.25, 0.25, 0.25);
+						radius = VecUtil.replaceValue(radius, face.getAxis(), conSizes[i] / 2);
+						Vec3 min = center.subtract(radius);
+						Vec3 max = center.add(radius);
+						aabb = Shapes.create(BoundingBoxUtil.makeFrom(min, max));// TODO cache this
 					}
+					result[face.get3DDataValue()+1] = aabb;
 				}
-			result.add(shape);//Base Pipe ,subHit [0,6]
+			}
+			
 		}
 		for (Direction face : Direction.values()) {
 			PipePluggable pluggable = tile.getPluggable(face);
 			if(pluggable != PipePluggable.EMPTY) {
 				VoxelShape bb = pluggable.getBoundingBox();
-				result.add(1 + face.get3DDataValue(), bb);//Pluggable ,subHit [7, 12]
+				result[1+ 6 + face.get3DDataValue()] = bb;//Pluggable ,subHit [7, 12]
 			}
 		}
 		for (EnumWirePart part : tile.getWireManager().parts.keySet()) {
-			result.add(1 + 6 + part.ordinal(), part.boundingBox);
+			result[1 + 6 + 6 + part.ordinal()] = part.boundingBox;
 			added = true;
 		}
 		for (EnumWireBetween between : tile.getWireManager().betweens.keySet()) {
-			result.add(1 + 6 + 8 + between.ordinal(), between.boundingBox);
+			result[1 + 6 + 6 + 8 + between.ordinal()] = between.boundingBox;
 			added = true;
 		}
 		if(added)
 			return result;
-		return List.of(Shapes.block());
+		return new VoxelShape[] {Shapes.block()};
 	}
 
 	@Override
 	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
-		List<VoxelShape> allShape = getAllShape(world, pos);
-		VoxelShape voxelShape = allShape.get(0);
-		int lenth = allShape.size();
+		VoxelShape[] allShape = getAllShape(world, pos);
+		VoxelShape voxelShape = allShape[0];
+		int lenth = allShape.length;
 		for(int i = 1;i < lenth;i++) {
-			voxelShape = Shapes.or(voxelShape, allShape.get(i));
+			voxelShape = allShape[i] != null ? Shapes.or(voxelShape, allShape[i]) : voxelShape;
 		}
 		return voxelShape;
 	}
 
-	// @Override
+	// @Override//TODO
 	public ItemStack getPickBlock(BlockState state, BlockHitResult target, Level world, BlockPos pos, Player player) {
 		TilePipeHolder tile = getPipe(world, pos, false);
 		if (tile == null || target == null) {
 			return ItemStack.EMPTY;
 		}
-		int subHit = computSubhit(tile, target.getLocation());
+		int subHit = computSubhit(tile, target.getLocation(), computHitOctant(target.getLocation()));
 		if (subHit <= 6) {
 			Pipe pipe = tile.getPipe();
 			if (pipe != Pipe.EMPTY) {
@@ -600,7 +658,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			return InteractionResult.PASS;
 		Vec3 carmpos = player.getEyePosition();
 		Vec3 location = re.getLocation();
-		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()), getAllShape(world, pos));
+		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()));
 		int subHit = trace.subHit;
 		Direction realSide = subHit == 0 ? re.getDirection() : getPartSideHit(re.getDirection(), subHit);
 		if (realSide == null)
@@ -888,57 +946,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		return true;
 	}
 	
-	
-	
-	
-	/*
-	 * private static HitSpriteInfo getHitSpriteInfo(BlockHitResult target,
-	 * TilePipeHolder pipeHolder) { int p = computSubhit(pipeHolder,
-	 * target.getLocation()); VoxelShape aabb = null; TextureAtlasSprite sprite =
-	 * SpriteUtil.missingSprite(); if (0 <= p && p <= 6) { aabb = p == 0 ?
-	 * BOX_CENTER : BOX_FACES[p - 1]; PipeDefinition def =
-	 * pipeHolder.getPipe().definition; TextureAtlasSprite[] sprites =
-	 * PipeModelCacheBase.generator.getItemSprites(def); sprite = sprites.length ==
-	 * 0 ? SpriteUtil.missingSprite() : sprites[0]; } else if (6 + 1 <= p && p < 6 +
-	 * 6 + 1) { PipePluggable plug = pipeHolder.getPluggable(Direction.values()[p -
-	 * 6 - 1]); if (plug == PipePluggable.EMPTY) { return null; } aabb =
-	 * plug.getBoundingBox(); if (aabb == null) { return null; } PluggableModelKey
-	 * keyC = plug.getModelRenderKey(RenderType.cutout()); PluggableModelKey keyT =
-	 * plug.getModelRenderKey(RenderType.translucent()); if (keyC == null && keyT ==
-	 * null) { return null; } List<BakedQuad> quads = null; if (keyC != null) quads
-	 * = PipeModelCachePluggable.cacheCutoutSingle.bake(keyC); if (quads == null ||
-	 * quads.isEmpty()) { if (keyT == null) { return null; } quads =
-	 * PipeModelCachePluggable.cacheTranslucentSingle.bake(keyT); if (quads == null
-	 * || quads.isEmpty()) { return null; } } sprite = quads.get(0).getSprite(); }
-	 * else if (6 + 6 + 1 <= p && p < 1 + 6 + 6 + 8) { EnumWirePart wirePart =
-	 * EnumWirePart.values()[p - 6 - 6 - 1]; aabb = wirePart.boundingBox; DyeColor
-	 * colour = pipeHolder.getWireManager().getColorOfPart(wirePart); if (colour ==
-	 * null) { return null; } sprite =
-	 * PipeWireRenderer.getWireSprite(colour).getSprite(); } else if (6 + 6 + 1 + 8
-	 * < p && p <= 6 + 6 + 1 + 8 + 36) { EnumWireBetween wireBetween =
-	 * EnumWireBetween.values()[p - 6 - 6 - 1 - 8]; aabb = wireBetween.boundingBox;
-	 * DyeColor colour = pipeHolder.getWireManager().betweens.get(wireBetween); if
-	 * (colour == null) { return null; } sprite =
-	 * PipeWireRenderer.getWireSprite(colour).getSprite(); } else { return null; }
-	 * if (aabb == null) { throw new IllegalStateException("Null aabb for index " +
-	 * p + " (and sprite " + sprite + ")"); } return new HitSpriteInfo(aabb,
-	 * sprite); }
-	 */
-
-	@Override
-	public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_) {
-		super.stepOn(p_152431_, p_152432_, p_152433_, p_152434_);
-	}
-
-	@Override
-	public void attack(BlockState p_60499_, Level p_60500_, BlockPos p_60501_, Player p_60502_) {
-		super.attack(p_60499_, p_60500_, p_60501_, p_60502_);
-	}
-	
     private static HitSpriteInfo getHitSpriteInfo(BlockHitResult target, TilePipeHolder pipeHolder) {
     	BlockPos pos = pipeHolder.getBlockPos();
-    	comp
-        int p = computSubhit(pipeHolder, target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()));
+        int p = computSubhit(pipeHolder, target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()), computHitOctant(target.getLocation()));
         VoxelShape aabb = null;
         TextureAtlasSprite sprite = SpriteUtil.missingSprite();
         if (0 <= p && p <= 6) {

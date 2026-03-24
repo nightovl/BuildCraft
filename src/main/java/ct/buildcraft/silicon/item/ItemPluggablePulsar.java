@@ -17,6 +17,7 @@ import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.plug.PluggablePulsar;
+import ct.buildcraft.transport.pipe.Pipe;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -33,15 +34,15 @@ public class ItemPluggablePulsar extends Item implements IItemPluggable {
     public PipePluggable onPlace(@Nonnull ItemStack stack, IPipeHolder holder, Direction side, Player player,
         InteractionHand hand) {
         IPipe pipe = holder.getPipe();
-        if (pipe == null) {
-            return null;
+        if (pipe == Pipe.EMPTY) {
+            return PipePluggable.EMPTY;
         }
         PipeBehaviour behaviour = pipe.getBehaviour();
         if (behaviour instanceof IMjRedstoneReceiver) {
             SoundUtil.playBlockPlace(holder.getPipeWorld(), holder.getPipePos());
             return new PluggablePulsar(BCSiliconPlugs.pulsar, holder, side);
         } else {
-            return null;
+            return PipePluggable.EMPTY;
         }
     }
 }

@@ -135,7 +135,7 @@ public abstract class PipePluggable {
 
     /** PipePluggable version of
      * {@link Block#canBeConnectedTo(net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos, Direction)}.
-     *not exist in 1.19.2 anymore */
+     *not exist in 1.19.2 anymore *///TODO CHeck
     @Deprecated
     public boolean canBeConnected() {
         return false;

@@ -14,16 +14,13 @@ import ct.buildcraft.api.transport.pipe.IPipe;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
 import ct.buildcraft.api.transport.pluggable.PluggableDefinition;
-import ct.buildcraft.lib.misc.ColourUtil;
-import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
 import ct.buildcraft.silicon.BCSilicon;
 import ct.buildcraft.silicon.BCSiliconPlugs;
 import ct.buildcraft.silicon.plug.PluggableLens;
+import ct.buildcraft.transport.pipe.Pipe;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -59,8 +56,8 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
     public PipePluggable onPlace(@Nonnull ItemStack stack, IPipeHolder holder, Direction side, Player player,
         InteractionHand hand) {
         IPipe pipe = holder.getPipe();
-        if (pipe == null || !(pipe.getFlow() instanceof IFlowItems)) {
-            return null;
+        if (pipe == Pipe.EMPTY || !(pipe.getFlow() instanceof IFlowItems)) {
+            return PipePluggable.EMPTY;
         }
         LensData data = getData(stack);
         SoundUtil.playBlockPlace(holder.getPipeWorld(), holder.getPipePos(), Blocks.STONE.defaultBlockState());

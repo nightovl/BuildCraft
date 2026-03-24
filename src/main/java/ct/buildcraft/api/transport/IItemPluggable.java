@@ -1,7 +1,8 @@
 package ct.buildcraft.api.transport;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
@@ -21,7 +22,7 @@ public interface IItemPluggable {
      * @param holder The pipe holder
      * @param side The side that the pluggable should be placed on
      * @return A pluggable to place onto the pipe */
-    @Nullable
+    @NotNull
     PipePluggable onPlace(@Nonnull ItemStack stack, IPipeHolder holder, Direction side, Player player,
         InteractionHand hand);
 }
