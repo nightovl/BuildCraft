@@ -271,10 +271,15 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		StringBuilder s = new StringBuilder();
 		for(int i =0 ;i<8;i++) {
 			if(octant[i] != Double.MAX_VALUE) {
-				s.append(i).append(", ");
+				int directionId = (((i>>1)|(i<<2)))&0b111;//xzy
+				for(int j = 0b0;j<5;j+=2,directionId>>=1) {
+					Direction direction = Direction.values()[(directionId&0b1)+j];
+					s.append(direction).append(", ");
+				}
+				BCLog.logger.debug(s);
 			}
 		}
-		BCLog.logger.debug(s);
+		
 		double closest = Double.MAX_VALUE;
 		int closestOctant = -1;
 		boolean[] caculated = new boolean[6+8+36];
