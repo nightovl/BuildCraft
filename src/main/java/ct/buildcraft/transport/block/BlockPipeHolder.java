@@ -8,7 +8,6 @@ package ct.buildcraft.transport.block;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -83,7 +82,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -241,38 +239,48 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		Vec3 vec = end.subtract(start);
 		Vec3 dvec = vec.scale(0.001);
 		{
-			Vec3 start0 = start.subtract(pos.getX(), pos.getY(), pos.getZ());
-			Vec3 end0 = end.subtract(pos.getX(), pos.getY(), pos.getZ());
+			double xoff = pos.getX() + 0.5;
+			double yoff = pos.getY() + 0.5;
+			double zoff = pos.getZ() + 0.5;
+			Vec3 start0 = start.subtract(xoff, yoff, zoff);
+			Vec3 end0 = end.subtract(xoff, yoff, zoff);
 			if(Mth.abs((float) vec.x) > 1e-2) {
 				double y1 = (start0.y * end0.x - start0.x * end0.y)/vec.x;
 				double z1 = (start0.z * end0.x - start0.x * end0.z)/vec.x;
-				int octan1 = (dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
-				int octan2 = ((~octan1)&0b1) | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
-				octant[octan1] = Math.min(octant[octan1], sign*(start0.x+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], sign*(start0.x-dvec.x));
+				int octant1 = (dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
+				int octant2 = ((~octant1)&0b1) | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
+				double dx = sign*(start0.x+dvec.x);
+				octant[octant1] = dx> 0 ? Math.min(octant[octant1], dx) : octant[octant1];
+				dx = sign*(start0.x-dvec.x);
+				octant[octant2] = dx> 0? Math.min(octant[octant2], dx) : octant[octant2];
 			}
 			if(Mth.abs((float) vec.y) > 1e-2) {
 				double x1 = (start0.x * end0.y - start0.y * end0.x)/vec.y;
 				double z1 = (start0.z * end0.y - start0.y * end0.z)/vec.y;
-				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
-				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | ((~octan1)&0b10) | (z1 - dvec.z > 0 ? 0b100 : 0);
-				octant[octan1] = Math.min(octant[octan1], sign*(start0.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], sign*(start0.x - x1-dvec.x));
+				int octant1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
+				int octant2 = (x1 - dvec.x > 0 ? 0b1 : 0) | ((~octant1)&0b10) | (z1 - dvec.z > 0 ? 0b100 : 0);
+				double dx = sign*(start0.x - x1+dvec.x);
+				octant[octant1] = dx > 0 ? Math.min(octant[octant1], dx) : octant[octant1];
+				dx = sign*(start0.x - x1-dvec.x);
+				octant[octant2] = dx > 0 ? Math.min(octant[octant2], dx) : octant[octant2];
 			}
 			if(Mth.abs((float) vec.z) > 1e-2) {
 				double x1 = (start0.x * end0.z - start0.z * end0.x)/vec.z;
 				double y1 = (start0.y * end0.z - start0.z * end0.y)/vec.z;
-				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (dvec.z > 0 ? 0b100 : 0);
-				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | ((~octan1)&0b100);
-				octant[octan1] = Math.min(octant[octan1], sign*(start0.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], sign*(start0.x - x1-dvec.x));
+				int octant1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (dvec.z > 0 ? 0b100 : 0);
+				int octant2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | ((~octant1)&0b100);
+				double dx = sign*(start0.x - x1+dvec.x);
+				octant[octant1] = dx > 0 ? Math.min(octant[octant1], dx) : octant[octant1];
+				dx = sign*(start0.x - x1-dvec.x);
+				octant[octant2] = dx > 0 ? Math.min(octant[octant2], dx) : octant[octant2];
 			}
 		}
-		StringBuilder s = new StringBuilder("\n");
+/*		StringBuilder s = new StringBuilder("\n");
 		if(tile.getLevel().getGameTime() % 20 == 0)
-		for(int i =0 ;i<8;i++) {
+		for(int i =0 ;i<8;i++) {//zyx
 			if(octant[i] != Double.MAX_VALUE) {
 				int directionId = (((i>>1)|(i<<2)))&0b111;//xzy
+				s.append(i);
 				for(int j = 0b0;j<5;j+=2,directionId>>=1) {
 					Direction direction = Direction.values()[(directionId&0b1)+j];
 					s.append(direction).append(", ");
@@ -280,16 +288,16 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				s.append("\n");
 			}
 			BCLog.logger.debug(s);
-		}
+		}*/
 		
 		double closest = Double.MAX_VALUE;
-		int closestOctant = -1;
+		int closestOctant = -1;//zyx
 		boolean[] caculated = new boolean[6+8+36];
 		BlockHitResult bestResult = preResult;
 		int bestPart = 0;
 		double bestXDis = preDist;
 		Arrays.fill(caculated, false);
-		HashSet<Direction> set = new HashSet<Direction>();
+		Direction[] plugs = new Direction[3];
 		do {
 			closest = Double.MAX_VALUE;
 			for(int i = 0;i<8;i++) {
@@ -302,7 +310,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				octant[closestOctant] = Double.MAX_VALUE;
 			if(closestOctant == -1)
 				break;
-			Direction[] plugs = new Direction[3];
+			
 			EnumWirePart parts;
 			EnumWireBetween[] betweens = new EnumWireBetween[6];
 			int directionId = (((closestOctant>>1)|(closestOctant<<2)))&0b111;//xzy
@@ -311,7 +319,20 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				caculated[(directionId&0b1)+j] = true;
 //				BCLog.d(""+closestOctant + ":" + Direction.values()[(directionId&0b1)+j]);
 			}
-			parts = !caculated[6 + 7 - closestOctant] ? EnumWirePart.VALUES[7 - closestOctant] : null;
+			int partId = (~((closestOctant>>2) | (closestOctant<<2) | (closestOctant&0b010)))&0b111; 
+			parts = !caculated[6 + partId] ? EnumWirePart.VALUES[partId] : null;//xyz
+/*			if(tile.getLevel().getGameTime() % 40 == 0) {
+				StringBuilder s = new StringBuilder("\n");
+						s.append(closestOctant);
+						directionId = (((closestOctant>>1)|(closestOctant<<2)))&0b111;//xzy
+						for(int j = 0b0;j<5;j+=2,directionId>>=1) {
+							Direction direction = Direction.values()[(directionId&0b1)+j];
+							s.append(direction).append(", ");
+						s.append("\n");
+						}
+				BCLog.logger.debug(s);
+				BCLog.d((partId) + ", "+EnumWirePart.VALUES[partId]);
+			}*/
 			int octant1 = (~closestOctant)&0b111;
 			for(int i = 0;i<3;i++) {
 				int index = (((octant1>>(i&0b1))|(octant1>>(((~(i|(i>>>1)))&0b1)*2)))&0b11) + i *4;
@@ -328,8 +349,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			betweens[4] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+20+(octant1&0b10)<<1];
 			betweens[5] = EnumWireBetween.VALUES[(octant1|octant1)&0b11+28+(octant1&0b100)];*/
 			for(Direction face : plugs) {
-				if(face == null) break;
-				set.add(face);
+				if(face == null) continue;
 				PipePluggable pluggable = tile.getPluggable(face);
 				if (pluggable != PipePluggable.EMPTY) {
 					BlockHitResult clip = pluggable.getBoundingBox().clip(start, end, pos);

@@ -64,7 +64,7 @@ public class TriggerPower extends BCStatement implements ITriggerInternal, ITrig
     }
 
     public static boolean isTriggeringTile(BlockEntity tile, Direction face) {
-        return tile.getCapability(MjAPI.CAP_READABLE, face) != null;
+        return tile.getCapability(MjAPI.CAP_READABLE, face).isPresent();
     }
 
     protected boolean isActive(ICapabilityProvider tile, EnumPipePart side) {
