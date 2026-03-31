@@ -249,26 +249,27 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				int octan1 = (dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
 				int octan2 = ((~octan1)&0b1) | (y1 - dvec.y > 0 ? 0b10 : 0) | (z1 - dvec.z > 0 ? 0b100 : 0);
 				octant[octan1] = Math.min(octant[octan1], sign*(start0.x+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x-dvec.x));
+				octant[octan2] = Math.min(octant[octan2], sign*(start0.x-dvec.x));
 			}
 			if(Mth.abs((float) vec.y) > 1e-2) {
 				double x1 = (start0.x * end0.y - start0.y * end0.x)/vec.y;
 				double z1 = (start0.z * end0.y - start0.y * end0.z)/vec.y;
 				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (dvec.y > 0 ? 0b10 : 0) | (z1 + dvec.z > 0 ? 0b100 : 0);
 				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | ((~octan1)&0b10) | (z1 - dvec.z > 0 ? 0b100 : 0);
-				octant[octan1] = Math.min(octant[octan1], Math.abs(start0.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x - x1-dvec.x));
+				octant[octan1] = Math.min(octant[octan1], sign*(start0.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], sign*(start0.x - x1-dvec.x));
 			}
 			if(Mth.abs((float) vec.z) > 1e-2) {
 				double x1 = (start0.x * end0.z - start0.z * end0.x)/vec.z;
 				double y1 = (start0.y * end0.z - start0.z * end0.y)/vec.z;
 				int octan1 = (x1 + dvec.x > 0 ? 0b1 : 0) | (y1 + dvec.y > 0 ? 0b10 : 0) | (dvec.z > 0 ? 0b100 : 0);
 				int octan2 = (x1 - dvec.x > 0 ? 0b1 : 0) | (y1 - dvec.y > 0 ? 0b10 : 0) | ((~octan1)&0b100);
-				octant[octan1] = Math.min(octant[octan1], Math.abs(start0.x - x1+dvec.x));
-				octant[octan2] = Math.min(octant[octan2], Math.abs(start0.x - x1-dvec.x));
+				octant[octan1] = Math.min(octant[octan1], sign*(start0.x - x1+dvec.x));
+				octant[octan2] = Math.min(octant[octan2], sign*(start0.x - x1-dvec.x));
 			}
 		}
-		StringBuilder s = new StringBuilder();
+		StringBuilder s = new StringBuilder("\n");
+		if(tile.getLevel().getGameTime() % 20 == 0)
 		for(int i =0 ;i<8;i++) {
 			if(octant[i] != Double.MAX_VALUE) {
 				int directionId = (((i>>1)|(i<<2)))&0b111;//xzy
@@ -276,8 +277,9 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 					Direction direction = Direction.values()[(directionId&0b1)+j];
 					s.append(direction).append(", ");
 				}
-				BCLog.logger.debug(s);
+				s.append("\n");
 			}
+			BCLog.logger.debug(s);
 		}
 		
 		double closest = Double.MAX_VALUE;
@@ -366,7 +368,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 				}
 			}
 		}while(closest != Double.MAX_VALUE/* && bestResult == preResult*/);
-		BCLog.logger.debug(set.toString());
+//		BCLog.logger.debug(set.toString());
 		return bestResult == preResult ? (preResult == null ? null :
 			new BCBlockHitResult(preResult, computHitFacing(preClip)))
 				: new BCBlockHitResult(bestResult, bestPart);
