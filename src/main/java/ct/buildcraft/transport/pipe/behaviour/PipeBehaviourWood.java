@@ -108,7 +108,7 @@ public class PipeBehaviourWood extends PipeBehaviourDirectional implements IMjRe
 
     @Nullable
     protected FluidStack extractFluid(IFlowFluid flow, Direction dir, int millibuckets, FluidAction simulate) {
-        return flow.tryExtractFluid(millibuckets, dir, null, simulate);
+        return flow.tryExtractFluid(millibuckets, dir, FluidStack.EMPTY, simulate);
     }
 
     // IMjRedstoneReceiver
