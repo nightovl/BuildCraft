@@ -49,6 +49,10 @@ public enum PlugBakerLens implements IPluggableStaticBaker<KeyPlugLens> {
             MutableQuad c = new MutableQuad();
             List<BakedQuad> list = new ArrayList<>(quads.length);
             for (MutableQuad q : quads) {
+            	q.vertex_0.colour_a = 64;//TODO find a better way
+            	q.vertex_1.colour_a = 64;
+            	q.vertex_2.colour_a = 64;
+            	q.vertex_3.colour_a = 64;
                 c.copyFrom(q);
                 c.multShade();
                 list.add(c.toBakedBlock());

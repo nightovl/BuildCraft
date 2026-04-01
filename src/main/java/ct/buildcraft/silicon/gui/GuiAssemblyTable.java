@@ -37,6 +37,7 @@ public class GuiAssemblyTable extends GuiBC8<ContainerAssemblyTable> {
         imageWidth = SIZE_X;
         imageHeight = SIZE_Y;
         mainGui.shownElements.add(new LedgerTablePower(mainGui, container.tile, true));
+        titleLabelY += 8;
     }
 
     private IGuiPosition getPos(int index) {
@@ -83,8 +84,7 @@ public class GuiAssemblyTable extends GuiBC8<ContainerAssemblyTable> {
 
     @Override
     protected void drawForegroundLayer(PoseStack pose, int mouseX, int mouseY) {
-        MutableComponent title = Component.translatable("tile.assemblyTableBlock.name");
-        font.draw(pose, title, titleLabelX + (imageWidth - font.width(title)) / 2, titleLabelY + 15, 0x404040);
+        font.draw(pose, title, titleLabelX + leftPos + (imageWidth - font.width(title)) / 2, titleLabelY + topPos, 0x404040);
     }
 
     @Override

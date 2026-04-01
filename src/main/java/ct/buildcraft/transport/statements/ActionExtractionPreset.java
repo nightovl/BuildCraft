@@ -12,13 +12,11 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.core.statements.BCStatement;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
+import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.transport.BCTransportSprites;
 import ct.buildcraft.transport.BCTransportStatements;
 import ct.buildcraft.transport.pipe.behaviour.PipeBehaviourEmzuli.SlotIndex;
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,8 +32,7 @@ public class ActionExtractionPreset extends BCStatement implements IActionIntern
 
     @Override
     public Component getDescription() {
-    	return MutableComponent.create(new TranslatableContents("gate.action.extraction"));
-//        return Component.translatable("gate.action.extraction", ColourUtil.getTextFullTooltip(index.colour));
+    	return Component.translatable("gate.action.extraction", LocaleUtil.localizeColourComponent(index.colour));
     }
 
     @Override

@@ -574,7 +574,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
             PipePluggable plug = getPluggable(facing);
             if (plug != PipePluggable.EMPTY) {
                 LazyOptional<T> cap = plug.getCapability(capability);
-                if (!cap.isPresent()) return cap;
+                if (cap.isPresent()) return cap;
                 if (plug.isBlocking()) return LazyOptional.empty();
             }
         }

@@ -483,12 +483,12 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		}
 		BCBlockHitResult trace = rayTrace(world, pos, carmpos, vec32, centerShape);
 		VoxelShape hitShape = trace != null ? allShape[trace.subHit] : null;
-		return (hitShape == null ? Shapes.empty() : Shapes.create(hitShape.bounds().inflate(1 / 32.0)));
+		return hitShape == null ? Shapes.empty() : hitShape;//Shapes.create(hitShape.bounds().inflate(1 / 32.0));
 
 	}
 	
 	private static int computHitOctant(Vec3 pos) {//zyx
-		return (int)(pos.z>0 ? 0b100 : 0|(pos.y>0 ? 0b10 : 0)|(pos.x>0 ? 0b1 : 0));
+		return (int)((pos.z >0.5 ? 0b100 : 0)|(pos.y>0.5 ? 0b10 : 0)|(pos.x>0.5 ? 0b1 : 0));
 	}
 
 	private static int computHitFacing(Vec3 clip) {
@@ -528,10 +528,11 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		Direction[] plugs = new Direction[3];
 		EnumWirePart parts;
 		EnumWireBetween[] betweens = new EnumWireBetween[6];
-		int directionId = (octant>>1|octant<<2)&0b111;//xzy
-		for(int j = 0b0;j<0b100;j+=2,directionId>>=1)
-			plugs[j/2] = Direction.values()[directionId&0b1+j];
-		parts = EnumWirePart.VALUES[7 - octant];
+		int directionId = ((octant>>1)|(octant<<2))&0b111;//xzy
+		for(int j = 0b0;j<0b110;j+=2,directionId>>=1)
+			plugs[j/2] = Direction.values()[(directionId&0b1)+j];
+		
+		parts = EnumWirePart.VALUES[(~((octant>>2) | (octant<<2) | (octant&0b010)))&0b111];
 		int octant1 = (~octant)&0b111;
 		betweens[0] = EnumWireBetween.VALUES[(octant1|octant1>>2)&0b11];
 		betweens[1] = EnumWireBetween.VALUES[(octant1>>1|octant1)&0b11+0b100];
@@ -639,7 +640,8 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		if (tile == null || target == null) {
 			return ItemStack.EMPTY;
 		}
-		int subHit = computSubhit(tile, target.getLocation(), computHitOctant(target.getLocation()));
+		Vec3 location = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+		int subHit = computSubhit(tile, location, computHitOctant(location));
 		if (subHit <= 6) {
 			Pipe pipe = tile.getPipe();
 			if (pipe != Pipe.EMPTY) {
@@ -684,13 +686,14 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		if (tile == null)
 			return InteractionResult.PASS;
 		Vec3 carmpos = player.getEyePosition();
-		Vec3 location = re.getLocation();
-		BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).normalize()));
-		int subHit = trace.subHit;
+		Vec3 dvec = re.getLocation().subtract(carmpos).scale(0.0125);
+		Vec3 location = re.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()).add(dvec);
+		//BCBlockHitResult trace = rayTrace(world, pos, carmpos, location.add(location.subtract(carmpos).scale(0.0125)));
+		int computHitOctant = computHitOctant(location);
+		int subHit =  computSubhit(tile, location, computHitOctant);//trace.subHit;
 		Direction realSide = subHit == 0 ? re.getDirection() : getPartSideHit(re.getDirection(), subHit);
 		if (realSide == null)
 			realSide = re.getDirection();
-		BCLog.logger.debug(realSide.getName());
 		if (subHit > 6 && subHit <= 12) {
 			PipePluggable existing = tile.getPluggable(realSide);
 			if (existing != PipePluggable.EMPTY)
@@ -728,8 +731,8 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 					attachTile = getPipe(world, node.pos, false);
 				}
 			} else {
-				wirePart = EnumWirePart.get((re.getLocation().x + 1) % 1 > 0.5, (re.getLocation().y % 1 + 1) % 1 > 0.5,
-						(re.getLocation().z % 1 + 1) % 1 > 0.5);
+				wirePart = EnumWirePart.get((location.x + 1) % 1 > 0.5, (location.y % 1 + 1) % 1 > 0.5,
+						(location.z % 1 + 1) % 1 > 0.5);
 			}
 			if (wirePart != null && attachTile != null) {
 				DyeColor colour = wire.getType();

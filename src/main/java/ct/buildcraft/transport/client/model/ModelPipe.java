@@ -58,8 +58,8 @@ public enum ModelPipe implements IDynamicBakedModel {
 	@Override
 	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
 			@NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
+		
 		TilePipeHolder tile = data.get(PipeTypeModelKey);
-
         if (tile == null || tile.getPipe() == Pipe.EMPTY) {
             if (renderType == RenderType.translucent()) {
                 return ImmutableList.of();
@@ -130,7 +130,7 @@ public enum ModelPipe implements IDynamicBakedModel {
 	@Override
 	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand,
 			@NotNull ModelData data) {
-		return ChunkRenderTypeSet.of(List.of(RenderType.cutout()));
+		return ChunkRenderTypeSet.of(List.of(RenderType.cutout(), RenderType.translucent()));
 	}
 
 	@Override

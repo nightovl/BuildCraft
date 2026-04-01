@@ -22,12 +22,14 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.StatementMouseClick;
 import ct.buildcraft.lib.misc.ColourUtil;
+import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.transport.BCTransportSprites;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 
@@ -108,13 +110,10 @@ public class ActionParameterSignal implements IStatementParameter {
 
     @Override
     public Component getDescription() {
-        DyeColor c = colour;
-        if (c == null) {
-            return null;
+        if (colour == null) {
+            return Component.empty();
         }
-        String format = "gate.action.pipe.wire";
-        Object[] args = { ColourUtil.getTextFullTooltip(c) };
-        return Component.translatable(format, args);
+        return Component.translatable("gate.action.pipe.wire", LocaleUtil.localizeColourComponent(colour));
     }
 
     @Override

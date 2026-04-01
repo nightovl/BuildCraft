@@ -8,23 +8,19 @@ package ct.buildcraft.transport.statements;
 
 import java.util.Locale;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.DyeColor;
-
 import ct.buildcraft.api.gates.IGate;
 import ct.buildcraft.api.statements.IStatement;
 import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.ITriggerInternal;
 import ct.buildcraft.api.transport.IWireManager;
-
-import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
-import ct.buildcraft.lib.misc.ColourUtil;
-import ct.buildcraft.lib.misc.LocaleUtil;
-
 import ct.buildcraft.core.statements.BCStatement;
+import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
 import ct.buildcraft.transport.BCTransportSprites;
 import ct.buildcraft.transport.BCTransportStatements;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.DyeColor;
 
 public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
 
@@ -54,8 +50,8 @@ public class TriggerPipeSignal extends BCStatement implements ITriggerInternal {
 
     @Override
     public Component getDescription() {
-        return (Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive")));
-//            ColourUtil.getTextFullTooltip(colour));
+        return Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive"),
+        		Component.translatable("color.minecraft." + colour.getName()).withStyle(Style.EMPTY.withColor(colour.getTextColor())));
     }
 
     @Override

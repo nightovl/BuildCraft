@@ -144,6 +144,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
 
     public TileBC_Neptune(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 		super(p_155228_, p_155229_, p_155230_);
+		caps.addProvider(itemManager);
 	}
 
     // ##################################################

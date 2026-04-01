@@ -60,10 +60,10 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
         IFluidHandler handler = tile.getCapability(CapUtil.CAP_FLUIDS, side.getOpposite()).orElse(null);
 
         if (handler != null) {
-            FluidStack searchedFluid = null;
+            FluidStack searchedFluid = FluidStack.EMPTY;
 
             if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack().isEmpty()) {
-                searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).get();
+                searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(searchedFluid);
             }
 
             if (!searchedFluid.isEmpty()) {
@@ -78,7 +78,7 @@ public class TriggerFluidContainer extends BCStatement implements ITriggerExtern
             switch (state) {
                 case EMPTY:
                     FluidStack drained = handler.drain(1, FluidAction.SIMULATE);
-                    return drained == null || drained.getAmount() <= 0;
+                    return drained.isEmpty() || drained.getAmount() <= 0;
                 case CONTAINS:
                     for (int i = 0; i < liquids ; i++) {
                         FluidStack fluid = handler.getFluidInTank(i);

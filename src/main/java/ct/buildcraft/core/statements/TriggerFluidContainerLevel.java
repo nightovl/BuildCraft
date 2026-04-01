@@ -58,11 +58,11 @@ public class TriggerFluidContainerLevel extends BCStatement implements ITriggerE
         if (handler == null) {
             return false;
         }
-        FluidStack searchedFluid = null;
+        FluidStack searchedFluid = FluidStack.EMPTY;
 
         if (parameters != null && parameters.length >= 1 && parameters[0] != null && !parameters[0].getItemStack() .isEmpty()) {
             searchedFluid = FluidUtil.getFluidContained(parameters[0].getItemStack()).orElse(searchedFluid);
-            if (searchedFluid != null) {
+            if (!searchedFluid.isEmpty()) {
                 searchedFluid.setAmount(1);
             }
         }
@@ -78,7 +78,7 @@ public class TriggerFluidContainerLevel extends BCStatement implements ITriggerE
                 return searchedFluid.isEmpty() || handler.fill(searchedFluid, FluidAction.SIMULATE) > 0;
             }
 
-            if (searchedFluid == null || searchedFluid.isFluidEqual(fluid)) {
+            if (searchedFluid.isEmpty() || searchedFluid.isFluidEqual(fluid)) {
                 float percentage = fluid.getAmount() / (float) handler.getTankCapacity(i);
                 return percentage < type.level;
             }

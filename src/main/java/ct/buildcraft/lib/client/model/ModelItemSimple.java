@@ -6,7 +6,6 @@
 
 package ct.buildcraft.lib.client.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;

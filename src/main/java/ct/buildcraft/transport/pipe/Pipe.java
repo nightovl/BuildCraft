@@ -283,7 +283,7 @@ public final class Pipe implements IPipe, IDebuggable {
                 if (oBehaviour == null) {
                     continue;
                 }
-                PipePluggable oPlug = oTile.getCapability(PipeApi.CAP_PLUG, facing.getOpposite()).orElse(null);
+                PipePluggable oPlug = oTile.getCapability(PipeApi.CAP_PLUG, facing.getOpposite()).orElse(PipePluggable.EMPTY);
                 if (oPlug == PipePluggable.EMPTY || !oPlug.isBlocking()) {
                     if (canPipesConnect(facing, this, oPipe)) {
                         connected.put(facing, DEFAULT_CONNECTION_DISTANCE);

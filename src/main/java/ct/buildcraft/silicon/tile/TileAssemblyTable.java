@@ -325,7 +325,7 @@ public class TileAssemblyTable extends TileLaserTableBase implements MenuProvide
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("TileAssemblyTable:TODO");//TODO
+		return Component.translatable(this.getBlockState().getBlock().getDescriptionId());
 	}
 
     @Override

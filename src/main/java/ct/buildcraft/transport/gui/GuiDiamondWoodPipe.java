@@ -43,6 +43,9 @@ public class GuiDiamondWoodPipe extends GuiBC8<ContainerDiamondWoodPipe> impleme
 
     public GuiDiamondWoodPipe(ContainerDiamondWoodPipe container, Inventory inv, Component title) {
         super(container, inv, title);
+        
+        this.pipe = container.behaviour;
+        
         imageWidth = SIZE_X;
         imageHeight = SIZE_Y;
     }

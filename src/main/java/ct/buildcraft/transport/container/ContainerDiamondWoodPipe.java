@@ -27,7 +27,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
 public class ContainerDiamondWoodPipe extends ContainerPipe {
-    private final PipeBehaviourWoodDiamond behaviour;
+    public final PipeBehaviourWoodDiamond behaviour;
     
     public static ContainerDiamondWoodPipe create(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
     	ContainerLevelAccess access = CreateClientLevelAccess(buf);

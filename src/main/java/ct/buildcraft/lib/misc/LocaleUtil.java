@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -108,7 +109,11 @@ public class LocaleUtil {
     /** @param colour The {@link DyeColor} to localize.
      * @return a localised name for the given colour. */
     public static String localizeColour(DyeColor colour) {
-        return localize("item.fireworksCharge." + colour.getName());
+        return localize("color.minecraft." + colour.getName());
+    }
+    
+    public static Component localizeColourComponent(DyeColor colour) {
+    	return Component.translatable("color.minecraft." + colour.getName()).withStyle(Style.EMPTY.withColor(colour.getTextColor()));
     }
 
     /** @param face The {@link Direction} to localize.

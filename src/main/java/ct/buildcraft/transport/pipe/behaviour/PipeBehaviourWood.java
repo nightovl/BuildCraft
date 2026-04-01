@@ -93,7 +93,7 @@ public class PipeBehaviourWood extends PipeBehaviourDirectional implements IMjRe
                 int maxMillibuckets = (int) (power / BCTransportConfig.mjPerMillibucket);
                 if (maxMillibuckets > 0) {
                     FluidStack extracted = extractFluid(flow, getCurrentDir(), maxMillibuckets, simulate);
-                    if (extracted != null && extracted.getAmount() > 0) {
+                    if (!extracted.isEmpty() && extracted.getAmount() > 0) {
                         return power - extracted.getAmount() * BCTransportConfig.mjPerMillibucket;
                     }
                 }

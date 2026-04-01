@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,7 +32,21 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
     private final EnumLaserTableType type;
     
     private static final VoxelShape BOUNDING_BOX = Shapes.box(0 / 16D, 0 / 16D, 0 / 16D, 16 / 16D, 9 / 16D, 16 / 16D);
-
+    private static final VoxelShape ASSEMBLY_TABLE_BOX ;
+    private static final VoxelShape CHARGING_TABLE_BOX ;
+    private static final VoxelShape INTERGRATION_TABLE_BOX ;
+    private static final VoxelShape PROGRAMMING_TABLE_BOX ;
+    static {
+    	ASSEMBLY_TABLE_BOX = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(1, 1, 1, 15, 3, 15), Block.box(0, 3, 0, 16, 9, 16));
+    	CHARGING_TABLE_BOX = Shapes.or(Block.box(0, 0, 0, 4, 6, 4), Block.box(12, 0, 0, 16, 6, 4), Block.box(0, 0, 12, 4, 6, 16),
+    			Block.box(12, 0, 12, 16, 6, 16), Block.box(4, 0, 4, 12, 6, 12), Block.box(0, 6, 0, 16, 9, 16));
+    	INTERGRATION_TABLE_BOX = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), 
+    			Block.box(1, 1, 1, 5, 3, 5), Block.box(11, 1, 1, 15, 3, 5), Block.box(1, 1, 11, 5, 3, 15), Block.box(11, 1, 11, 15, 3, 15),
+    			Block.box(0, 3, 0, 16, 9, 16), Block.box(5, 3, 5, 11, 8, 11));
+    	PROGRAMMING_TABLE_BOX = Shapes.or(Block.box(0, 0, 0, 4, 3, 4), Block.box(12, 0, 0, 16, 3, 4), Block.box(0, 0, 12, 4, 3, 16),
+    			Block.box(12, 0, 12, 16, 3, 16), Block.box(0, 3, 0, 16, 6, 16));
+    }
+    
     public BlockLaserTable(EnumLaserTableType type) {
         super();
         this.type = type;
@@ -71,6 +86,18 @@ public class BlockLaserTable extends BlockBCTile_Neptune implements ILaserTarget
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext p_51174_) {
+        switch(type) {
+        case ASSEMBLY_TABLE:
+            return ASSEMBLY_TABLE_BOX;
+        case ADVANCED_CRAFTING_TABLE:
+            return PROGRAMMING_TABLE_BOX;
+        case INTEGRATION_TABLE:
+            return INTERGRATION_TABLE_BOX;
+        case CHARGING_TABLE:
+            return CHARGING_TABLE_BOX;
+        case PROGRAMMING_TABLE:
+            return PROGRAMMING_TABLE_BOX;
+        }
         return BOUNDING_BOX;
     }
 

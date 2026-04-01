@@ -105,20 +105,20 @@ public abstract class MenuBC_Neptune extends AbstractContainerMenu {
             super.clicked(slotId, dragType, clickType, player);
         }
 
-        ItemStack playerStack = player.getInventory().getSelected();
+        ItemStack playerStack = getCarried();
         if (slot instanceof IPhantomSlot) {
             IPhantomSlot phantom = (IPhantomSlot) slot;
             if (playerStack.isEmpty()) {
-                slot.safeInsert(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else if (!StackUtil.canMerge(playerStack, StackUtil.asNonNull(slot.getItem()))) {
                 ItemStack copy = playerStack.copy();
                 copy.setCount(1);
-                slot.safeInsert(copy);
+                slot.set(copy);
             } else if (phantom.canAdjustCount()) {
                 ItemStack stack = slot.getItem();
                 if (stack.getCount() < stack.getMaxStackSize()) {
                     stack.grow(1);
-                    slot.safeInsert(stack);
+                    slot.set(stack);
                 }
             }
         }

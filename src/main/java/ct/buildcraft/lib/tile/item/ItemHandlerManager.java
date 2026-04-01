@@ -131,7 +131,7 @@ public class ItemHandlerManager implements ICapabilityProvider, INBTSerializable
     public <T> @NotNull LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == CapUtil.CAP_ITEMS) {
             Wrapper wrapper = wrappers.get(EnumPipePart.fromFacing(facing));
-            return LazyOptional.of(() -> wrapper.combined).cast();
+            return wrapper.combined == null ? LazyOptional.empty() : LazyOptional.of(() -> wrapper.combined).cast();
         }
         return LazyOptional.empty();
     }

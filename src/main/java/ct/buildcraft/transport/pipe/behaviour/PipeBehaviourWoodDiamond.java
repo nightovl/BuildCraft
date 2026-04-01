@@ -201,7 +201,7 @@ public class PipeBehaviourWoodDiamond extends PipeBehaviourWood implements MenuP
             default:
             case WHITE_LIST:
                 if (filters.extract(s -> true, 1, 1, true).isEmpty()) {
-                    return flow.tryExtractFluid(millibuckets, dir, null, simulate);
+                    return flow.tryExtractFluid(millibuckets, dir, FluidStack.EMPTY, simulate);
                 }
                 // Firstly try the advanced version - if that fails we will need to try the basic version
                 InteractionResultHolder<FluidStack> result  = flow.tryExtractFluidAdv(millibuckets, dir, new ArrayFluidFilter(filters.stacks), simulate);
@@ -217,7 +217,7 @@ public class PipeBehaviourWoodDiamond extends PipeBehaviourWood implements MenuP
                             continue;
                         }
                         extracted = flow.tryExtractFluid(millibuckets, dir, FluidUtil.getFluidContained(stack).get(), simulate);
-                        if (extracted != null && extracted.getAmount() > 0) {
+                        if (!extracted.isEmpty() && extracted.getAmount() > 0) {
                             return extracted;
                         }
                     }
@@ -229,7 +229,7 @@ public class PipeBehaviourWoodDiamond extends PipeBehaviourWood implements MenuP
                 return flow.tryExtractFluidAdv(millibuckets, dir, filter, simulate).getObject();
             case ROUND_ROBIN:
                 // We can't do this -- amounts might differ and its just ugly
-                return null;
+                return FluidStack.EMPTY;
         }
     }
 

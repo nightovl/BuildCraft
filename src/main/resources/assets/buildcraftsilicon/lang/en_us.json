@@ -1,14 +1,14 @@
 {
 	"block.buildcraftsilicon.laser":"Laser",
 	"block.buildcraftsilicon.assembly_table":"Assembly Table",
-	"block.buildcraftsilicon.charging_talbe":"Charging Table",
+	"block.buildcraftsilicon.charging_table":"Charging Table",
 	"block.buildcraftsilicon.integration_table":"Integration Table",
 	"block.buildcraftsilicon.advanced_crafting_table":"Advanced Crafting Table",
 	"block.buildcraftsilicon.programming_table":"Programming Table",
 	
 	"item.buildcraftsilicon.laser":"Laser",
 	"item.buildcraftsilicon.assembly_table":"Assembly Table",
-	"item.buildcraftsilicon.charging_talbe":"Charging Table",
+	"item.buildcraftsilicon.charging_table":"Charging Table",
 	"item.buildcraftsilicon.integration_table":"Integration Table",
 	"item.buildcraftsilicon.advanced_crafting_table":"Advanced Crafting Table",
 	"item.buildcraftsilicon.programming_table":"Programming Table",

@@ -73,8 +73,8 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
     private static final int COOLDOWN_INPUT = -DIRECTION_COOLDOWN;
     private static final int COOLDOWN_OUTPUT = DIRECTION_COOLDOWN;
 
-    private static final InteractionResultHolder<FluidStack> FAILED_EXTRACT = new InteractionResultHolder<>(InteractionResult.FAIL, null);
-    private static final InteractionResultHolder<FluidStack> PASSED_EXTRACT = new InteractionResultHolder<>(InteractionResult.PASS, null);
+    private static final InteractionResultHolder<FluidStack> FAILED_EXTRACT = new InteractionResultHolder<>(InteractionResult.FAIL, FluidStack.EMPTY);
+    private static final InteractionResultHolder<FluidStack> PASSED_EXTRACT = new InteractionResultHolder<>(InteractionResult.PASS, FluidStack.EMPTY);
 
     public static final int NET_FLUID_AMOUNTS = 2;
 
@@ -214,9 +214,9 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
     public InteractionResultHolder<FluidStack> tryExtractFluidAdv(int millibuckets, Direction from, IFluidFilter filter,
         FluidAction simulate) {
         FluidExtractor extractor = (mb, c, handler) -> {
-            if (c != null) {
+            if (!c.isEmpty()) {
                 if (!filter.matches(c)) {
-                    return null;
+                    return FluidStack.EMPTY;
                 }
                 return extractSimple(mb, c, handler, simulate);
             }
@@ -230,7 +230,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
 
             int tanks = handler.getTanks();
             if (tanks == 0) {
-                return null;
+                return FluidStack.EMPTY;
             }
             for (int i=0; i< tanks;i++) {
                 FluidStack contents = handler.getFluidInTank(i);
@@ -241,7 +241,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
                     }
                 }
             }
-            return null;
+            return FluidStack.EMPTY;
         };
         return tryExtractFluidInternal(millibuckets, from, extractor, simulate.simulate());
     }
@@ -961,7 +961,7 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
 
         @Override
         public int fill(FluidStack resource, FluidAction doFill) {
-            if (!getCurrentDirection().canInput() || !pipe.isConnected(part.face) || resource == null) {
+            if (!getCurrentDirection().canInput() || !pipe.isConnected(part.face) || resource.isEmpty()) {
                 return 0;
             }
             resource = resource.copy();
@@ -973,14 +973,14 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
                 return 0;
             }
 
-            if (currentFluid == null || currentFluid.isFluidEqual(resource)) {
-                if (doFill == FluidAction.EXECUTE) {
-                    if (currentFluid == null) {
+            if (currentFluid.isEmpty() || currentFluid.isFluidEqual(resource)) {
+                if (doFill.execute()) {
+                    if (currentFluid.isEmpty()) {
                         setFluid(resource.copy());
                     }
                 }
                 int filled = fill(resource.getAmount(), doFill);
-                if (filled > 0 && doFill == FluidAction.EXECUTE) {
+                if (filled > 0 && doFill.execute()) {
                     ticksInDirection = COOLDOWN_INPUT;
                 }
                 return filled;

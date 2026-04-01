@@ -17,7 +17,7 @@ import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.transport.IWireEmitter;
 
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
-
+import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.core.statements.BCStatement;
 import ct.buildcraft.transport.BCTransportSprites;
 import ct.buildcraft.transport.BCTransportStatements;
@@ -35,7 +35,7 @@ public class ActionPipeSignal extends BCStatement implements IActionInternal {
 
     @Override
     public Component getDescription() {
-        return (Component.translatable("gate.action.pipe.wire"));//, ColourUtil.getTextFullTooltip(colour));
+        return Component.translatable("gate.action.pipe.wire", LocaleUtil.localizeColourComponent(colour));
     }
 
     @Override

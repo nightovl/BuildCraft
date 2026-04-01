@@ -12,6 +12,7 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.core.statements.BCStatement;
 import ct.buildcraft.lib.client.sprite.SpriteHolderRegistry.SpriteHolder;
+import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.transport.BCTransportSprites;
 import ct.buildcraft.transport.BCTransportStatements;
 
@@ -31,7 +32,7 @@ public class ActionPipeColor extends BCStatement implements IActionInternal {
 
     @Override
     public Component getDescription() {
-        return Component.translatable("gate.action.pipe.item.color");//String.format(Component.translatable("gate.action.pipe.item.color"), ColourUtil.getTextFullTooltip(color));
+        return Component.translatable("gate.action.pipe.item.color", LocaleUtil.localizeColourComponent(color));
     }
 
     @Override
