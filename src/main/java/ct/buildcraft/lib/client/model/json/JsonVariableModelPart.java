@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.client.model.MutableQuad;
 import ct.buildcraft.lib.client.model.ResourceLoaderContext;
 import ct.buildcraft.lib.client.model.json.JsonVariableModel.ITextureGetter;
@@ -51,6 +52,7 @@ public abstract class JsonVariableModelPart {
         } else if ("led".equals(type)) {
             return new VariablePartLed(obj, fnCtx);
         } else if ("texture_expand".equals(type)) {
+        	BCLog.logger.debug("JsonVariableModelPart:unimplement part");
             return new VariablePartTextureExpand(obj, fnCtx);
         } else if ("cuboid".equals(type)) {
             return new VariablePartCuboid(obj, fnCtx);

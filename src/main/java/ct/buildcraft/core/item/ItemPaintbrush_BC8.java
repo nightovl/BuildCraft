@@ -44,7 +44,6 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
                    p_186374_.broadcastBreakEvent(hand);
                 });
              }
-            stack.setDamageValue(63);
             if (stack.isEmpty()) {
             	ItemStack stack1 = new ItemStack(BCCoreItems.PAINT_BRUSH.get(), 1);
             	stack1.setTag(tag);

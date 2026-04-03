@@ -67,7 +67,7 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
 
     @Override
 	public String getDescriptionId(ItemStack stack) {
-        LensData data = getData(stack);
+        LensData data = new LensData(stack.getDamageValue());//getData(stack);
         String colour = data.colour == null ? "clear" : data.colour.getName();
         String first = data.isFilter ? "item.filter." : "item.lens.";
         return first+colour;
@@ -88,14 +88,6 @@ public class ItemPluggableLens extends Item implements IItemPluggable {
             subItems.add(item);
         }
     }
-
-/*    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addModelVariants(TIntObjectHashMap<ModelResourceLocation> variants) {
-        for (int i = 0; i < 34; i++) {
-            variants.put(i, new ModelResourceLocation("buildcraftsilicon:lens_item#inventory"));
-        }
-    }*/
 
 	public static class LensData {
         public final DyeColor colour;

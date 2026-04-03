@@ -12,10 +12,7 @@ import ct.buildcraft.builders.BCBuildersConfig;
 import ct.buildcraft.lib.CreativeTabManager;
 import ct.buildcraft.lib.CreativeTabManager.CreativeTabBC;
 import ct.buildcraft.silicon.plug.FacadeStateManager;
-import ct.buildcraft.silicon.recipe.FacadeSwapRecipe;
 import ct.buildcraft.transport.BCTransport;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
@@ -31,8 +28,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(BCSilicon.MODID)
 public class BCSilicon {
@@ -101,9 +96,9 @@ public class BCSilicon {
     	@SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-            BCSiliconModels.fmlInit();
-            BCSiliconGuis.clientInit(event);
+    		BCSiliconGuis.clientInit(event);
             event.enqueueWork(BCSiliconItems::registerItemProperties);
+    		BCSiliconModels.init();
         }
         
         @SubscribeEvent

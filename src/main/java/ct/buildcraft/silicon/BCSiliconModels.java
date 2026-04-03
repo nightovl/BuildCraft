@@ -95,7 +95,7 @@ public class BCSiliconModels {
       //  MinecraftForge.EVENT_BUS.register(BCSiliconModels.class);
     }
 
-    public static void fmlInit() {
+    public static void init() {
  //       Minecraft.getInstance().getItemRenderer().getItemModelShaper().register(BCSiliconItems.PLUG_GATE_ITEM.get(),
    //         GateMeshDefinition.INSTANCE);//TODO
 

@@ -18,7 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -31,7 +31,7 @@ public class BCSiliconGuis {
     public static final RegistryObject<MenuType<ContainerIntegrationTable>> MENU_INTEGRATION_TABLE = MENUS.register("integration_table_menu", () -> BCContainerFactory.create(ContainerIntegrationTable::new));
 
 
-    public static void clientInit(FMLClientSetupEvent event) {
+    public static void clientInit(ParallelDispatchEvent event) {
         event.enqueueWork(
                 () -> {
                 	MenuScreens.register(MENU_AD_CRAFTING_TABLE.get(), GuiAdvancedCraftingTable::new);

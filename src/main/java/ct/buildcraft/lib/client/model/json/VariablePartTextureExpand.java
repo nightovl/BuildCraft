@@ -49,7 +49,7 @@ public class VariablePartTextureExpand extends JsonVariableModelPart {
             float[] size = { t[0] - f[0], t[1] - f[1], t[2], f[2] };
             boolean s = shade.evaluate();
             int l = (int) (light.evaluate() & 15);
-            int rgba = RenderUtil.swapARGBforABGR((int) colour.evaluate());
+            int rgba = RenderUtil.swapARGBforRGBA((int) colour.evaluate());
 
  /*           VariableFaceData data = faceUv.evaluate(spriteLookup);
             // TODO: Use the UV data! (only take part of the texture)

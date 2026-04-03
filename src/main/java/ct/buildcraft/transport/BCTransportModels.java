@@ -76,7 +76,7 @@ public class BCTransportModels {
     }
 
 
-    public static void fmlInit() {
+    public static void init() {
         
         PipeApiClient.registry.registerBaker(KeyPlugBlocker.class, BAKER_PLUG_BLOCKER);
         PipeApiClient.registry.registerBaker(KeyPlugPowerAdaptor.class, BAKER_PLUG_POWER_ADAPTOR);

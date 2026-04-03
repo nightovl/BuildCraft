@@ -224,6 +224,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
             }
             StatementPair s = statements[slot];
             (isAction ? s.action : s.trigger).readFromBuffer(buffer);
+            BCLog.d("rec "+(isAction ? s.action : s.trigger).writeToNbt());
             return;
         }
         if (side == LogicalSide.CLIENT) {
@@ -250,6 +251,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
             buffer.writeByte(slot);
             StatementPair s = statements[slot];
             (isAction ? s.action : s.trigger).writeToBuffer(buffer);
+            BCLog.d("send "+(isAction ? s.action : s.trigger).writeToNbt());
         });
     }
 

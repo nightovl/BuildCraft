@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.transport.pipe.IPipeHolder;
 import ct.buildcraft.api.transport.pluggable.IPluggableStaticBaker;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
@@ -44,6 +44,7 @@ public class PipeModelCachePluggable {
         }
         IPluggableStaticBaker<K> baker = PipeRegistryClient.getPlugBaker(key);
         if (baker == null) {
+        	BCLog.d("PipeModelCachePluggable : empty Baker :"+key.getClass());
             return ImmutableList.of();
         }
         return baker.bake(key);

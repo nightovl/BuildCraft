@@ -102,7 +102,7 @@ public class MutableVertex {
         data[offset + 1] = Float.floatToRawIntBits(position_y);
         data[offset + 2] = Float.floatToRawIntBits(position_z);
         // COLOR_4UB
-        data[offset + 3] = colourRGBA();
+        data[offset + 3] = colourABGR();
         // TEX_2F
         data[offset + 4] = Float.floatToRawIntBits(tex_u);
         data[offset + 5] = Float.floatToRawIntBits(tex_v);
@@ -116,7 +116,7 @@ public class MutableVertex {
         data[offset + 1] = Float.floatToRawIntBits(position_y);
         data[offset + 2] = Float.floatToRawIntBits(position_z);
         // COLOR_4UB
-        data[offset + 3] = colourRGBA();
+        data[offset + 3] = colourABGR();
         // TEX_2F
         data[offset + 4] = Float.floatToRawIntBits(tex_u);
         data[offset + 5] = Float.floatToRawIntBits(tex_v);
@@ -318,20 +318,20 @@ public class MutableVertex {
 
     public int colourRGBA() {
         int rgba = 0;
-        rgba |= (colour_r & 0xFF) << 0;
-        rgba |= (colour_g & 0xFF) << 8;
-        rgba |= (colour_b & 0xFF) << 16;
-        rgba |= (colour_a & 0xFF) << 24;
-        return rgba;
-    }
-
-    public int colourABGR() {
-        int rgba = 0;
         rgba |= (colour_r & 0xFF) << 24;
         rgba |= (colour_g & 0xFF) << 16;
         rgba |= (colour_b & 0xFF) << 8;
         rgba |= (colour_a & 0xFF) << 0;
         return rgba;
+    }
+
+    public int colourABGR() {
+        int abgr = 0;
+        abgr |= (colour_r & 0xFF) << 0;
+        abgr |= (colour_g & 0xFF) << 8;
+        abgr |= (colour_b & 0xFF) << 16;
+        abgr |= (colour_a & 0xFF) << 24;
+        return abgr;
     }
 
     public MutableVertex multColourd(double d) {

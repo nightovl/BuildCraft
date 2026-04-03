@@ -125,7 +125,8 @@ public abstract class TileAutoWorkbenchBase extends TileBC_Neptune
             if (id == NET_GUI_TICK) {
                 buffer.writeLong(powerStored);
             } else if (id == NET_GUI_DATA) {
-                buffer.writeItem(crafting.getAssumedResult());
+            	resultClient = crafting.getAssumedResult();
+                //buffer.writeItem(crafting.getAssumedResult());
             }
         }
     }
@@ -141,9 +142,9 @@ public abstract class TileAutoWorkbenchBase extends TileBC_Neptune
                     // properly handle crafting finishes
                     powerStoredLast = powerStored;
                 }
-            } else if (id == NET_GUI_DATA) {
-                resultClient = buffer.readItem();
-            }
+            }/* else if (id == NET_GUI_DATA) {
+                //resultClient = buffer.readItem();
+            }*/
         }
     }
 

@@ -54,7 +54,7 @@ public class GuiAdvancedCraftingTable extends GuiBC8<ContainerAdvancedCraftingTa
             BCLog.logger.warn("[silicon.gui] An exception was thrown while creating the recipe book gui!", e);
             book = null;
         }
-        recipeBook = book;
+        recipeBook = null;//= book; TODO
         mainGui.shownElements.add(new LedgerHelp(mainGui, true));
     }
 

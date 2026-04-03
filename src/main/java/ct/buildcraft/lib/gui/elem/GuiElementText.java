@@ -73,13 +73,15 @@ public class GuiElementText extends GuiElementSimple {
 
     @Override
     public double getWidth() {
-        Font fr = Minecraft.getInstance().font;
+        Minecraft mc = Minecraft.getInstance();
+		Font fr = mc.font;
         return fr.width(text.get());
     }
 
     @Override
     public double getHeight() {
-        Font fr = Minecraft.getInstance().font;
+        Minecraft mc = Minecraft.getInstance();
+		Font fr = mc.font;
         return fr.lineHeight;
     }
 
@@ -98,12 +100,14 @@ public class GuiElementText extends GuiElementSimple {
     }
 
     private void draw(PoseStack pose) {
-    	if(dropShadow)
-    		Minecraft.getInstance().font.drawShadow(pose, text.get(), (int) getX(), (int) getY(), colour.getAsInt()/*, dropShadow,
+    	Minecraft mc = Minecraft.getInstance();
+		Component content = text.get();
+		if(dropShadow)
+    		mc.font.drawShadow(pose, content, (int) getX() - (centered ? mc.font.width(content)/2 : 0), (int) getY(), colour.getAsInt()/*, dropShadow,
             centered, (float) scale.getAsDouble()*/);
     	else
-    		Minecraft.getInstance().font.draw(pose, text.get(), (int) getX(), (int) getY(), colour.getAsInt()/*, dropShadow,
-    	            centered, (float) scale.getAsDouble()*/);
+    		mc.font.draw(pose, content, (int) getX() - (centered ? mc.font.width(content)/2 : 0), (int) getY(), colour.getAsInt()/*, dropShadow,
+    	            centered, (float) scale.getAsDouble()*/);//TODO scale
         // final double s = scale.getAsDouble();
         // final boolean needsScaling = s != 1;
         // FontRenderer fr = Minecraft.getMinecraft().fontRenderer;

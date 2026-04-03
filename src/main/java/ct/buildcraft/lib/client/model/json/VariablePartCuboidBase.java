@@ -11,6 +11,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import com.mojang.math.Vector3f;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.client.model.ModelUtil;
 import ct.buildcraft.lib.client.model.ModelUtil.UvFaceData;
 import ct.buildcraft.lib.client.model.MutableQuad;
@@ -49,7 +50,7 @@ public abstract class VariablePartCuboidBase extends JsonVariableModelPart {
             float[] t = bakePosition(to);
             boolean s = shade.evaluate();
             int l = (int) (light.evaluate() & 15);
-            int rgba = RenderUtil.swapARGBforABGR((int) colour.evaluate());
+            int argb = (int) colour.evaluate();//RenderUtil.swapARGBforRGBA((int) colour.evaluate());
             for (Direction face : Direction.values()) {
                 VariableFaceData data = getFaceData(face, spriteLookup);
                 if (data != null) {
@@ -60,7 +61,7 @@ public abstract class VariablePartCuboidBase extends JsonVariableModelPart {
                     MutableQuad quad = ModelUtil.createFace(face, center, radius, data.uvs);
                     quad.rotateTextureUp(data.rotations);
                     quad.lighti(l, 0);
-                    quad.colouri(rgba);
+                    quad.colouri(argb);
                     quad.texFromSprite(data.sprite);
                     quad.setSprite(data.sprite);
                     quad.setShade(s);

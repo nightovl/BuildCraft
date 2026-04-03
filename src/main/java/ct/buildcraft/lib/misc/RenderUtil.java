@@ -91,7 +91,7 @@ public class RenderUtil {
         RenderSystem.setShaderColor(red, green, blue, alpha);
     }
 
-    public static int swapARGBforABGR(int argb) {
+    public static int swapARGBforRGBA(int argb) {
         int a = (argb >>> 24) & 255;
         int r = (argb >> 16) & 255;
         int g = (argb >> 8) & 255;

@@ -14,6 +14,7 @@ import ct.buildcraft.api.transport.pipe.IPipeFlowRenderer;
 import ct.buildcraft.lib.client.model.ModelUtil;
 import ct.buildcraft.lib.client.model.ModelUtil.UvFaceData;
 import ct.buildcraft.lib.client.model.MutableQuad;
+import ct.buildcraft.lib.client.render.ItemRenderUtil;
 import ct.buildcraft.lib.misc.ColourUtil;
 import ct.buildcraft.transport.BCTransportSprites;
 import ct.buildcraft.transport.pipe.flow.PipeFlowItems;
@@ -71,6 +72,7 @@ public enum PipeFlowRendererItems implements IPipeFlowRenderer<PipeFlowItems> {
         Level world = flow.pipe.getHolder().getPipeWorld();
         long now = world.getGameTime();
         List<TravellingItem> toRender = flow.getAllItemsForRender();
+        VertexConsumer buffer2 = buffer.getBuffer(RenderType.cutout());
         
         matrix.translate(0.5f, 0.5f, 0.5f);
 
@@ -83,8 +85,8 @@ public enum PipeFlowRendererItems implements IPipeFlowRenderer<PipeFlowItems> {
             	itemRender.renderStatic(stack, TransformType.GROUND, lightc, combinedOverlay, matrix, buffer, 0);
 //                itemRender.getModel(stack, world, null, combinedOverlay);
                 matrix.translate(-pos.x, 0.2f-pos.y, -pos.z);
-/*                ItemRenderUtil.renderItemStack(x + pos.x, y + pos.y, z + pos.z, //
-                        stack, item.stackSize, lightc, item.getRenderDirection(now, partialTicks), bb);*/
+  //              ItemRenderUtil.renderItemStack(pos.x, pos.y, pos.z, //
+  //                      stack, item.stackSize, lightc, item.getRenderDirection(now, partialTicks), buffer2);
             }
             if (item.colour != null) {
                 matrix.translate(pos.x, pos.y, pos.z);
@@ -101,7 +103,7 @@ public enum PipeFlowRendererItems implements IPipeFlowRenderer<PipeFlowItems> {
                     q2.multColouri(r, g, b, 255);
                     q2.render(pose, normal, builder);
                 }
-                matrix.clear();
+                matrix.translate(-pos.x, -pos.y, -pos.z);
             }
         }
 

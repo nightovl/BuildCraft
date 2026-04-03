@@ -48,7 +48,7 @@ public class StatementParameterItemStack implements IStatementParameter {
     }
 
     public StatementParameterItemStack(CompoundTag nbt) {
-        ItemStack read = ItemStack.of(nbt.getCompound("stack"));
+        ItemStack read = ItemStack.of(nbt);
         if (read.isEmpty()) {
             stack = EMPTY_STACK;
         } else {
@@ -59,9 +59,7 @@ public class StatementParameterItemStack implements IStatementParameter {
     @Override
     public void writeToNbt(CompoundTag compound) {
         if (!stack.isEmpty()) {
-            CompoundTag tagCompound = new CompoundTag();
             stack.save(compound);
-            compound.put("stack", tagCompound);
         }
     }
 
@@ -77,9 +75,7 @@ public class StatementParameterItemStack implements IStatementParameter {
     }
 
     @Override
-    public StatementParameterItemStack onClick(
-        IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse
-    ) {
+    public StatementParameterItemStack onClick(IStatementContainer source, IStatement stmt, ItemStack stack, StatementMouseClick mouse) {
         if (stack.isEmpty()) {
             return EMPTY;
         } else {

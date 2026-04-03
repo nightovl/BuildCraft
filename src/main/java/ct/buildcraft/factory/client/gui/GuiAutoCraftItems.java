@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
@@ -66,7 +67,7 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
             BCLog.logger.warn("[factory.gui] An exception was thrown while creating the recipe book gui!", e);
             book = null;
         }
-        recipeBook = book;
+        recipeBook =null;//= book;
         mainGui.shownElements.add(new LedgerHelp(mainGui, true));
     }
 
@@ -135,7 +136,9 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
 
     @Override
     public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
-        if (recipeBook == null) {
+    	super.render(pose, mouseX, mouseY, partialTicks);
+//e    	BCLog.d("aa : "+container.getCarried());
+/*        if (recipeBook == null) {
             super.render(pose, mouseX, mouseY, partialTicks);
             return;
         }
@@ -146,11 +149,11 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
             renderTooltip(pose, mouseX, mouseY);
         } else {
             super.render(pose, mouseX, mouseY, partialTicks);
-            recipeBook.render(pose, mouseX, mouseY, partialTicks);
+ //           recipeBook.render(pose, mouseX, mouseY, partialTicks);
             recipeBook.renderGhostRecipe(pose, this.leftPos, this.topPos, true, partialTicks);
         }
 
-        recipeBook.renderTooltip(pose, this.leftPos, this.topPos, mouseX, mouseY);
+        recipeBook.renderTooltip(pose, this.leftPos, this.topPos, mouseX, mouseY);*/
     }
 
     @Override
@@ -189,9 +192,9 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
     }
 
     private boolean hasFilters() {
-        ItemHandlerSimple filters = container.tile.invMaterialFilter;
-        for (int s = 0; s < filters.getSlots(); s++) {
-            ItemStack filter = filters.getStackInSlot(s);
+        SlotBase[] filters = container.filtterSlots;
+        for (int s = 0; s < filters.length; s++) {
+            ItemStack filter = filters[s].getItem();
             if (!filter.isEmpty()) {
                 return true;
             }
@@ -200,9 +203,9 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
     }
 
     private void forEachFilter(IFilterSlotIterator iter) {
-        ItemHandlerSimple filters = container.tile.invMaterialFilter;
-        for (int s = 0; s < filters.getSlots(); s++) {
-            ItemStack filter = filters.getStackInSlot(s);
+    	SlotBase[] filters = container.filtterSlots;
+        for (int s = 0; s < filters.length; s++) {
+            ItemStack filter = filters[s].getItem();
             if (!filter.isEmpty()) {
                 iter.iterate(container.materialSlots[s], filter);
             }

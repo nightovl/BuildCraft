@@ -12,6 +12,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.api.core.BCDebugging;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergyConfig;
@@ -38,10 +39,10 @@ public class OilStructureGen {
     /** Random number, used to differentiate generators */
     private static final long MAGIC_GEN_NUMBER = 0xD0_46_B4_E4_0C_7D_07_CFL;
 
-    public static final boolean DEBUG_OILGEN_BASIC = true;//BCDebugging.shouldDebugLog("energy.oilgen");
-    public static final boolean DEBUG_OILGEN_ALL = true;//BCDebugging.shouldDebugComplex("energy.oilgen");
+    public static final boolean DEBUG_OILGEN_BASIC = BCDebugging.shouldDebugLog("energy.oilgen");
+    public static final boolean DEBUG_OILGEN_ALL = BCDebugging.shouldDebugComplex("energy.oilgen");
     
-    private static final LoadingCache<Integer, List<OilGenStructure>> structureCache
+    private static final LoadingCache<Long, List<OilGenStructure>> structureCache
     	= CacheBuilder.newBuilder().expireAfterAccess(20, TimeUnit.SECONDS).build(CacheLoader.from(OilStructureGen::genCache));
     
     private static WorldGenLevel level;
@@ -58,14 +59,14 @@ public class OilStructureGen {
         LAKE,
         NONE
     }
-    //TODO change to Lambda
-    private static List<OilGenStructure> genCache(int key){
-    	return getStructures(level, key&0x0000FFFF, (key>>16)&0x0000FFFF, false);
+
+    private static List<OilGenStructure> genCache(long key){
+    	return getStructures(level, (int)(key&0xFFFFFFFF), (int)((key>>32)&0xFFFFFFFF), false);
     }
     
     public static List<OilGenStructure> getStructures(WorldGenLevel world, int cx, int cz) {
     	if(level != world) level = world;
-    	return structureCache.getUnchecked(cz<<16|cx);
+    	return structureCache.getUnchecked((((long)(cz))<<32)|(cx));
     }
 
     /*this will not use the cache, only use for testing*/
@@ -117,7 +118,7 @@ public class OilStructureGen {
 
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= BCEnergyConfig.oilWellGenerationRate;
-        if (BCEnergyWorldGen.isTerraBlenderLoaded&&false) {
+        if (BCEnergyWorldGen.isTerraBlenderLoaded) {
 	        if (BCEnergyConfig.excessiveBiomes.contains(key))
 	            bonus *= 30.0;
         }
@@ -144,7 +145,7 @@ public class OilStructureGen {
             // 2%
             type = GenType.LAKE;
         } else {
-            if (/*DEBUG_OILGEN_ALL*/false & log) {
+            if (DEBUG_OILGEN_ALL & log) {
                 BCLog.logger.info(
                     "[energy.oilgen] Not generating oil in " + toStr(world) + " chunk " + cx + ", " + cz
                         + " because none of the random numbers were above the thresholds for generation"

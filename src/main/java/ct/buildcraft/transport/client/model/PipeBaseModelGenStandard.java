@@ -206,7 +206,7 @@ public enum PipeBaseModelGenStandard implements IPipeBaseModelGen {
     public List<BakedQuad> generateCutout(PipeBaseCutoutKey key) {
         List<MutableQuad> quads = new ArrayList<>();
         
-        BCLog.logger.debug("generate Model for " + key.hashCode());
+        BCLog.logger.debug("PipeBaseModelGenStandard : generate Model for " + key.hashCode());
 
         TextureAtlasSprite[] spriteArray = SPRITES.get(key.definition);
         TextureAtlasSprite borderSprite = getBorderSprite(key);
@@ -314,7 +314,7 @@ public enum PipeBaseModelGenStandard implements IPipeBaseModelGen {
     }
 
     private static int getPipeModelColour(DyeColor c) {
-        return 0xFF_00_00_00 | ColourUtil.swapArgbToAbgr(ColourUtil.getLightHex(c));
+        return 0x40_00_00_00 | ColourUtil.getLightHex(c);
     }
 
     private static void addQuads(MutableQuad[] from, List<MutableQuad> to, TextureAtlasSprite sprite) {

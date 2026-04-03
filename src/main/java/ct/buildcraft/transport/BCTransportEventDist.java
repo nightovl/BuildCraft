@@ -27,6 +27,7 @@ import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class BCTransportEventDist {
 
@@ -39,11 +40,16 @@ public class BCTransportEventDist {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+        	BCTransportModels.init();
+        }
+        
+        @SubscribeEvent
+        public static void onClientCommonSetup(FMLCommonSetupEvent event)
+        {
         	PipeApiClient.registry = PipeRegistryClient.INSTANCE;
-        	BCTransportSprites.init();
-        	BCTransportModels.fmlInit();
         	BCTransportGuis.clientInit(event);
         }
+        
         @SubscribeEvent
         public static void registryRender(EntityRenderersEvent.RegisterRenderers e) {
         	BCTransportModels.onBlockEntityRender(e);

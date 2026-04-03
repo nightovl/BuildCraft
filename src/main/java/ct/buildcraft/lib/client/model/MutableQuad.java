@@ -386,11 +386,11 @@ public class MutableQuad {
         return this;
     }
 
-    public MutableQuad colouri(int rgba) {
-        vertex_0.colouri(rgba);
-        vertex_1.colouri(rgba);
-        vertex_2.colouri(rgba);
-        vertex_3.colouri(rgba);
+    public MutableQuad colouri(int argb) {
+        vertex_0.colouri(argb);
+        vertex_1.colouri(argb);
+        vertex_2.colouri(argb);
+        vertex_3.colouri(argb);
         return this;
     }
 
