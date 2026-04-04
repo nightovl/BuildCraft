@@ -106,6 +106,7 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
 
     @Override
     public void readPayload(int id, FriendlyByteBuf buffer, LogicalSide msgSide) throws IOException {
+//    	BCLog.d("rece");
         if (msgSide == LogicalSide.CLIENT) {
             if (id == NET_CREATE_ITEM) {
                 int stackId = buffer.readInt();
@@ -145,15 +146,15 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
 
     void sendItemDataToClient(TravellingItem item) {
         final int stackId = BuildCraftObjectCaches.storeItemStack(item.stack);
-        // sendCustomPayload(NET_CREATE_ITEM, (buffer) -> {
-        // FriendlyByteBuf buf = FriendlyByteBuf.asFriendlyByteBufBc(buffer);
-        // buf.writeInt(stackId);
-        // buf.writeShort(item.stack.getCount());
-        // buf.writeBoolean(item.toCenter);
-        // buf.writeEnum(item.side);
-        // MessageUtil.writeEnumOrNull(buf, item.colour);
-        // buf.writeShort(item.timeToDest > Short.MAX_VALUE ? Short.MAX_VALUE : item.timeToDest);
-        // });
+        /* sendCustomPayload(NET_CREATE_ITEM, (buffer) -> {
+         FriendlyByteBuf buf = buffer;
+         buf.writeInt(stackId);
+         buf.writeShort(item.stack.getCount());
+         buf.writeBoolean(item.toCenter);
+         buf.writeEnum(item.side);
+         MessageUtil.writeEnumOrNull(buf, item.colour);
+         buf.writeShort(item.timeToDest > Short.MAX_VALUE ? Short.MAX_VALUE : item.timeToDest);
+         });*/
         PipeItemMessageQueue.appendTravellingItem(
             pipe.getHolder().getPipeWorld(), pipe.getHolder().getPipePos(), stackId, (byte) item.stack.getCount(),
             item.toCenter, item.side, item.colour, item.timeToDest > Byte.MAX_VALUE ? Byte.MAX_VALUE
@@ -283,12 +284,22 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
     @Override
     public void onTick() {
         Level world = pipe.getHolder().getPipeWorld();
+ //       if(world.isClientSide)return;
+ /*       if(items.getAllElements().isEmpty() | !world.isClientSide)
+        	return;
+        List<TravellingItem> toTick = getAllItemsForRender();
 
+  //      BCLog.d("size "+toTick.size());
+        for (TravellingItem item : toTick) {*/
+        	
+ //       	BCLog.d(""+item.clientItemLink.get());
+        	//if(item.stack.toString().equals("1 ocelot_spawn_egg") ) {
+        	//	item.clientItemLink.get();
         List<TravellingItem> toTick = items.advance();
         long currentTime = world.getGameTime();
 
         for (TravellingItem item : toTick) {
-            if (item.tickFinished > currentTime) {
+            if (!world.isClientSide() && item.tickFinished > currentTime) {
                 // Can happen if something ticks this tile multiple times in a single real tick
                 items.add((int) (item.tickFinished - currentTime), item);
                 continue;
@@ -298,7 +309,8 @@ public final class PipeFlowItems extends PipeFlow implements IFlowItems {
             }
             if (world.isClientSide()) {
                 // TODO: Client item advancing/intelligent stuffs
-                break;
+             //   items.add((int) (item.tickFinished - currentTime), item);
+                continue;
             }
             if (item.toCenter) {
                 onItemReachCenter(item);

@@ -58,6 +58,7 @@ public enum ModelPipe implements IDynamicBakedModel {
 	@Override
 	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
 			@NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
+		PipeModelCacheAll.clearModels();
 		TilePipeHolder tile = data.get(PipeTypeModelKey);
         if (tile == null || tile.getPipe() == Pipe.EMPTY) {
             if (renderType == RenderType.translucent()) {

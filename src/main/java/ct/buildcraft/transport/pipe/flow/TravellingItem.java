@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.misc.VecUtil;
@@ -68,7 +69,10 @@ public class TravellingItem {
 
     public TravellingItem(@Nonnull ItemStack stack) {
         this.stack = stack;
-        clientItemLink = () -> ItemStack.EMPTY;
+        clientItemLink = () ->{
+        	BCLog.d("empty");
+        	return ItemStack.EMPTY;
+        };
     }
 
     public TravellingItem(Supplier<ItemStack> clientStackLink, int count) {
@@ -78,7 +82,10 @@ public class TravellingItem {
     }
 
     public TravellingItem(CompoundTag nbt, long tickNow) {
-        clientItemLink = () -> ItemStack.EMPTY;
+        clientItemLink = () ->{
+        	BCLog.d("empty");
+        	return ItemStack.EMPTY;
+        };
         stack = ItemStack.of(nbt.getCompound("stack"));
         int c = nbt.getByte("colour");
         this.colour = c == 0 ? null : DyeColor.byId(c - 1);

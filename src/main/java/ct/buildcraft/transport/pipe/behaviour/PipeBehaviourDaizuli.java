@@ -79,7 +79,8 @@ public class PipeBehaviourDaizuli extends PipeBehaviourDirectional {
 
     @Override
     protected boolean canFaceDirection(Direction dir) {
-        return true;
+    	return true;
+        //return pipe.isConnected(dir);
     }
 
     @Override

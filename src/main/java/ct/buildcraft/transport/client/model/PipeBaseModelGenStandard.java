@@ -210,10 +210,10 @@ public enum PipeBaseModelGenStandard implements IPipeBaseModelGen {
 
         TextureAtlasSprite[] spriteArray = SPRITES.get(key.definition);
         TextureAtlasSprite borderSprite = getBorderSprite(key);
-        int colour = borderSprite == null ? -1 : getPipeModelColour(key.colour);
-        int border_r = (colour >> 0) & 0xFF;
-        int border_g = (colour >> 8) & 0xFF;
-        int border_b = (colour >> 16) & 0xFF;
+        int argb = borderSprite == null ? -1 : getPipeModelColour(key.colour);
+        int border_r = (argb >> 16) & 0xFF;
+        int border_g = (argb >> 8) & 0xFF;
+        int border_b = (argb >> 0) & 0xFF;
         for (Direction face : Direction.values()) {
             float size = key.connections[face.ordinal()];
             PipeFaceTex tex = size > 0 ? key.sideSprites[face.ordinal()] : key.centerSprite;

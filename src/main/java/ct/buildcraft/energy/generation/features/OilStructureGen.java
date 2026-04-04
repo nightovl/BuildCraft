@@ -61,12 +61,12 @@ public class OilStructureGen {
     }
 
     private static List<OilGenStructure> genCache(long key){
-    	return getStructures(level, (int)(key&0xFFFFFFFF), (int)((key>>32)&0xFFFFFFFF), false);
+    	return getStructures(level, (int)(key&0xFFFFFFFFL), (int)((key>>32)&0xFFFFFFFFL), false);
     }
     
     public static List<OilGenStructure> getStructures(WorldGenLevel world, int cx, int cz) {
     	if(level != world) level = world;
-    	return structureCache.getUnchecked((((long)(cz))<<32)|(cx));
+    	return structureCache.getUnchecked((((long)(cz))<<32)|(cx&0xFFFFFFFFL));
     }
 
     /*this will not use the cache, only use for testing*/

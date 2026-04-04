@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import ct.buildcraft.api.core.BCDebugging;
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.transport.pipe.PipeEvent;
 import ct.buildcraft.api.transport.pipe.PipeEventHandler;
 import ct.buildcraft.api.transport.pipe.PipeEventPriority;

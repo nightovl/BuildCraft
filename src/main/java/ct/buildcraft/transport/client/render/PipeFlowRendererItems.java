@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -75,12 +76,14 @@ public enum PipeFlowRendererItems implements IPipeFlowRenderer<PipeFlowItems> {
         VertexConsumer buffer2 = buffer.getBuffer(RenderType.cutout());
         
         matrix.translate(0.5f, 0.5f, 0.5f);
-
+//        BCLog.d("" + toRender.size());
         for (TravellingItem item : toRender) {
             Vec3 pos = item.getRenderPosition(BlockPos.ZERO, now, partialTicks, flow);
-
+            
             ItemStack stack = item.clientItemLink.get();
-            if (stack != null && !stack.isEmpty()) {
+            
+            if (!stack.isEmpty()) {
+//            	BCLog.d(stack.getItem() == Items.APPLE);
             	matrix.translate(pos.x, -0.2f+pos.y, pos.z);
             	itemRender.renderStatic(stack, TransformType.GROUND, lightc, combinedOverlay, matrix, buffer, 0);
 //                itemRender.getModel(stack, world, null, combinedOverlay);
