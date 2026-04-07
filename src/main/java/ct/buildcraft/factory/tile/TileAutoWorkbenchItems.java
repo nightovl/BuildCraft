@@ -5,7 +5,7 @@
 package ct.buildcraft.factory.tile;
 
 import ct.buildcraft.factory.BCFactoryBlocks;
-import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
+import ct.buildcraft.factory.container.ContainerAutoCraftItems;
 import ct.buildcraft.lib.gui.ItemProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

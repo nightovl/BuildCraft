@@ -2,7 +2,7 @@
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-package ct.buildcraft.factory.client.gui;
+package ct.buildcraft.factory.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
+import ct.buildcraft.factory.container.ContainerAutoCraftItems;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.ledger.LedgerHelp;

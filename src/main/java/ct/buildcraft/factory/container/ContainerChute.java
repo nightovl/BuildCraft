@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package ct.buildcraft.factory.menu;
+package ct.buildcraft.factory.container;
 
 import ct.buildcraft.factory.BCFactoryGuis;
 import ct.buildcraft.factory.tile.TileChute;

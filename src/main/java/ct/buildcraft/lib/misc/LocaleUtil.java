@@ -108,7 +108,7 @@ public class LocaleUtil {
     /** @param colour The {@link DyeColor} to localize.
      * @return a localised name for the given colour. */
     public static String localizeColour(DyeColor colour) {
-        return localize("item.fireworksCharge." + colour.getName());
+        return localize("color.minecraft." + colour.getName());
     }
 
     /** @param face The {@link Direction} to localize.
