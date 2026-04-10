@@ -80,7 +80,7 @@ public class RenderTank implements BlockEntityRenderer<TileTank> {
                 || !fluid.isFluidEqual(thisTank.getFluidForRender(partialTicks).fluid)) {
                 return false;
             }
-            if (fluid.getFluid().getFluidType().getDensity(fluid)<=0) {
+            if (fluid.getFluid().getFluidType().isLighterThanAir()) {
                 face = face.getOpposite();
             }
             return forRender.amount >= oTank.tank.getCapacity() || face == Direction.UP;

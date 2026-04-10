@@ -2,36 +2,30 @@ package ct.buildcraft.energy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
 
 import ct.buildcraft.core.BCCore;
+import ct.buildcraft.energy.fluid.BCFluidType;
+import ct.buildcraft.energy.fluid.BCLiquidBlock;
 import ct.buildcraft.lib.fluid.BCFluid;
-
-import com.mojang.blaze3d.shaders.FogShape;
-
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.FogRenderer.FogMode;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BCEnergyFluids {
 	public static final int COOL_TEM = 300;
@@ -77,93 +71,11 @@ public class BCEnergyFluids {
             {      300,       500,    0,     10, 0xFA_F6_30, 0xE0_D9_00,      0,         1 },// Gas Fuel
         };//@formatter:on
 
-    public static final ResourceLocation OilCrudeCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_cool_still");
-    public static final ResourceLocation OilCrudeCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_cool_flow");
-    public static final ResourceLocation OilCrudeHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_hot_still");
-    public static final ResourceLocation OilCrudeHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_hot_flow");
-    public static final ResourceLocation OilCrudeSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_searing_still");
-    public static final ResourceLocation OilCrudeSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/crude_oil/oil_crude_searing_flow");
-    
-    
-    
-    public static final ResourceLocation OilResidueCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_cool_still");
-    public static final ResourceLocation OilResidueCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_cool_flow");
-    public static final ResourceLocation OilResidueHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_hot_still");
-    public static final ResourceLocation OilResidueHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_hot_flow");
-    public static final ResourceLocation OilResidueSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_searing_still");
-    public static final ResourceLocation OilResidueSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/residue_oil/oil_residue_searing_flow");
-    
-    public static final ResourceLocation OilHeavyCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_cool_still");
-    public static final ResourceLocation OilHeavyCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_cool_flow");
-    public static final ResourceLocation OilHeavyHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_hot_still");
-    public static final ResourceLocation OilHeavyHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_hot_flow");
-    public static final ResourceLocation OilHeavySearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_searing_still");
-    public static final ResourceLocation OilHeavySearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/heavy_oil/oil_heavy_searing_flow");
-    
-    public static final ResourceLocation OilDenseCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_cool_still");
-    public static final ResourceLocation OilDenseCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_cool_flow");
-    public static final ResourceLocation OilDenseHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_hot_still");
-    public static final ResourceLocation OilDenseHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_hot_flow");
-    public static final ResourceLocation OilDenseSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_searing_still");
-    public static final ResourceLocation OilDenseSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_oil/oil_dense_searing_flow");
-    
-    public static final ResourceLocation OilDistilledCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_cool_still");
-    public static final ResourceLocation OilDistilledCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_cool_flow");
-    public static final ResourceLocation OilDistilledHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_hot_still");
-    public static final ResourceLocation OilDistilledHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_hot_flow");
-    public static final ResourceLocation OilDistilledSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_searing_still");
-    public static final ResourceLocation OilDistilledSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/distilled_oil/oil_distilled_searing_flow");
-    
-    public static final ResourceLocation FuelDenseCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_cool_still");
-    public static final ResourceLocation FuelDenseCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_cool_flow");
-    public static final ResourceLocation FuelDenseHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_hot_still");
-    public static final ResourceLocation FuelDenseHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_hot_flow");
-    public static final ResourceLocation FuelDenseSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_searing_still");
-    public static final ResourceLocation FuelDenseSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/dense_fuel/fuel_dense_searing_flow");
-    
-    public static final ResourceLocation FuelMixedHeavyCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_cool_still");
-    public static final ResourceLocation FuelMixedHeavyCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_cool_flow");
-    public static final ResourceLocation FuelMixedHeavyHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_hot_still");
-    public static final ResourceLocation FuelMixedHeavyHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_hot_flow");
-    public static final ResourceLocation FuelMixedHeavySearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_searing_still");
-    public static final ResourceLocation FuelMixedHeavySearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_heavy_fuel/fuel_mixed_heavy_searing_flow");
-    
-    public static final ResourceLocation FuelLightCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_cool_still");
-    public static final ResourceLocation FuelLightCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_cool_flow");
-    public static final ResourceLocation FuelLightHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_hot_still");
-    public static final ResourceLocation FuelLightHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_hot_flow");
-    public static final ResourceLocation FuelLightSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_searing_still");
-    public static final ResourceLocation FuelLightSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/light_fuel/fuel_light_searing_flow");
-    
-    public static final ResourceLocation FuelMixedLightCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_cool_still");
-    public static final ResourceLocation FuelMixedLightCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_cool_flow");
-    public static final ResourceLocation FuelMixedLightHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_hot_still");
-    public static final ResourceLocation FuelMixedLightHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_hot_flow");
-    public static final ResourceLocation FuelMixedLightSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_searing_still");
-    public static final ResourceLocation FuelMixedLightSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/mixed_light_fuel/fuel_mixed_light_searing_flow");
-    
-    public static final ResourceLocation FuelGasCoolStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_cool_still");
-    public static final ResourceLocation FuelGasCoolFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_cool_flow");
-    public static final ResourceLocation FuelGasHotStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_hot_still");
-    public static final ResourceLocation FuelGasHotFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_hot_flow");
-    public static final ResourceLocation FuelGasSearingStillTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_searing_still");
-    public static final ResourceLocation FuelGasSearingFlowTexture = new ResourceLocation("buildcraftenergy:blocks/fluids/gas_fuel/fuel_gas_searing_flow");
-    
+
     public static final Material FLAMMABLELIQUID = new Material(MaterialColor.COLOR_BLACK,true,false,true,false,true,true,PushReaction.DESTROY);
     
-    public static final ResourceLocation[][] OIL_TEXTURE = {
-    		new ResourceLocation[]{OilCrudeCoolStillTexture, OilCrudeCoolFlowTexture, OilCrudeHotStillTexture, OilCrudeHotFlowTexture, OilCrudeSearingStillTexture,OilCrudeSearingFlowTexture},
-    		new ResourceLocation[]{OilResidueCoolStillTexture, OilResidueCoolFlowTexture, OilResidueHotStillTexture, OilResidueHotFlowTexture, OilResidueSearingStillTexture,OilResidueSearingFlowTexture},
-    		new ResourceLocation[]{OilHeavyCoolStillTexture, OilHeavyCoolFlowTexture, OilHeavyHotStillTexture, OilHeavyHotFlowTexture, OilHeavySearingStillTexture,OilHeavySearingFlowTexture},
-    		new ResourceLocation[]{OilDenseCoolStillTexture, OilDenseCoolFlowTexture, OilDenseHotStillTexture, OilDenseHotFlowTexture, OilDenseSearingStillTexture,OilDenseSearingFlowTexture},
-    		new ResourceLocation[]{OilDistilledCoolStillTexture, OilDistilledCoolFlowTexture, OilDistilledHotStillTexture, OilDistilledHotFlowTexture, OilDistilledSearingStillTexture,OilDistilledSearingFlowTexture},
-    		new ResourceLocation[]{FuelDenseCoolStillTexture, FuelDenseCoolFlowTexture, FuelDenseHotStillTexture, FuelDenseHotFlowTexture, FuelDenseSearingStillTexture,FuelDenseSearingFlowTexture},
-    		new ResourceLocation[]{FuelMixedHeavyCoolStillTexture, FuelMixedHeavyCoolFlowTexture, FuelMixedHeavyHotStillTexture, FuelMixedHeavyHotFlowTexture, FuelMixedHeavySearingStillTexture,FuelMixedHeavySearingFlowTexture},
-    		new ResourceLocation[]{FuelLightCoolStillTexture, FuelLightCoolFlowTexture, FuelLightHotStillTexture, FuelLightHotFlowTexture, FuelLightSearingStillTexture,FuelLightSearingFlowTexture},
-    		new ResourceLocation[]{FuelMixedLightCoolStillTexture, FuelMixedLightCoolFlowTexture, FuelMixedLightHotStillTexture, FuelMixedLightHotFlowTexture, FuelMixedLightSearingStillTexture,FuelMixedLightSearingFlowTexture},
-    		new ResourceLocation[]{FuelGasCoolStillTexture, FuelGasCoolFlowTexture, FuelGasHotStillTexture, FuelGasHotFlowTexture, FuelGasSearingStillTexture,FuelGasSearingFlowTexture}
-    };
-    public static final List<RegistryObject<FluidType>> OIL_TYPE = new ArrayList<>();
+
+    public static final List<RegistryObject<BCFluidType>> OIL_TYPE = new ArrayList<>();
     public static final List<RegistryObject<BCFluid>> OIL_SOURCE = new ArrayList<>();
     public static final List<RegistryObject<BucketItem>> OIL_BUCKET = new ArrayList<>();
     public static final List<RegistryObject<LiquidBlock>> OIL_BLOCK = new ArrayList<>();
@@ -221,74 +133,55 @@ public class BCEnergyFluids {
     
     public static void registryFluid() {
     	for(int id=0;id<NAME.length;id++) 
-    		for(int tem = 0;tem <3;tem++) {
-    			creatFluid(id,tem);
-    	}
+    			defineFluids(data[id], NAME[id]);
     }
     
-    private static void creatFluid(int id, int tem) {
-        RegistryObject<FluidType> TYPE = FLUID_TYPES.register(NAME[id]+TEM_NAMES[tem], () -> new aFluidType(FluidType.Properties.create().canDrown(true).canSwim(false).density(data[id][0]).viscosity(data[id][1]).temperature(TEMS[tem]), OIL_TEXTURE[id][2*tem], OIL_TEXTURE[id][2*tem+1], id) );
-        RegistryObject<BCFluid> SOURCE = RegistryObject.create(new ResourceLocation(BCEnergy.MODID,NAME[id]+TEM_NAMES[tem]+"_source"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
-        RegistryObject<BCFluid> FLOWING = RegistryObject.create(new ResourceLocation(BCEnergy.MODID,NAME[id]+TEM_NAMES[tem]+"_flowing"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
-        RegistryObject<BucketItem> BUCKET = BCEnergy.ITEMS.register(NAME[id]+"/"+NAME[id]+TEM_NAMES[tem]+"_bucket", () -> new BucketItem(SOURCE,new Item.Properties().stacksTo(1).tab(BCCore.tabFluids).craftRemainder(Items.BUCKET)));
-        RegistryObject<LiquidBlock> FUEL_GAS_COOL_BLOCK = BCEnergyBlocks.BLOCKS.register(NAME[id]+"/"+NAME[id]+TEM_NAMES[tem], () -> new LiquidBlock(SOURCE, BlockBehaviour.Properties.of(FLAMMABLELIQUID).noCollission().strength(100.0F).noLootTable()));
-        ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(TYPE, SOURCE, FLOWING).bucket(BUCKET).block(FUEL_GAS_COOL_BLOCK);//.slopeFindDistance(0);
-        FLUIDS.register(NAME[id]+TEM_NAMES[tem]+"_source", () -> new BCFluid.Source(properties).setHeat(tem));
-        FLUIDS.register(NAME[id]+TEM_NAMES[tem]+"_flowing", () -> new BCFluid.Flowing(properties).setHeat(tem));
+    private static void defineFluids(int[] data, String name) {
+        for (int h = 0; h < 3; h++) {
+            defineFluid(data, h, name);
+        }
+    }
+    
+    private static void defineFluid(int[] data, int heat, String name) {
+        final int density = data[0];
+        final int baseViscosity = data[1];
+        final int boilPoint = data[2];
+        final int baseQuanta = data[3];
+        final int texLight = data[4];
+        final int texDark = data[5];
+        final boolean sticky = BCEnergyConfig.oilIsSticky && data[6] == 1;
+        final boolean flammable = BCEnergyConfig.enableOilBurn ? data[7] == 1 : false;
+
+        String fullName = name + (heat == 0 ? "" : "_heat_" + heat);
+        int tempAdjustedViscosity = baseViscosity * (4 - heat) / 4;
+        int boilAdjustedDensity = density * (heat >= boilPoint ? -1 : 1);
+
+        String fluidTexture = "buildcraftenergy:blocks/fluids/heat_" + heat;
+        
+        RegistryObject<BCFluidType> TYPE = FLUID_TYPES.register(fullName, () -> 
+        	new BCFluidType(FluidType.Properties.create().canSwim(false).density(boilAdjustedDensity).viscosity(tempAdjustedViscosity).temperature(300 + 20*heat).rarity(Rarity.UNCOMMON)
+        			, new ResourceLocation(fluidTexture + "_still"), new ResourceLocation(fluidTexture + "_flow"), (texLight + texDark)/2));
+        RegistryObject<BCFluid> SOURCE = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName+"_source"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
+        RegistryObject<BCFluid> FLOWING = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName+"_flowing"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
+        RegistryObject<BucketItem> BUCKET = BCEnergy.ITEMS.register(fullName+"_bucket", () -> new BucketItem(SOURCE,new Item.Properties().stacksTo(1).tab(BCCore.tabFluids).craftRemainder(Items.BUCKET)));
+        RegistryObject<LiquidBlock> FUEL_GAS_COOL_BLOCK = BCEnergyBlocks.BLOCKS.register(fullName, () -> new BCLiquidBlock(SOURCE, BlockBehaviour.Properties.of(FLAMMABLELIQUID).noCollission().strength(100.0F).noLootTable(), sticky));
+        ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(TYPE, SOURCE, FLOWING).bucket(BUCKET).block(FUEL_GAS_COOL_BLOCK).tickRate(10 + 10*(2 - heat))/*.levelDecreasePerBlock(boilAdjustedDensity)*/;//.slopeFindDistance(0);
+        FLUIDS.register(fullName+"_source", () -> {
+        	BCFluid fluid = new BCFluid.Source(properties).setHeat(heat);
+        	fluid.setFlammable(flammable);
+        	return fluid;
+        });
+        FLUIDS.register(fullName+"_flowing", () -> {
+        	BCFluid fluid = new BCFluid.Flowing(properties).setHeat(heat);
+        	fluid.setFlammable(flammable);
+        	return fluid;
+        });
         OIL_TYPE.add(TYPE);
         OIL_SOURCE.add(SOURCE);
         OIL_BUCKET.add(BUCKET);
         OIL_BLOCK.add(FUEL_GAS_COOL_BLOCK);
 //    	System.out.println("\"item.buildcraftenergy."+(NAME[id]+"/"+NAME[id]+TEM_NAMES[tem]+"_bucket").replace('/', '.')+"\":\"\",");
 
-    }
     
-    static class aFluidType extends FluidType{
-
-    	private final ResourceLocation stillTexture;
-    	private final ResourceLocation flowTexture;
-//    	private final int num;
-		public aFluidType(Properties properties,ResourceLocation still, ResourceLocation flowingTexture,int i) {
-			super(properties);
-			this.stillTexture = still;
-			this.flowTexture = flowingTexture;
-//			num = i;
-
-			// TODO Auto-generated constructor stub
-		}
-    	@Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-        {
-    		consumer.accept(new IClientFluidTypeExtensions() {
-    			@Override
-    			public ResourceLocation getStillTexture() {
-					return stillTexture;
-    			}
-
-				@Override
-				public int getTintColor() {
-//					return BCEnergyFluids.data[i][4];
-					return 0xFFffffFF;
-				}
-				
-				@Override
-				public ResourceLocation getFlowingTexture() {
-					return flowTexture;
-				}
-				
-				@Override
-				public @Nullable ResourceLocation getOverlayTexture() {
-					return IClientFluidTypeExtensions.super.getOverlayTexture();
-				}
-
-				@Override
-				public void modifyFogRender(Camera camera, FogMode mode, float renderDistance, float partialTick,
-						float nearDistance, float farDistance, FogShape shape) {
-					IClientFluidTypeExtensions.super.modifyFogRender(camera, mode, renderDistance, partialTick, nearDistance, farDistance,
-							shape);
-				}
-    		});
-        }
-    	
     }
 }

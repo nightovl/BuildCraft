@@ -5,12 +5,8 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 public class BCFluidType extends FluidType{
@@ -64,24 +60,6 @@ public class BCFluidType extends FluidType{
 
 		});
     }
-
-	@Override
-	public int getTemperature() {
-		return super.getTemperature();
-	}
-
-	@Override
-	public int getTemperature(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-		return super.getTemperature(state, getter, pos);
-	}
-
-	@Override
-	public int getTemperature(FluidStack stack) {
-
-		return super.getTemperature(stack);
-	}
-	
-	
 	
 	
 }

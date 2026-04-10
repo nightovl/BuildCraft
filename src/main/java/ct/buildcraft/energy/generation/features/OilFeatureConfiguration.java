@@ -10,14 +10,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 public record OilFeatureConfiguration(List<ResourceLocation> excludedBiomes, List<ExcessiveBiome> excessiveBiomes,
-		List<ResourceLocation> surfaceDepositBiomes, double propOilWellGenerationRate,
+		List<ResourceLocation> surfaceDepositBiomes, double oilWellGenerationRate,
 		boolean genOilInEveryVanillaBiomes, boolean genOilInEveryModBiomes, GenSetting genSetting) implements FeatureConfiguration {
 	public static final Codec<OilFeatureConfiguration> CODEC = RecordCodecBuilder.create((p_65912_) -> 
 	      p_65912_.group(
 	    		  Codec.list(ResourceLocation.CODEC).fieldOf("excludedBiomes").forGetter((cfg) -> cfg.excludedBiomes),
 	    		  Codec.list(ExcessiveBiome.CODEC).fieldOf("excessiveBiomes").forGetter((cfg) -> cfg.excessiveBiomes),
 	    		  Codec.list(ResourceLocation.CODEC).fieldOf("surfaceDepositBiomes").forGetter((cfg) -> cfg.surfaceDepositBiomes),
-	    		  Codec.doubleRange(0, 100).fieldOf("noiseThreshold").forGetter((cfg) ->  cfg.propOilWellGenerationRate),
+	    		  Codec.doubleRange(0, 100).fieldOf("noiseThreshold").forGetter((cfg) ->  cfg.oilWellGenerationRate),
 	    		  Codec.BOOL.fieldOf("genOilInEveryVanillaBiomes").forGetter((cfg) ->  cfg.genOilInEveryVanillaBiomes),
 	    		  Codec.BOOL.fieldOf("genOilInEveryModBiomes").forGetter((cfg) ->  cfg.genOilInEveryModBiomes),
 	    		  GenSetting.CODEC.fieldOf("oilStructureSetting").forGetter((cfg) -> cfg.genSetting)
