@@ -1,6 +1,7 @@
 {
-	"parent": "forge:item/bucket_drip",
-	"flip_gas":true,
-	"fluid": "buildcraftenergy:fuel_gaseous"
-	
+  "parent": "forge:item/fluid_container",
+  "apply_tint": false,
+  "flip_gas": true,
+  "fluid": "buildcraftenergy:fuel_gaseous",
+  "loader": "forge:fluid_container"
 }

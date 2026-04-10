@@ -31,15 +31,15 @@
 					"noiseThreshold" : 0.9
 				}
 			],
-			"surfaceDepositBiomes":{
+			"surfaceDepositBiomes":[
 				
-			},
+			],
 			"oilWellGenerationRate" : 1.0,
 			"genOilInEveryVanillaBiomes" : true,
 			"genOilInEveryModBiomes" : false,
 			"oilStructureSetting" :{
 				"genOilState": {
-				  "Name": "buildcraftenergy:oil/oil_cool"
+				  "Name": "buildcraftenergy:oil"
 				},
 				"enableOilSpouts" : true,
 				"smallSpoutMinHeight" : 6,

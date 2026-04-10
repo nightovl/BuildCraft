@@ -1,6 +1,7 @@
 {
-	"parent": "forge:item/bucket_drip",
-	"flip_gas":true,
-	"fluid": "buildcraftenergy:oil_heavy_heat_2"
-	
+  "parent": "forge:item/fluid_container",
+  "apply_tint": false,
+  "flip_gas": true,
+  "fluid": "buildcraftenergy:oil_heavy_heat_2",
+  "loader": "forge:fluid_container"
 }

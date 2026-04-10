@@ -86,7 +86,7 @@ public class BCEnergyFluids {
     public static final TagKey<Fluid> IS_OIL = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(BCEnergy.MODID, "is_oil"));
     public static final TagKey<Fluid> IS_FUEL = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(BCEnergy.MODID, "is_fuel"));
 
-    private static final String[] NAME = {"oil","oil_residue","oil_heavy","oil_dense","oil_distilled",
+    static final String[] NAME = {"oil","oil_residue","oil_heavy","oil_dense","oil_distilled",
 			  "fuel_dense","fuel_mixed_heavy","fuel_light","fuel_mixed_light","fuel_gaseous"};
 
 

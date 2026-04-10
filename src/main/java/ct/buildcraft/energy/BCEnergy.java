@@ -43,7 +43,7 @@ public class BCEnergy {
         //TEST_CODE_END
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-//        modEventBus.addListener(this::gatherData);
+        modEventBus.addListener(this::gatherData);
         BCEnergyFluids.registry(modEventBus);
         BCEnergyBlocks.init(modEventBus);
         BCEnergyGuis.init();
@@ -76,12 +76,14 @@ public class BCEnergy {
         
     }
     public void gatherData(GatherDataEvent event) {
-        event.getGenerator().addProvider(
-            event.includeServer(),
-            new BCEnergyRecipes.BCEnergyRecipeProvider(event.getGenerator())
-        );
+        event.getGenerator().addProvider(event.includeServer(),
+            new BCEnergyRecipes.BCEnergyRecipeProvider(event.getGenerator()));
         event.getGenerator().addProvider(event.includeClient(), 
-        	new BCEnergyBlockStateProvider(event));
+        	new BCEnergyProvider.BlockModel(event.getGenerator(), event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeClient(), 
+            new BCEnergyProvider.BlockState(event.getGenerator(), event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeClient(), 
+                new BCEnergyProvider.ItemModel(event.getGenerator(), event.getExistingFileHelper()));
     }
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
