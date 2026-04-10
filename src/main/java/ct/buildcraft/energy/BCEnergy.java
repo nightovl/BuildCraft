@@ -80,6 +80,8 @@ public class BCEnergy {
             event.includeServer(),
             new BCEnergyRecipes.BCEnergyRecipeProvider(event.getGenerator())
         );
+        event.getGenerator().addProvider(event.includeClient(), 
+        	new BCEnergyBlockStateProvider(event));
     }
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)

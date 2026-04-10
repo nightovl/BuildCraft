@@ -12,7 +12,6 @@ import ct.buildcraft.core.item.ItemMarkerConnector;
 import ct.buildcraft.core.item.ItemPaintbrush_BC8;
 import ct.buildcraft.core.item.ItemVolumeBox;
 import ct.buildcraft.core.item.ItemWrench;
-import ct.buildcraft.core.item.OilBucketItem;
 import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.item.MultiBlockItem;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -38,8 +37,6 @@ public class BCCoreItems {
     public static final RegistryObject<ItemVolumeBox> VOLUME_BOX = ITEMS.register("volume_box", () -> new ItemVolumeBox(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
     public static final RegistryObject<ItemMapLocation> MAP_LOCATION = ITEMS.register("map_location", () -> new ItemMapLocation(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB)));
     public static final RegistryObject<ItemList_BC8> LIST = ITEMS.register("list", () -> new ItemList_BC8(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB).stacksTo(1)));
-
-    public static final RegistryObject<OilBucketItem> OIL_BUCKET = ITEMS.register("list", () -> new OilBucketItem(new Item.Properties().tab(BCCore.BUILDCRAFT_TAB).stacksTo(1)));
 
     
     

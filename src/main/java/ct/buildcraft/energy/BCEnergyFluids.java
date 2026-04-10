@@ -32,7 +32,7 @@ public class BCEnergyFluids {
 	public static final int HOT_TEM = 400;
 	public static final int SEARING_TEM = 500;
 	public static final int[] TEMS = {COOL_TEM, HOT_TEM, SEARING_TEM};
-	public static final String[] TEM_NAMES = {"_cool", "_hot", "_searing"};
+	public static final String[] HEAT_NAMES = {"cool", "hot", "searing"};
 	
     public static BCFluid[] crudeOil = new BCFluid[3];
     /** All 3 fuels (no residue) */
@@ -156,17 +156,17 @@ public class BCEnergyFluids {
         int tempAdjustedViscosity = baseViscosity * (4 - heat) / 4;
         int boilAdjustedDensity = density * (heat >= boilPoint ? -1 : 1);
 
-        String fluidTexture = "buildcraftenergy:blocks/fluids/heat_" + heat;
+        String fluidTexture = "buildcraftenergy:blocks/fluids/" + name + "/"+ HEAT_NAMES[heat];
         
         RegistryObject<BCFluidType> TYPE = FLUID_TYPES.register(fullName, () -> 
         	new BCFluidType(FluidType.Properties.create().canSwim(false).density(boilAdjustedDensity).viscosity(tempAdjustedViscosity).temperature(300 + 20*heat).rarity(Rarity.UNCOMMON)
         			, new ResourceLocation(fluidTexture + "_still"), new ResourceLocation(fluidTexture + "_flow"), (texLight + texDark)/2));
-        RegistryObject<BCFluid> SOURCE = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName+"_source"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
+        RegistryObject<BCFluid> SOURCE = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
         RegistryObject<BCFluid> FLOWING = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName+"_flowing"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
-        RegistryObject<BucketItem> BUCKET = BCEnergy.ITEMS.register(fullName+"_bucket", () -> new BucketItem(SOURCE,new Item.Properties().stacksTo(1).tab(BCCore.tabFluids).craftRemainder(Items.BUCKET)));
+        RegistryObject<BucketItem> BUCKET = BCEnergy.ITEMS.register(name+"/"+HEAT_NAMES[heat]+"_bucket", () -> new BucketItem(SOURCE,new Item.Properties().stacksTo(1).tab(BCCore.tabFluids).craftRemainder(Items.BUCKET)));
         RegistryObject<LiquidBlock> FUEL_GAS_COOL_BLOCK = BCEnergyBlocks.BLOCKS.register(fullName, () -> new BCLiquidBlock(SOURCE, BlockBehaviour.Properties.of(FLAMMABLELIQUID).noCollission().strength(100.0F).noLootTable(), sticky));
         ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(TYPE, SOURCE, FLOWING).bucket(BUCKET).block(FUEL_GAS_COOL_BLOCK).tickRate(10 + 10*(2 - heat))/*.levelDecreasePerBlock(boilAdjustedDensity)*/;//.slopeFindDistance(0);
-        FLUIDS.register(fullName+"_source", () -> {
+        FLUIDS.register(fullName, () -> {
         	BCFluid fluid = new BCFluid.Source(properties).setHeat(heat);
         	fluid.setFlammable(flammable);
         	return fluid;
