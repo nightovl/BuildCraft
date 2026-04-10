@@ -7,10 +7,8 @@
 package ct.buildcraft.core.list;
 
 import ct.buildcraft.api.items.IList;
-import ct.buildcraft.lib.misc.LocaleUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

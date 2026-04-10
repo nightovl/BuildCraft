@@ -68,7 +68,7 @@ public class ContainerList extends MenuBC_Neptune {
 	}
 
     public ContainerList(int containerId, Inventory playerInventory, ContainerLevelAccess access) {
-        super(playerInventory, BCCore.MENU_LIST.get(), containerId);
+        super(playerInventory, BCCore.LIST_MENU.get(), containerId);
         this.access = access;
 
         lines = ListHandler.getLines(getListItemStack());

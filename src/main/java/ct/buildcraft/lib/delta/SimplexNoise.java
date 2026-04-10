@@ -4,7 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/
  */
 
-package buildcraft.lib.misc.data;
+package ct.buildcraft.lib.delta;
 
 /** A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
  *

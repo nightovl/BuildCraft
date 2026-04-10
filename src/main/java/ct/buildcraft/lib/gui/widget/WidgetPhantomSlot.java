@@ -129,7 +129,7 @@ public class WidgetPhantomSlot extends Widget_Neptune<MenuBC_Neptune> {
         @Override
         public void drawForeground(PoseStack pose, float partialTicks) {
            // RenderHelper.enableGUIStandardItemLighting();
-            gui.mc.getItemRenderer().renderAndDecorateItem(getStack(), (int) getX() - gui.rootElement.getX(), (int) getY() - gui.rootElement.getY());
+            gui.mc.getItemRenderer().renderGuiItem(getStack(), (int) (getX() - gui.rootElement.getX()), (int) (getY() - gui.rootElement.getY()));
             //RenderHelper.disableStandardItemLighting();
             if (contains(gui.mouse) && shouldDrawHighlight()) {
                 GuiUtil.drawRect(pose, this, 0x70_FF_FF_FF);

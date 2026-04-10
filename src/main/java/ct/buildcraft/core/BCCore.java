@@ -11,6 +11,8 @@ import ct.buildcraft.core.client.model.ModelEngine;
 import ct.buildcraft.core.client.render.RenderEngine_BC8;
 import ct.buildcraft.core.client.render.RenderMarkerVolume;
 import ct.buildcraft.core.client.render.RenderVolumeBoxes;
+import ct.buildcraft.core.list.ContainerList;
+import ct.buildcraft.core.list.GuiList;
 import ct.buildcraft.core.marker.PathCache;
 import ct.buildcraft.core.marker.VolumeCache;
 import ct.buildcraft.core.marker.volume.MessageVolumeBoxes;
@@ -23,8 +25,10 @@ import ct.buildcraft.lib.client.render.DetachedRenderer;
 import ct.buildcraft.lib.client.render.DetachedRenderer.RenderMatrixType;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.net.MessageManager;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
@@ -42,6 +46,9 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod(BCCore.MODID)
 public class BCCore {
@@ -50,7 +57,8 @@ public class BCCore {
     public static final CreativeTabBC tabFluids = CreativeTabManager.createTab("buildcraft.fluid");
 	
     public static final Map<String,Object> ENGINE_MAP = new HashMap<>();
-
+	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BCCore.MODID);
+    public static final RegistryObject<MenuType<ContainerList>> LIST_MENU = MENUS.register("list_menu", () -> new MenuType<>(ContainerList::new));
     
     public BCCore() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -108,7 +116,12 @@ public class BCCore {
         {
         	BCCoreSprites.init();
         	DetachedRenderer.INSTANCE.addRenderer(RenderMatrixType.FROM_WORLD_ORIGIN, RenderVolumeBoxes.INSTANCE);
-        	event.enqueueWork(BCCoreItems::registerItemProperties);
+            event.enqueueWork(
+                    () -> {
+                    	BCCoreItems.registerItemProperties();
+                    	MenuScreens.register(LIST_MENU.get(), GuiList::new);
+                    }
+            );
         }
     	
         @SubscribeEvent

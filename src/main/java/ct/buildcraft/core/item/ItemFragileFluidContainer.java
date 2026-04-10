@@ -119,7 +119,7 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
     }
 
     static void setFluid(ItemStack container, FluidStack fluid) {
-        CompoundTag nbt = NBTUtilBC.getItemData(container);
+        CompoundTag nbt =container.getOrCreateTag();
         nbt.put("fluid", fluid.writeToNBT(new CompoundTag()));
     }
 
@@ -176,7 +176,7 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
         @Override
         public FluidStack drain(int maxDrain, FluidAction doDrain) {
             FluidStack fluid = ItemFragileFluidContainer.getFluid(container);
-            if (fluid == null || maxDrain <= 0) {
+            if (fluid.isEmpty() || maxDrain <= 0) {
                 return FluidStack.EMPTY;
             }
             int toDrain = Math.min(maxDrain, fluid.getAmount());
