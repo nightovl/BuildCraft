@@ -27,7 +27,7 @@ public class BCSiliconGuis {
 	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BCSilicon.MODID);
     public static final RegistryObject<MenuType<ContainerAdvancedCraftingTable>> MENU_AD_CRAFTING_TABLE = MENUS.register("advanced_crafting_table_menu", () -> BCContainerFactory.create(ContainerAdvancedCraftingTable::new));
     public static final RegistryObject<MenuType<ContainerAssemblyTable>> MENU_ASSEMBLY_TABLE = MENUS.register("assembly_table_menu", () -> BCContainerFactory.create(ContainerAssemblyTable::new));
-    public static final RegistryObject<MenuType<ContainerGate>> MENU_GATE = MENUS.register("gate_menu", () -> BCContainerFactory.create(ContainerGate::CreatClientMenu));
+    public static final RegistryObject<MenuType<ContainerGate>> MENU_GATE = MENUS.register("gate_menu", () -> BCContainerFactory.create(ContainerGate::creatClientMenu));
     public static final RegistryObject<MenuType<ContainerIntegrationTable>> MENU_INTEGRATION_TABLE = MENUS.register("integration_table_menu", () -> BCContainerFactory.create(ContainerIntegrationTable::new));
 
 

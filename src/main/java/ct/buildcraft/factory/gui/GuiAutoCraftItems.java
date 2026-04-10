@@ -2,7 +2,7 @@
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
-package ct.buildcraft.factory.client.gui;
+package ct.buildcraft.factory.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
+import ct.buildcraft.factory.container.ContainerAutoCraftItems;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.ledger.LedgerHelp;
@@ -20,6 +20,7 @@ import ct.buildcraft.lib.gui.recipe.GuiRecipeBookPhantom;
 import ct.buildcraft.lib.gui.slot.SlotBase;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.lib.tile.craft.WorkbenchCrafting;
+import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -65,7 +66,7 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
             BCLog.logger.warn("[factory.gui] An exception was thrown while creating the recipe book gui!", e);
             book = null;
         }
-        recipeBook =null;//= book;
+        recipeBook = book;
         mainGui.shownElements.add(new LedgerHelp(mainGui, true));
     }
 
@@ -134,9 +135,7 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
 
     @Override
     public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
-    	super.render(pose, mouseX, mouseY, partialTicks);
-//e    	BCLog.d("aa : "+container.getCarried());
-/*        if (recipeBook == null) {
+        if (recipeBook == null) {
             super.render(pose, mouseX, mouseY, partialTicks);
             return;
         }
@@ -147,11 +146,11 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
             renderTooltip(pose, mouseX, mouseY);
         } else {
             super.render(pose, mouseX, mouseY, partialTicks);
- //           recipeBook.render(pose, mouseX, mouseY, partialTicks);
+            recipeBook.render(pose, mouseX, mouseY, partialTicks);
             recipeBook.renderGhostRecipe(pose, this.leftPos, this.topPos, true, partialTicks);
         }
 
-        recipeBook.renderTooltip(pose, this.leftPos, this.topPos, mouseX, mouseY);*/
+        recipeBook.renderTooltip(pose, this.leftPos, this.topPos, mouseX, mouseY);
     }
 
     @Override
@@ -190,9 +189,9 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
     }
 
     private boolean hasFilters() {
-        SlotBase[] filters = container.filtterSlots;
-        for (int s = 0; s < filters.length; s++) {
-            ItemStack filter = filters[s].getItem();
+        ItemHandlerSimple filters = container.tile.invMaterialFilter;
+        for (int s = 0; s < filters.getSlots(); s++) {
+            ItemStack filter = filters.getStackInSlot(s);
             if (!filter.isEmpty()) {
                 return true;
             }
@@ -201,9 +200,9 @@ public class GuiAutoCraftItems extends GuiBC8<ContainerAutoCraftItems> implement
     }
 
     private void forEachFilter(IFilterSlotIterator iter) {
-    	SlotBase[] filters = container.filtterSlots;
-        for (int s = 0; s < filters.length; s++) {
-            ItemStack filter = filters[s].getItem();
+        ItemHandlerSimple filters = container.tile.invMaterialFilter;
+        for (int s = 0; s < filters.getSlots(); s++) {
+            ItemStack filter = filters.getStackInSlot(s);
             if (!filter.isEmpty()) {
                 iter.iterate(container.materialSlots[s], filter);
             }

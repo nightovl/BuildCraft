@@ -21,7 +21,6 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.StatementMouseClick;
 import ct.buildcraft.lib.misc.ColourUtil;
-import ct.buildcraft.lib.misc.LocaleUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.StackUtil;
 import ct.buildcraft.transport.BCTransportSprites;
@@ -29,7 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -128,8 +126,7 @@ public class TriggerParameterSignal implements IStatementParameter {
         if (colour == null) {
             return Component.empty();
         }
-        return Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive"), 
-        		LocaleUtil.localizeColourComponent(colour));
+        return Component.translatable("gate.trigger.pipe.wire." + (active ? "active" : "inactive"), ColourUtil.getTextFullTooltip(colour));
     }
 
     @Override

@@ -1,11 +1,11 @@
 package ct.buildcraft.factory;
 
-import ct.buildcraft.factory.client.gui.GuiAutoCraftItems;
-import ct.buildcraft.factory.client.gui.GuiChute;
 import ct.buildcraft.factory.client.gui.MenuHeatExchange;
 import ct.buildcraft.factory.client.gui.ScreenHeatExchange;
-import ct.buildcraft.factory.menu.ContainerAutoCraftItems;
-import ct.buildcraft.factory.menu.ContainerChute;
+import ct.buildcraft.factory.container.ContainerAutoCraftItems;
+import ct.buildcraft.factory.container.ContainerChute;
+import ct.buildcraft.factory.gui.GuiAutoCraftItems;
+import ct.buildcraft.factory.gui.GuiChute;
 import ct.buildcraft.lib.gui.BCContainerFactory;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;

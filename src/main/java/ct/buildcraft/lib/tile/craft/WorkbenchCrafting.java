@@ -426,17 +426,17 @@ public class WorkbenchCrafting extends CraftingContainer {
 
 		@Override
 		public int getGridWidth() {
-			return WorkbenchCrafting.this.width;
+			return WorkbenchCrafting.this.getWidth();
 		}
 
 		@Override
 		public int getGridHeight() {
-			return WorkbenchCrafting.this.height;
+			return WorkbenchCrafting.this.getHeight();
 		}
 
 		@Override
 		public int getSize() {
-			return WorkbenchCrafting.this.width * WorkbenchCrafting.this.height + 1;
+			return WorkbenchCrafting.this.getWidth() * WorkbenchCrafting.this.getHeight() + 1;
 		}
 
 		@Override
