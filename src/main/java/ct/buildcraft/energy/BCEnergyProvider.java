@@ -26,7 +26,7 @@ public class BCEnergyProvider{
 				        String name = BCEnergyFluids.NAME[id];
 				        RegistryObject<LiquidBlock> registryObject = BCEnergyFluids.OIL_BLOCK.get(3 * id + h);
 						LiquidBlock block = registryObject.get();
-						simpleBlock(block, new ConfiguredModel(models().getBuilder("buildcraftenergy:blocks/fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h])));
+						simpleBlock(block, new ConfiguredModel(models().getBuilder("buildcraftenergy:fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h])));
 				        	//.texture("particle", "buildcraftenergy:blocks/fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h]+"_still");
 				    }
 			} catch (Exception e) {
@@ -50,7 +50,7 @@ public class BCEnergyProvider{
 				for(int id=0;id<BCEnergyFluids.NAME.length;id++) 
 				    for (int h = 0; h < 3; h++) {
 				        String name = BCEnergyFluids.NAME[id];
-				        getBuilder("buildcraftenergy:blocks/fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h])
+				        getBuilder("buildcraftenergy:fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h])
 				        	.texture("particle", "buildcraftenergy:blocks/fluids/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h]+"_still");
 				    }
 			} catch (Exception e) {
@@ -72,8 +72,8 @@ public class BCEnergyProvider{
 				for(int id=0;id<BCEnergyFluids.NAME.length;id++) 
 				    for (int h = 0; h < 3; h++) {
 				        String name = BCEnergyFluids.NAME[id];
-				        getBuilder("buildcraftenergy:items/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h]+"_bucket")
-				        	.parent(this.getBuilder("forge:fluid_container"))
+				        getBuilder("buildcraftenergy:item/"+name+"/"+BCEnergyFluids.HEAT_NAMES[h]+"_bucket")
+				        	.parent(this.getBuilder("forge:item/bucket_drip"))
 				        	.customLoader(DynamicFluidContainerModelBuilder::begin)
 				        			.applyTint(false).flipGas(true).fluid(BCEnergyFluids.OIL_SOURCE.get(3*id+h).get()).end();
 				    }

@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ScreenArchitectTable extends AbstractContainerScreen<ContainerArchitectTable>{
 
-	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.ARCHITECT_GUI;
+	private static final ResourceLocation TEXTURE_BASE = null;//BCBuildersSprites.ARCHITECT_GUI;
 	
 	public ScreenArchitectTable(ContainerArchitectTable be, Inventory p_97742_, Component p_97743_) {
 		super(be, p_97742_, p_97743_);

@@ -4,7 +4,10 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package ct.buildcraft.api.core;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 
 /** To be implemented by TileEntities able to provide a square area on the world, typically BuildCraft markers. */
 public interface IAreaProvider {
@@ -13,5 +16,5 @@ public interface IAreaProvider {
     BlockPos max();
 
     /** Remove from the world all objects used to define the area. */
-    void removeFromWorld();
+    void removeFromWorld(@Nullable Player player);
 }

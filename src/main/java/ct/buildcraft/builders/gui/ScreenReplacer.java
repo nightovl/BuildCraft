@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ScreenReplacer extends AbstractContainerScreen<MenuReplacer>{
 
-	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.REPLACER_GUI;
+	private static final ResourceLocation TEXTURE_BASE = null;//BCBuildersSprites.REPLACER_GUI;
 	
 	public ScreenReplacer(MenuReplacer be, Inventory p_97742_, Component p_97743_) {
 		super(be, p_97742_, p_97743_);

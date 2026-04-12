@@ -177,7 +177,7 @@ public class TileFiller extends TileBC_Neptune
             box.reset();
             box.setMin(provider.min());
             box.setMax(provider.max());
-            provider.removeFromWorld();
+            provider.removeFromWorld(placer instanceof Player player ? player : null);
         }
         updateBuildingInfo();
         sendNetworkUpdate(NET_RENDER_DATA);

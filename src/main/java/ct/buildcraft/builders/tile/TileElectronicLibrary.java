@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.primitives.Bytes;
 
@@ -24,6 +25,7 @@ import ct.buildcraft.api.data.NbtSquishConstants;
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.gui.MenuElectronicLibrary;
 import ct.buildcraft.builders.item.ItemSnapshot;
+import ct.buildcraft.builders.menu.ContainerElectronicLibrary;
 import ct.buildcraft.builders.snapshot.GlobalSavedDataSnapshots;
 import ct.buildcraft.builders.snapshot.Snapshot;
 import ct.buildcraft.lib.delta.DeltaInt;
@@ -36,9 +38,11 @@ import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.item.ItemHandlerManager.EnumAccess;
 import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.lib.tile.item.StackInsertionFunction;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -96,7 +100,6 @@ public class TileElectronicLibrary extends TileBC_Neptune implements MenuProvide
 
     public TileElectronicLibrary(BlockPos pos, BlockState state) {
 		super(BCBuildersBlocks.LIBRARY_TILE_BC8.get(), pos, state);
-		// TODO Auto-generated constructor stub
 	}
     
     @Override
@@ -235,7 +238,8 @@ public class TileElectronicLibrary extends TileBC_Neptune implements MenuProvide
                             
                             private void write(boolean last) throws IOException {
                                 MessageManager.sendToServer(createMessage(NET_UP, localBuffer -> {
-                                    localBuffer.writeUUID(ctx.getSender().getGameProfile().getId());//CHECK
+                                    ClientPacketListener listener = (ClientPacketListener) ctx.getNetworkManager().getPacketListener();
+                                    localBuffer.writeUUID(listener.getLocalGameProfile().getId());
                                     selected.writeToByteBuf(localBuffer);
                                     localBuffer.writeBoolean(last);
                                     localBuffer.writeByteArray(buf);
@@ -307,7 +311,7 @@ public class TileElectronicLibrary extends TileBC_Neptune implements MenuProvide
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new MenuElectronicLibrary(id, inv, invDownIn, invDownOut, invUpIn, invUpOut, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerElectronicLibrary(id, inv, invDownOut, invDownIn, invUpIn, invUpOut, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

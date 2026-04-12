@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "buildcraftenergy:blocks/fluids/oil/searing"
+      "model": "buildcraftenergy:fluids/oil/searing"
     }
   }
 }

@@ -14,8 +14,8 @@ import net.minecraft.world.inventory.ContainerData;
 
 public class ScreenBuilder extends ContainerScreenBase<MenuBuilder>{
 
-	private static final ResourceLocation TEXTURE_BASE1 = BCBuildersSprites.BUILDER_GUI;
-	private static final ResourceLocation TEXTURE_BASE2 = BCBuildersSprites.BUILDER_BLUEPRINT_GUI;
+	private static final ResourceLocation TEXTURE_BASE1 = null;//BCBuildersSprites.BUILDER_GUI;
+	private static final ResourceLocation TEXTURE_BASE2 = null;//BCBuildersSprites.BUILDER_BLUEPRINT_GUI;
 	
 	protected static final TankComponent tank0 = new TankComponent(141, 112, 16, 47, 8000, 0, 55);
 	protected static final TankComponent tank1 = new TankComponent(159, 112, 16, 47, 8000, 0, 55);

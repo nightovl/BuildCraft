@@ -59,6 +59,7 @@ public class GuiList extends GuiBC8<ContainerList> implements IButtonClickEventL
     public void init() {
         super.init();
 
+        mainGui.shownElements.clear();
         for (int line = 0; line < container.slots.length; line++) {
             WidgetListSlot[] arr = container.slots[line];
             for (int slot = 0; slot < arr.length; slot++) {

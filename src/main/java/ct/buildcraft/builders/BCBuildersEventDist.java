@@ -14,15 +14,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import com.mojang.datafixers.util.Either;
+
 import ct.buildcraft.api.schematics.ISchematicBlock;
+import ct.buildcraft.builders.client.BlueprintTooltip;
 import ct.buildcraft.builders.client.ClientArchitectTables;
 import ct.buildcraft.builders.item.ItemSchematicSingle;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.snapshot.Blueprint;
+import ct.buildcraft.builders.snapshot.ClientSnapshots;
 import ct.buildcraft.builders.snapshot.Snapshot;
 import ct.buildcraft.builders.snapshot.Snapshot.Header;
 import ct.buildcraft.builders.tile.TileQuarry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -87,55 +92,11 @@ public class BCBuildersEventDist {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onRenderTooltipPostText(RenderTooltipEvent.Color event) {
-/*        Snapshot snapshot = null;
-        ItemStack stack = event.getItemStack();
-        Header header = BCBuildersItems.BLUEPRINT.get() != null &&  BCBuildersItems.TEMPLATE.get() != null? ItemSnapshot.getHeader(stack) : null;
-        if (header != null) {
-            snapshot = ClientSnapshots.INSTANCE.getSnapshot(header.key);
-        } else if (BCBuildersItems.SCHEMATIC_SINGLE.get() != null) {
-            ISchematicBlock schematicBlock = ItemSchematicSingle.getSchematicSafe(stack);
-            if (schematicBlock != null) {
-                Blueprint blueprint = new Blueprint();
-                blueprint.size = new BlockPos(1, 1, 1);
-                blueprint.offset = BlockPos.ZERO;
-                blueprint.data = new int[] { 0 };
-                blueprint.palette.add(schematicBlock);
-                blueprint.computeKey();
-                snapshot = blueprint;
-            }
-        }
-
-        if (snapshot != null) {
-            int pX = event.getX();
-            int pY = event.getY() + event.get() + 10;
-            int sX = 100;
-            int sY = 100;
-
-            // Copy from GuiUtils#drawHoveringText
-            int zLevel = 300;
-            int backgroundColor = 0xF0100010;
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY - 4, pX + sX + 3, pY - 3, backgroundColor, backgroundColor);
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY + sY + 3, pX + sX + 3, pY + sY + 4, backgroundColor,
-                backgroundColor);
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY - 3, pX + sX + 3, pY + sY + 3, backgroundColor,
-                backgroundColor);
-            GuiUtils.drawGradientRect(zLevel, pX - 4, pY - 3, pX - 3, pY + sY + 3, backgroundColor, backgroundColor);
-            GuiUtils.drawGradientRect(zLevel, pX + sX + 3, pY - 3, pX + sX + 4, pY + sY + 3, backgroundColor,
-                backgroundColor);
-            int borderColorStart = 0x505000FF;
-            int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY - 3 + 1, pX - 3 + 1, pY + sY + 3 - 1, borderColorStart,
-                borderColorEnd);
-            GuiUtils.drawGradientRect(zLevel, pX + sX + 2, pY - 3 + 1, pX + sX + 3, pY + sY + 3 - 1, borderColorStart,
-                borderColorEnd);
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY - 3, pX + sX + 3, pY - 3 + 1, borderColorStart,
-                borderColorStart);
-            GuiUtils.drawGradientRect(zLevel, pX - 3, pY + sY + 2, pX + sX + 3, pY + sY + 3, borderColorEnd,
-                borderColorEnd);
-
-            ClientSnapshots.INSTANCE.renderSnapshot(snapshot, pX, pY, sX, sY);
-        }*/
+    public static void onRenderTooltipPostText(RenderTooltipEvent.GatherComponents event) {
+    	ItemStack itemStack = event.getItemStack();
+		if(itemStack.getItem() == BCBuildersItems.BLUEPRINT.get()) {
+			event.getTooltipElements().add(Either.right(new BlueprintTooltip(itemStack)));
+		}
     }
 
     @OnlyIn(Dist.CLIENT)

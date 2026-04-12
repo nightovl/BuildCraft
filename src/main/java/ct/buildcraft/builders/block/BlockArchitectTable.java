@@ -37,8 +37,6 @@ public class BlockArchitectTable extends BlockBCTile_Neptune implements IBlockWi
 		super.createBlockStateDefinition(bs);
 		bs.add(PROP_VALID);
 	}
-
-    
     
     @Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

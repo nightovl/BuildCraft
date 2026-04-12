@@ -156,7 +156,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
             box.setMax(provider.max());
             markerBox = true;
             isValid = true;
-            provider.removeFromWorld();
+            provider.removeFromWorld(placer instanceof Player player? player : null);
         } else {
             isValid = false;
             BlockState state = level.getBlockState(worldPosition);

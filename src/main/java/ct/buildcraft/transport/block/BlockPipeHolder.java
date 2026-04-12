@@ -1222,9 +1222,12 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 	}
 
 	@Override
-	public Object getRenderPropertiesInternal() {
-		return this;
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
+			Player player) {
+		return super.getCloneItemStack(state, target, level, pos, player);//TODO
 	}
+
+
 
 	/** a wrapper of {@link BlockHitResult} */
 	protected static class BCBlockHitResult {

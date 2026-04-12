@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Quaternion;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.net.MessageManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -31,6 +32,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,7 +63,7 @@ public enum ClientSnapshots {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderSnapshot(Snapshot.Header header, int offsetX, int offsetY, int sizeX, int sizeY) {
+    public void renderSnapshot(PoseStack pose, Snapshot.Header header, int offsetX, int offsetY, int sizeX, int sizeY) {
         if (header == null) {
             return;
         }
@@ -68,12 +71,15 @@ public enum ClientSnapshots {
         if (snapshot == null) {
             return;
         }
-        renderSnapshot(snapshot, offsetX, offsetY, sizeX, sizeY);
+        renderSnapshot(pose, snapshot, offsetX, offsetY, sizeX, sizeY);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderSnapshot(Snapshot snapshot, int offsetX, int offsetY, int sizeX, int sizeY) {
-        FakeWorld world = worlds.computeIfAbsent(snapshot.key, key -> {
+    public void renderSnapshot(PoseStack pose, Snapshot snapshot, int offsetX, int offsetY, int sizeX, int sizeY) {
+        if(1 == 1) {
+        	return;
+        }
+    	FakeWorld world = worlds.computeIfAbsent(snapshot.key, key -> {
         	Minecraft mc = Minecraft.getInstance();
             FakeWorld localWorld = new FakeWorld(mc.level);
             localWorld.uploadSnapshot(snapshot);
@@ -83,7 +89,6 @@ public enum ClientSnapshots {
         RenderedBuffer bufferBuilder = buffers.computeIfAbsent(snapshot.key, key -> {
             BufferBuilder localBuffer = new BufferBuilder(1024);
             localBuffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-            PoseStack pose = new PoseStack();
             pose.pushPose();
             for (int z = 0; z < snapshot.size.getZ(); z++) {
                 for (int y = 0; y < snapshot.size.getY(); y++) {
@@ -94,11 +99,13 @@ public enum ClientSnapshots {
                             -FakeWorld.BLUEPRINT_OFFSET.getY(),
                             -FakeWorld.BLUEPRINT_OFFSET.getZ()
                         );
-                        Minecraft.getInstance().getBlockRenderer().renderBatched(
-                            world.getBlockState(pos),
+                        BlockState blockState = world.getBlockState(pos);
+                        BCLog.d("" + blockState);
+						Minecraft.getInstance().getBlockRenderer().renderBatched(
+                            blockState,
                             pos,
                             world,
-                            null, localBuffer, false, null, ModelData.EMPTY, RenderType.cutout()
+                            pose, localBuffer, false, world.random, ModelData.EMPTY, RenderType.cutout()
                         );
                         pose.translate(0, 0, 0);
                     }
@@ -107,7 +114,6 @@ public enum ClientSnapshots {
             pose.popPose();
             return localBuffer.end();
         });
-        PoseStack pose = new PoseStack();
         pose.pushPose();
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
@@ -120,7 +126,7 @@ public enum ClientSnapshots {
         int viewportY = (int) (window.getHeight() - (sizeY + offsetY) * window.getGuiScale());
         int viewportWidth = (int) (sizeX * window.getGuiScale());
         int viewportHeight = (int) (sizeY * window.getGuiScale());
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        RenderSystem.enableScissor(viewportX, viewportY, viewportWidth, viewportHeight);
         GL11.glScissor(
             viewportX,
             viewportY,
@@ -128,13 +134,8 @@ public enum ClientSnapshots {
             viewportHeight
         );
 //        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        RenderSystem.viewport(
-            viewportX,
-            viewportY,
-            viewportWidth,
-            viewportHeight
-        );
+        RenderSystem.disableScissor();
+        RenderSystem.viewport(viewportX, viewportY, viewportWidth, viewportHeight);
  //       RenderSystem.scale(window.getGuiScale(), window.getGuiScale(), 1);
 //        GLU.gluPerspective(70.0F, (float) sizeX / sizeY, 0.1F, 1000.0F);
 /*        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
@@ -164,8 +165,10 @@ public enum ClientSnapshots {
                         		pos.getY() - FakeWorld.BLUEPRINT_OFFSET.getY(),
                         		pos.getZ() - FakeWorld.BLUEPRINT_OFFSET.getZ());
                         // noinspection ConstantConditions
-                        Minecraft.getInstance().getBlockEntityRenderDispatcher().render(
-                            world.getBlockEntity(pos),
+                        BlockEntity blockEntity = world.getBlockEntity(pos);
+                        if(blockEntity != null)
+						Minecraft.getInstance().getBlockEntityRenderDispatcher().render(
+                            blockEntity,
                             0,
                             pose,
                             multibuffersource$buffersource
@@ -178,7 +181,7 @@ public enum ClientSnapshots {
 //            TileEntityRendererDispatcher.instance.drawBatch(1);
         }
         // noinspection Guava
-        for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.ofSize(null, viewportWidth, viewportHeight, snapshotSize))) {
+/*        for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.ofSize(Vec3.ZERO, viewportWidth, viewportHeight, snapshotSize))) {
             Vec3 pos = entity.position();
             //GlStateManager.pushAttrib();
             MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -197,7 +200,7 @@ public enum ClientSnapshots {
             pose.popPose();
             multibuffersource$buffersource.endBatch();
            // GlStateManager.popAttrib();
-        }
+        }*///TODO
 /*        GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
         GlStateManager.matrixMode(GL11.GL_PROJECTION);
@@ -212,5 +215,6 @@ public enum ClientSnapshots {
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
         pose.popPose();
+        buffers.remove(snapshot.key);//FORTEST
     }
 }

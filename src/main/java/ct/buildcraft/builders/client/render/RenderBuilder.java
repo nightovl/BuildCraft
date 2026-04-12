@@ -17,6 +17,7 @@ import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.core.client.BuildCraftLaserManager;
+import ct.buildcraft.lib.block.BlockBCBase_Neptune;
 import ct.buildcraft.lib.client.render.laser.LaserBoxRenderer;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;
@@ -29,6 +30,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
@@ -47,7 +49,8 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
         matrix.pushPose();
 		VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
 		BlockPos pos = tile.getBlockPos();
-		matrix.translate(-pos.getX(), -pos.getY(), -pos.getZ());
+		Direction face = tile.getBlockState().getValue(BlockBCBase_Neptune.PROP_FACING);
+		matrix.translate(0.5 - face.getStepX(), 0.5 - face.getStepY(), 0.5 - face.getStepZ());
 		Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
         Minecraft.getInstance().getProfiler().push("box");
@@ -61,8 +64,8 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
             BlockPos last = null;
             for (BlockPos p : path) {
                 if (last != null) {
-                    Vec3 from = Vec3.atLowerCornerOf(last).add(VecUtil.VEC_HALF);
-                    Vec3 to = Vec3.atLowerCornerOf(p).add(VecUtil.VEC_HALF);
+                    Vec3 from = Vec3.atBottomCenterOf(last);
+                    Vec3 to = Vec3.atBottomCenterOf(p);
                     Vec3 one = offset(from, to);
                     Vec3 two = offset(to, from);
                     LaserData_BC8 data = new LaserData_BC8(BuildCraftLaserManager.STRIPES_WRITE_DIRECTION, one, two, 1 / 16.1);

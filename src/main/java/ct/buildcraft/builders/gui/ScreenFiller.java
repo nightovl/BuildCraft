@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ScreenFiller extends AbstractContainerScreen<MenuFiller>{
 
-	private static final ResourceLocation TEXTURE_BASE = BCBuildersSprites.FillER_GUI;
+	private static final ResourceLocation TEXTURE_BASE = null;//BCBuildersSprites.FillER_GUI;
 	
 	public ScreenFiller(MenuFiller be, Inventory p_97742_, Component p_97743_) {
 		super(be, p_97742_, p_97743_);

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "buildcraftenergy:blocks/fluids/oil_dense/cool"
+      "model": "buildcraftenergy:fluids/oil_dense/cool"
     }
   }
 }

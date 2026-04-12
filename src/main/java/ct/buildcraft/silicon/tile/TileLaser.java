@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.SafeTimeTracker;
 import ct.buildcraft.api.mj.ILaserTarget;
 import ct.buildcraft.api.mj.ILaserTargetBlock;
@@ -32,7 +31,7 @@ import ct.buildcraft.lib.misc.data.Box;
 import ct.buildcraft.lib.mj.MjBatteryReceiver;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.silicon.BCSiliconBlocks;
-import ct.buildcraft.silicon.render.AdvDebuggerLaser;
+import ct.buildcraft.silicon.client.render.AdvDebuggerLaser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

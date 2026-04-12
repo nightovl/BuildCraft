@@ -18,9 +18,9 @@ public class ClientArchitectTables {
     public static final Object2IntMap<BlockPos> SCANNED_BLOCKS = new Object2IntOpenHashMap<>();
 
     public static void tick() {
-        BOXES.object2IntEntrySet().forEach(entry -> entry.setValue(entry.getIntValue() - 1));
+        BOXES.replaceAll((k, v) -> v - 1);
         BOXES.values().removeIf(i -> i <= 0);
-        SCANNED_BLOCKS.object2IntEntrySet().forEach(entry -> entry.setValue(entry.getIntValue() - 1));
+        SCANNED_BLOCKS.replaceAll((k, v) -> v - 1);
         SCANNED_BLOCKS.values().removeIf(i -> i <= 0);
     }
 }

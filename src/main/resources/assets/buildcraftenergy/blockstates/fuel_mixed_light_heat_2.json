@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "buildcraftenergy:blocks/fluids/fuel_mixed_light/searing"
+      "model": "buildcraftenergy:fluids/fuel_mixed_light/searing"
     }
   }
 }

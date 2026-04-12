@@ -58,17 +58,17 @@ public class BCEnergyFluids {
 
     private static int[][] data = { //@formatter:off
             // Tabular form of all the fluid values
-            // density, viscosity, boil, spread,  tex_light,   tex_dark, sticky, flammable
-            {      900,      2000,    3,      6, 0xFF505050, 0x05_05_05,      1,         1 },// Crude Oil
-            {     1200,      4000,    3,      4, 0x10_0F_10, 0x42_10_42,      1,         0 },// Residue
-            {      850,      1800,    3,      6, 0xA0_8F_1F, 0x42_35_20,      1,         1 },// Heavy Oil
-            {      950,      1600,    3,      5, 0x87_6E_77, 0x42_24_24,      1,         1 },// Dense Oil
-            {      750,      1400,    2,      8, 0xE4_AF_78, 0xB4_7F_00,      0,         1 },// Distilled Oil
-            {      600,       800,    2,      7, 0xFF_AF_3F, 0xE0_7F_00,      0,         1 },// Dense Fuel
-            {      700,      1000,    2,      7, 0xF2_A7_00, 0xC4_87_00,      0,         1 },// Mixed Heavy Fuels
-            {      400,       600,    1,      8, 0xFF_FF_30, 0xE4_CF_00,      0,         1 },// Light Fuel
-            {      650,       900,    1,      9, 0xF6_D7_00, 0xC4_B7_00,      0,         1 },// Mixed Light Fuels
-            {      300,       500,    0,     10, 0xFA_F6_30, 0xE0_D9_00,      0,         1 },// Gas Fuel
+            // density, viscosity, boil, spread,  tex_light,   tex_dark, sticky, igniteOdds, burnOdds
+            {      900,      2000,    3,      6, 0xFF505050, 0x05_05_05,      1,         10,      40},// Crude Oil
+            {     1200,      4000,    3,      4, 0x10_0F_10, 0x42_10_42,      1,         0,        0},// Residue
+            {      850,      1800,    3,      6, 0xA0_8F_1F, 0x42_35_20,      1,         5,        5},// Heavy Oil
+            {      950,      1600,    3,      5, 0x87_6E_77, 0x42_24_24,      1,         7,        7},// Dense Oil
+            {      750,      1400,    2,      8, 0xE4_AF_78, 0xB4_7F_00,      0,         7,        7},// Distilled Oil
+            {      600,       800,    2,      7, 0xFF_AF_3F, 0xE0_7F_00,      0,         30,      60},// Dense Fuel
+            {      700,      1000,    2,      7, 0xF2_A7_00, 0xC4_87_00,      0,         30,      60},// Mixed Heavy Fuels
+            {      400,       600,    1,      8, 0xFF_FF_30, 0xE4_CF_00,      0,         60,     100},// Light Fuel
+            {      650,       900,    1,      9, 0xF6_D7_00, 0xC4_B7_00,      0,         60,     100},// Mixed Light Fuels
+            {      300,       500,    0,     10, 0xFA_F6_30, 0xE0_D9_00,      0,         100,    250},// Gas Fuel
         };//@formatter:on
 
 
@@ -149,8 +149,10 @@ public class BCEnergyFluids {
         final int baseQuanta = data[3];
         final int texLight = data[4];
         final int texDark = data[5];
-        final boolean sticky = BCEnergyConfig.oilIsSticky && data[6] == 1;
-        final boolean flammable = BCEnergyConfig.enableOilBurn ? data[7] == 1 : false;
+        final boolean sticky = data[6] == 1;
+        
+        int igniteOdds = data[7];
+        int burnOdds = data[8];
 
         String fullName = name + (heat == 0 ? "" : "_heat_" + heat);
         int tempAdjustedViscosity = baseViscosity * (4 - heat) / 4;
@@ -164,18 +166,11 @@ public class BCEnergyFluids {
         RegistryObject<BCFluid> SOURCE = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
         RegistryObject<BCFluid> FLOWING = RegistryObject.create(new ResourceLocation(BCEnergy.MODID, fullName+"_flowing"), ForgeRegistries.Keys.FLUIDS, BCEnergy.MODID);
         RegistryObject<BucketItem> BUCKET = BCEnergy.ITEMS.register(name+"/"+HEAT_NAMES[heat]+"_bucket", () -> new BucketItem(SOURCE,new Item.Properties().stacksTo(1).tab(BCCore.tabFluids).craftRemainder(Items.BUCKET)));
-        RegistryObject<LiquidBlock> FUEL_GAS_COOL_BLOCK = BCEnergyBlocks.BLOCKS.register(fullName, () -> new BCLiquidBlock(SOURCE, BlockBehaviour.Properties.of(FLAMMABLELIQUID).noCollission().strength(100.0F).noLootTable(), sticky));
+        RegistryObject<LiquidBlock> FUEL_GAS_COOL_BLOCK = BCEnergyBlocks.BLOCKS.register(fullName, () -> 
+        	new BCLiquidBlock(SOURCE, BlockBehaviour.Properties.of(FLAMMABLELIQUID).noCollission().strength(100.0F).noLootTable(), sticky, igniteOdds, burnOdds));
         ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(TYPE, SOURCE, FLOWING).bucket(BUCKET).block(FUEL_GAS_COOL_BLOCK).tickRate(10 + 10*(2 - heat))/*.levelDecreasePerBlock(boilAdjustedDensity)*/;//.slopeFindDistance(0);
-        FLUIDS.register(fullName, () -> {
-        	BCFluid fluid = new BCFluid.Source(properties).setHeat(heat);
-        	fluid.setFlammable(flammable);
-        	return fluid;
-        });
-        FLUIDS.register(fullName+"_flowing", () -> {
-        	BCFluid fluid = new BCFluid.Flowing(properties).setHeat(heat);
-        	fluid.setFlammable(flammable);
-        	return fluid;
-        });
+        FLUIDS.register(fullName, () -> new BCFluid.Source(properties).setHeat(heat));
+        FLUIDS.register(fullName+"_flowing", () -> new BCFluid.Flowing(properties).setHeat(heat));
         OIL_TYPE.add(TYPE);
         OIL_SOURCE.add(SOURCE);
         OIL_BUCKET.add(BUCKET);

@@ -8,11 +8,11 @@ import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.block.VanillaRotationHandlers;
 import ct.buildcraft.lib.expression.ExpressionDebugManager;
+import ct.buildcraft.lib.list.VanillaListHandlers;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.misc.ExpressionCompat;
 import ct.buildcraft.lib.net.MessageManager;
 import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -105,8 +105,8 @@ public class BCLib {
     public void init(final FMLCommonSetupEvent event) {
     	BCLibRegistries.fmlInit();
     	BCLibProxy.MessageRegistry();
-//      VanillaListHandlers.fmlInit();
-//      VanillaPaintHandlers.fmlInit();
+    	VanillaListHandlers.fmlInit();
+  //  	VanillaPaintHandlers.fmlInit();
         VanillaRotationHandlers.fmlInit();
     }
     

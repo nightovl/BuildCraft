@@ -31,7 +31,7 @@ public class ListMatchHandlerOreDictionary extends ListMatchHandler {
 
     @Override
     public boolean matches(Type type, @Nonnull ItemStack stack, @Nonnull ItemStack target, boolean precise) {
-        Stream<TagKey<Item>> oreIds = stack.getTags();
+        Stream<TagKey<Item>> oreIds = stack.getTags().filter((tag) -> tag.location().getPath().startsWith("ores/"));
         Stream<TagKey<Item>> matchesIds = target.getTags();
 
 

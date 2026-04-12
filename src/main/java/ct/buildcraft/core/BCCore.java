@@ -68,6 +68,7 @@ public class BCCore {
         BCCoreBlocks.registry(modEventBus);
         BCCoreItems.registry(modEventBus);
 
+        MENUS.register(modEventBus);
 //        BCCoreRecipes.init();
         BCCoreConfig.registry();
         ModLoadingContext.get().registerConfig(Type.COMMON, BCCoreConfig.config);

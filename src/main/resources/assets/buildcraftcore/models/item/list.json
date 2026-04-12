@@ -14,7 +14,7 @@
 	            "predicate": {
 	                "buildcraftcore:isempty": 1
 	            },
-	            "model": "buildcrafcore:item/list_used"
+	            "model": "buildcraftcore:item/list_used"
 	        }
 	    ]
 }

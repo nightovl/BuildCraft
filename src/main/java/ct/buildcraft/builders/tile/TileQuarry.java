@@ -304,7 +304,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
                 min = null;
                 max = null;
             } else {
-                provider.removeFromWorld();
+                provider.removeFromWorld(placer instanceof Player player ? player : null);
             }
         }
         // noinspection ConstantConditions
@@ -344,7 +344,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
                 if (box2.isOnEdge(worldPosition)) {
                     min = volBox.min();
                     max = volBox.max();
-                    marker.removeFromWorld();
+                    marker.removeFromWorld(placer instanceof Player player ? player : null);
                     break;
                 }
             }

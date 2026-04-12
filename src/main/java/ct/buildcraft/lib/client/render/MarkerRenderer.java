@@ -9,7 +9,6 @@ package ct.buildcraft.lib.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.lib.client.render.DetachedRenderer.IDetachedRenderer;
 import ct.buildcraft.lib.marker.MarkerCache;
 import ct.buildcraft.lib.marker.MarkerConnection;

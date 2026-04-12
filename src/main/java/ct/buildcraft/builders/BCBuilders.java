@@ -10,6 +10,8 @@ import com.mojang.logging.LogUtils;
 
 import ct.buildcraft.builders.snapshot.RulesLoader;
 import ct.buildcraft.api.BCModules;
+import ct.buildcraft.builders.client.BlueprintTooltip;
+import ct.buildcraft.builders.client.BlueprintTooltipComponent;
 import ct.buildcraft.builders.client.render.RenderArchitectTable;
 import ct.buildcraft.builders.client.render.RenderBuilder;
 import ct.buildcraft.builders.client.render.RenderFiller;
@@ -21,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -44,7 +47,7 @@ public class BCBuilders {
     	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	modEventBus.addListener(BCBuilders::commonSetup);
 //    	modEventBus.addListener(this::gatherData);//DataGenerator
-    	
+    	modEventBus.addListener(ClientModEvents::onGatherTooltipFactory);
 
     	
     	BCBuildersBlocks.registry(modEventBus);
@@ -60,6 +63,7 @@ public class BCBuilders {
     	
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCBuildersConfig.class);
+        MinecraftForge.EVENT_BUS.register(BCBuildersEventDist.class);
         BCBuildersStatements.preInit();
 
     }
@@ -120,6 +124,10 @@ public class BCBuilders {
         	for(ModelResourceLocation r : ModelBuilder.stateDefinetion) {
         		event.getModels().put(r, ModelBuilder.INSTANCE);
         	}*/
+        }
+        
+        public static void onGatherTooltipFactory(RegisterClientTooltipComponentFactoriesEvent event) {
+        	event.register(BlueprintTooltip.class, BlueprintTooltipComponent::new);
         }
         	
         	

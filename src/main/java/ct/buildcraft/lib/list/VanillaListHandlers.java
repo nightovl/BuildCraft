@@ -21,7 +21,7 @@ public class VanillaListHandlers {
     public static void fmlPostInit() {
 /*        for (String s : OreDictionary.getOreNames()) {
             ListOreDictionaryCache.INSTANCE.registerName(s);
-        }
-        ListRegistry.registerHandler(new ListMatchHandlerOreDictionary());*/
+        }*/
+        ListRegistry.registerHandler(new ListMatchHandlerOreDictionary());
     }
 }

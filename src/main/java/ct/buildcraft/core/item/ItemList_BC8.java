@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import ct.buildcraft.api.items.IList;
+import ct.buildcraft.core.list.ContainerList;
 import ct.buildcraft.lib.list.ListHandler;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.NBTUtilBC;
@@ -25,6 +26,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -93,16 +95,14 @@ public class ItemList_BC8 extends Item implements IList, MenuProvider {
 
 
 	@Override
-	public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
-		// TODO Auto-generated method stub
-		return null;
+	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+		return new ContainerList(id, inv, ContainerLevelAccess.create(player.level, player.blockPosition()));
 	}
 
 
 
 	@Override
 	public Component getDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDescription();
 	}
 }

@@ -36,9 +36,9 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
         super.init();
         nameField = new EditBox(font, leftPos + 90, topPos + 62, 156, 12, Component.empty());
         nameField.setValue(container.tile.name);
-        nameField.setFocus(true);
         nameField.setResponder((s) -> container.sendNameToServer(s.trim()));
         this.addWidget(nameField);
+        setInitialFocus(nameField);
     }
 
     @Override
@@ -76,15 +76,6 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
 		if (a == 256) {
 			this.minecraft.player.closeContainer();
 		}
-        boolean typed = false;
-        if (nameField.isFocused()) {
-        	
-//            typed = nameField.keyPressed(a, b, c);
-            
-        }
-        if (!typed) {
-            return super.keyPressed(a, b, c);
-        }
-        return true;
+		return !this.nameField.keyPressed(a, b, c) && !this.nameField.canConsumeInput() ? super.keyPressed(a, b, c) : true;
 	}
 }

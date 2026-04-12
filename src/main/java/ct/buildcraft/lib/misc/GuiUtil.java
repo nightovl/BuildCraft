@@ -35,6 +35,7 @@ import ct.buildcraft.lib.gui.pos.IGuiPosition;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -126,7 +127,7 @@ public class GuiUtil {
         double draw(PoseStack pose, D drawable, double x, double y);
     }
 
-    /** Straight copy of {@link ScreenUtils#drawHoveringText(List, int, int, int, int, int, FontRenderer)}, except that we
+    /** Straight copy of {@link Screen#renderTooltipInternal(List, int, int, int, int, int, FontRenderer)}, except that we
      * return the height of the box that was drawn. Draws a tooltip box on the screen with text in it. Automatically
      * positions the box relative to the mouse to match Mojang's implementation. Automatically wraps text when there is
      * not enough space on the screen to display the text without wrapping. Can have a maximum width set to avoid
@@ -143,81 +144,35 @@ public class GuiUtil {
     public static int drawHoveringText(List<Component> textLines, final int mouseX, final int mouseY,
         final int screenWidth, final int screenHeight, final int maxTextWidth, Font font, PoseStack pose) {
         if (!textLines.isEmpty()) {//TODO
+        	pose.translate(0, 0, 400);
         	Matrix4f matrix = pose.last().pose();
             //GlStateManager.disableRescaleNormal();
             //GlStateManager.disableLighting();
+        	
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
+            int height = textLines.size() == 1 ? -2 : 0;
 
             for (Component textLine : textLines) {
                 int textLineWidth = font.width(textLine);
-
                 if (textLineWidth > tooltipTextWidth) {
                     tooltipTextWidth = textLineWidth;
                 }
+                
+                height += 10;
             }
 
-            boolean needsWrap = false;
-
-            int titleLinesCount = 1;
-            int tooltipX = mouseX + 12;
-            if (tooltipX + tooltipTextWidth + 4 > screenWidth) {
-                tooltipX = mouseX - 16 - tooltipTextWidth;
-                if (tooltipX < 4) // if the tooltip doesn't fit on the screen
-                {
-                    if (mouseX > screenWidth / 2) {
-                        tooltipTextWidth = mouseX - 12 - 8;
-                    } else {
-                        tooltipTextWidth = screenWidth - 16 - mouseX;
-                    }
-                    needsWrap = true;
-                }
-            }
-
-            if (maxTextWidth > 0 && tooltipTextWidth > maxTextWidth) {
-                tooltipTextWidth = maxTextWidth;
-                needsWrap = true;
-            }
-            List<FormattedCharSequence> wrappedTextLines = new ArrayList<>();
-            if (needsWrap) {
-                int wrappedTooltipWidth = 0;
-                for (int i = 0; i < textLines.size(); i++) {
-                	Component textLine = textLines.get(i);
-                    List<FormattedCharSequence> wrappedLine = font.split(textLine, tooltipTextWidth);
-                    if (i == 0) {
-                        titleLinesCount = wrappedLine.size();
-                    }
-
-                    for (FormattedCharSequence line : wrappedLine) {
-                        int lineWidth = font.width(line);
-                        if (lineWidth > wrappedTooltipWidth) {
-                            wrappedTooltipWidth = lineWidth;
-                        }
-                        wrappedTextLines.add(line);
-                    }
-                }
-                tooltipTextWidth = wrappedTooltipWidth;
-                //textLines = wrappedTextLines;
-
-                if (mouseX > screenWidth / 2) {
-                    tooltipX = mouseX - 16 - tooltipTextWidth;
-                } else {
-                    tooltipX = mouseX + 12;
-                }
-            }
+			int titleLinesCount = 1;
+			int tooltipX = mouseX + 12;
+			if (tooltipX + tooltipTextWidth > screenWidth) {
+				tooltipX -= 28 + tooltipTextWidth;
+			}
 
             int tooltipY = mouseY - 12;
-            int tooltipHeight = 8;
+            int tooltipHeight =  height;
 
-            if (wrappedTextLines.size() > 1) {
-                tooltipHeight += (wrappedTextLines.size() - 1) * 10;
-                if (wrappedTextLines.size() > titleLinesCount) {
-                    tooltipHeight += 2; // gap between title lines and next lines
-                }
-            }
-
-            if (tooltipY + tooltipHeight + 6 > screenHeight) {
-                tooltipY = screenHeight - tooltipHeight - 6;
+            if (tooltipY + 1 > screenWidth) {
+            	tooltipY = screenHeight - height - 6;
             }
 
             final int zLevel = 0;
@@ -280,7 +235,7 @@ public class GuiUtil {
             startY = endY;
             endY = i;
         }
-        //Gui.drawRect(x, startY + 1, x + 1, endY, color);
+        Screen.fill(pose, x, startY + 1, x + 1, endY, color);
     }
 
     public static void drawRect(PoseStack pose, IGuiArea area, int colour) {
@@ -288,7 +243,7 @@ public class GuiUtil {
         int yMin = (int) area.getY();
         int xMax = (int) area.getEndX();
         int yMax = (int) area.getEndY();
-        //Gui.drawRect(xMin, yMin, xMax, yMax, colour);
+        Screen.fill(pose, xMin, yMin, xMax, yMax, colour);
     }
 
     public static void drawTexturedModalRect(PoseStack pose, double posX, double posY, double textureX, double textureY, double width,
@@ -299,8 +254,10 @@ public class GuiUtil {
         int v = Mth.floor(textureY);
         int w = Mth.floor(width);
         int h = Mth.floor(height);
-        //Gui gui = Minecraft.getMinecraft().currentScreen;
-        //gui.drawTexturedModalRect(x, y, u, v, w, h);
+        Minecraft instance = Minecraft.getInstance();
+		Screen gui = instance.screen;
+        
+        gui.blit(pose, x, y, u, v, w, h);
     }
 
     public static void drawFluid(PoseStack pose ,IGuiArea position, Tank tank) {
