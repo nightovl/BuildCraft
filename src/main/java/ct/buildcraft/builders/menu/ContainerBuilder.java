@@ -20,19 +20,21 @@ import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
     public final List<WidgetFluidTank> widgetTanks;
+    public final DataSlot setting;
     
 	public ContainerBuilder(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
 		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(27),
-				new ItemHandlerSimple(24), CreateClientLevelAccess(buf));
+				new ItemHandlerSimple(24), DataSlot.standalone(), CreateClientLevelAccess(buf));
 	}
 
 
     public ContainerBuilder(int containerId, Inventory playerInventory, IItemHandlerAdv invSnapshot, IItemHandlerAdv invResources, 
-    		IItemHandler invRequire, ContainerLevelAccess access) {
+    		IItemHandler invRequire, DataSlot setting, ContainerLevelAccess access) {
     	super(BCBuildersGuis.MENU_BUILDER.get(), playerInventory, containerId, access);
 
         addFullPlayerInventory(140);
@@ -48,6 +50,9 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
                 .map(tank -> new WidgetFluidTank(this, tank))
                 .map(this::addWidget)
                 .collect(Collectors.toList());
+        
+		this.setting = setting;
+		addDataSlot(setting);
 
         for(int y = 0; y < 6; y++) {
             for(int x = 0; x < 4; x++) {

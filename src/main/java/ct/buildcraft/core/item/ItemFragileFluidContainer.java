@@ -11,7 +11,6 @@ import ct.buildcraft.api.items.IItemFluidShard;
 import ct.buildcraft.core.BCCore;
 import ct.buildcraft.lib.fluid.BCFluid;
 import ct.buildcraft.lib.misc.LocaleUtil;
-import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;

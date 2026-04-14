@@ -572,17 +572,19 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     	PluggableHolder initPlug = pluggables.get(Direction.SOUTH);
         for (int i = 0; i < 3; i++) {
         	Direction face = Direction.from2DDataValue(i);
-            pluggables.replace(axis.rotate(face), pluggables.get(face));
+            PluggableHolder plug = pluggables.get(face);
+            plug.rotate(axis);
+			pluggables.replace(axis.rotate(face), plug);
         }
         pluggables.replace(axis.rotate(Direction.SOUTH), initPlug);
 
         wireManager.rotate(axis);
-        nbt.put("wireManager", wireManager.writeToNbt());
-        nbt.putIntArray("redstone", redstoneValues);
+        int[] newRedstione = new int[6];
+        for(Direction face : Direction.values())
+        	newRedstione[axis.rotate(face).ordinal()] = redstoneValues[face.ordinal()];
+        redstoneValues = newRedstione;
 		super.rotate(axis);
 	}
-    
-    
 
     // Caps
 

@@ -15,9 +15,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.google.common.collect.ImmutableList;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.IPathProvider;
 import ct.buildcraft.api.enums.EnumOptionalSnapshotType;
@@ -70,6 +71,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -103,7 +105,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     public final ItemProvider invRequire = new ItemProvider(this::getDisplay, 24);
 
     private final MjBattery battery = new MjBattery(16000 * MjAPI.MJ);
-    private boolean canExcavate = true;
 
     /** Stores the real path - just a few block positions. */
     public List<BlockPos> path = null;
@@ -117,11 +118,32 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     public TemplateBuilder templateBuilder = new TemplateBuilder(this);
     public BlueprintBuilder blueprintBuilder = new BlueprintBuilder(this);
     private Box currentBox = new Box();
-    private Rotation rotation = null;
+    @NotNull
+    private Rotation rotation = Rotation.NONE;
     
     private boolean isDone = false;
     
     private boolean shouldInit = false;
+    
+    
+    private boolean needMaterial = true;
+    private boolean canRotate = true;
+    private boolean canExcavate = true;
+    
+    private DataSlot menuSetting = new DataSlot() {
+		
+		@Override
+		public void set(int p) {
+			needMaterial = (p&0b1) == 1;
+			canRotate = (p&0b10) == 0b10;
+			canExcavate = (p&0b100) == 0b100;
+		}
+		
+		@Override
+		public int get() {
+			return (needMaterial ? 1 : 0) | (canRotate ? 0b10 : 0) | (canExcavate ? 0b100 : 0);
+		}
+	};
     
 //    private final ContainerData blueprintData = new SingleProviderData(() -> snapshotType == null ? -1 : snapshotType.ordinal());
 /*    private final ContainerData remainingDisplayRequiredData = 
@@ -221,7 +243,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             snapshotType = snapshot.getType();
             if (canGetFacing) {
                 rotation = Arrays.stream(Rotation.values()).filter(r -> r.rotate(snapshot.facing) == level
-                    .getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING)).findFirst().orElse(null);
+                    .getBlockState(worldPosition).getValue(BlockBCBase_Neptune.PROP_FACING)).findFirst().orElse(Rotation.NONE);
             }
             if (snapshot.getType() == EnumSnapshotType.TEMPLATE) {
                 templateBuildingInfo = ((Template) snapshot).new BuildingInfo(getCurrentBasePos(), rotation);
@@ -233,7 +255,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             Optional.ofNullable(getBuilder()).ifPresent(SnapshotBuilder::updateSnapshot);
         } else {
             snapshotType = null;
-            rotation = null;
+            rotation = Rotation.NONE;
             templateBuildingInfo = null;
             blueprintBuildingInfo = null;
             currentBox = null;
@@ -285,10 +307,10 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     		shouldInit = false;
     	}
 
-//        level.profiler.startSection("main");
-//        level.profiler.startSection("power");
+        level.getProfiler().push("main");
+        level.getProfiler().push("power");
         battery.tick(getLevel(), getBlockPos());
-//        level.profiler.endStartSection("builder");
+        level.getProfiler().popPush("builder");
         SnapshotBuilder<?> builder = getBuilder();
         if (builder != null) {
             isDone = builder.tick();
@@ -304,10 +326,10 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 }
             }
         }
-//        level.profiler.endStartSection("net_update");
+        level.getProfiler().popPush("net_update");
         sendNetworkUpdate(NET_RENDER_DATA); // FIXME
-//        level.profiler.endSection();
-//        level.profiler.endSection();
+        level.getProfiler().pop();
+        level.getProfiler().pop();
     }
 
     // Networking
@@ -550,7 +572,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new ContainerBuilder(id, inv, invSnapshot, invResources, invRequire, ContainerLevelAccess.create(level, worldPosition));
+		return new ContainerBuilder(id, inv, invSnapshot, invResources, invRequire, menuSetting, ContainerLevelAccess.create(level, worldPosition));
 	}
 
 	@Override

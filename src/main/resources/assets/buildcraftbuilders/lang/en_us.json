@@ -26,13 +26,11 @@
 	"item.blueprint.no_build": "No Building",
 	"item.blueprint.incomplete": "Incomplete",
 	
-	"block.architect.rotate": "Rotate: On",
-	"block.architect.norotate": "Rotate: Off",
+	"block.architect.rotate": "Rotate",
 	"block.architect.allowCreative": "Mode: Creative",
 	"block.architect.noallowCreative": "Mode: Survival",
 	"block.architect.tooltip.allowCreative.1": "Creative allows all blocks - Creative Mode only!",
 	"block.architect.tooltip.allowCreative.2": "Survival ignores all unsupported blocks",
-	"block.architect.excavate": "Excavate: On",
-	"block.architect.noexcavate": "Excavate: Off"
+	"block.architect.excavate": "Excavate"
 	
 }

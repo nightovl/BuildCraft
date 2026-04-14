@@ -32,6 +32,8 @@ import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
 import ct.buildcraft.lib.misc.data.ModelVariableData;
 import ct.buildcraft.lib.net.IPayloadWriter;
+import ct.buildcraft.lib.statement.ActionWrapper;
+import ct.buildcraft.lib.statement.TriggerWrapper;
 import ct.buildcraft.silicon.BCSiliconItems;
 import ct.buildcraft.silicon.client.model.key.KeyPlugGate;
 import ct.buildcraft.silicon.container.ContainerGate;
@@ -39,6 +41,7 @@ import ct.buildcraft.silicon.gate.EnumGateLogic;
 import ct.buildcraft.silicon.gate.EnumGateMaterial;
 import ct.buildcraft.silicon.gate.EnumGateModifier;
 import ct.buildcraft.silicon.gate.GateLogic;
+import ct.buildcraft.silicon.gate.GateLogic.StatementPair;
 import ct.buildcraft.silicon.gate.GateVariant;
 import ct.buildcraft.silicon.item.ItemGateCopier;
 import ct.buildcraft.transport.pipe.PluggableHolder;
@@ -58,6 +61,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -341,4 +345,32 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
 	public Component getDisplayName() {
 		return Component.literal("PluggableGate:TODO");
 	}
+
+	@Override
+	public void rotate(Rotation axis) {
+		super.rotate(axis);
+		switch (axis) {
+		case CLOCKWISE_90 ->{
+			for(StatementPair pair : logic.statements) {
+				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft());
+				pair.action.set((ActionWrapper) pair.action.get().rotateLeft());
+			}
+		}
+		case CLOCKWISE_180 ->{
+			for(StatementPair pair : logic.statements) {
+				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft().rotateLeft());
+				pair.action.set((ActionWrapper) pair.action.get().rotateLeft().rotateLeft());
+			}
+		}
+		case COUNTERCLOCKWISE_90 ->{
+			for(StatementPair pair : logic.statements) {
+				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft().rotateLeft().rotateLeft());
+				pair.action.set((ActionWrapper) pair.action.get().rotateLeft().rotateLeft().rotateLeft());
+			}
+		}
+		case NONE ->{}
+		}
+	}
+	
+	
 }

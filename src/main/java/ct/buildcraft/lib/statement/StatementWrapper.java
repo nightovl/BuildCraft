@@ -18,7 +18,6 @@ import ct.buildcraft.api.statements.IStatementContainer;
 import ct.buildcraft.api.statements.IStatementParameter;
 import ct.buildcraft.api.statements.ITrigger;
 import ct.buildcraft.lib.misc.ColourUtil;
-import ct.buildcraft.lib.misc.LocaleUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 

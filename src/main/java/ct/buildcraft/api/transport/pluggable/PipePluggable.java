@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,7 +40,7 @@ public abstract class PipePluggable {
 	
     public final PluggableDefinition definition;
     public final IPipeHolder holder;
-    public final Direction side;
+    public /*final*/ Direction side;
 
     public PipePluggable(PluggableDefinition definition, IPipeHolder holder, Direction side) {
         this.definition = definition;
@@ -179,5 +180,10 @@ public abstract class PipePluggable {
     public void onPlacedBy(Player player) {
 
     }
+
+	public void rotate(Rotation axis) {
+		if(this != PipePluggable.EMPTY)
+			this.side = axis.rotate(side);
+	}
 
 }

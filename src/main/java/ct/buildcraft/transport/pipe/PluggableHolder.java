@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -159,4 +160,8 @@ public final class PluggableHolder {
             pluggable.onTick();
         }
     }
+
+	public void rotate(Rotation axis) {
+		pluggable.rotate(axis);
+	}
 }
