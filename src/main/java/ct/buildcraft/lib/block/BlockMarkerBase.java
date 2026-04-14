@@ -9,7 +9,6 @@ import java.util.Map;
 
 import ct.buildcraft.api.blocks.ICustomRotationHandler;
 import ct.buildcraft.api.properties.BuildCraftProperties;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -31,10 +29,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class BlockMarkerBase extends BlockBCTile_Neptune implements ICustomRotationHandler{
+public abstract class BlockMarkerBase extends BlockBCTile_Neptune implements ICustomRotationHandler, IBlockWithFacing{
     private static final Map<Direction, VoxelShape> BOUNDING_BOXES = new EnumMap<>(Direction.class);
     private static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static final BooleanProperty ACTIVE = BuildCraftProperties.ACTIVE;
@@ -56,26 +54,22 @@ public abstract class BlockMarkerBase extends BlockBCTile_Neptune implements ICu
     public BlockMarkerBase(Properties material) {
         super(material.strength(0.25f).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any()
-        		.setValue(FACING, Direction.NORTH)
+//        		.setValue(FACING, Direction.NORTH)
         		.setValue(ACTIVE, false));
     }
     
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> bs) {
-		bs.add(FACING);
+//		bs.add(FACING);
 		bs.add(ACTIVE);
 		super.createBlockStateDefinition(bs);
 	}
 
-
- 
-
     
     @OnlyIn(Dist.CLIENT)
     public RenderType getBlockLayer() {
-        return RenderType.cutout();
+        return RenderType.solid();
     }
-    
 
     @Override
 	public boolean isCollisionShapeFullBlock(BlockState p_181242_, BlockGetter p_181243_, BlockPos p_181244_) {
@@ -148,12 +142,9 @@ public abstract class BlockMarkerBase extends BlockBCTile_Neptune implements ICu
 		
 	}
 
-
-
     @Override
-	public BlockState rotate(BlockState state, LevelAccessor level, BlockPos pos, Rotation direction) {
-		// TODO Auto-generated method stub
-		return super.rotate(state, level, pos, direction);
+	public boolean canFaceVertically() {
+		return true;
 	}
 
     @Override

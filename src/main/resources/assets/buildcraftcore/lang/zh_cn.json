@@ -36,6 +36,7 @@
 	"block.buildcraftcore.spring_oil": "油泉",
 	"block.buildcraftcore.spring": "水泉",
 	"block.buildcraftcore.marker_path": "路径标",
+	"block.buildcraftcore.marker_volume":"地标",
 	
 	
 	"buildcraft.item.nonclean.usage": "Shift+右键点击以清理"

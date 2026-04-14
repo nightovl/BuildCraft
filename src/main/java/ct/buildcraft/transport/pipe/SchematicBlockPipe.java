@@ -16,6 +16,8 @@ import ct.buildcraft.api.transport.pipe.PipeApi;
 import ct.buildcraft.api.transport.pipe.PipeDefinition;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.transport.BCTransportBlocks;
+import ct.buildcraft.transport.tile.TilePipeHolder;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.core.BlockPos;
@@ -91,10 +93,9 @@ public class SchematicBlockPipe implements ISchematicBlock {
             if (tileEntity != null) {
                 tileEntity.setLevel(world);
                 world.setBlockEntity(tileEntity);
- //               world.updateNeighbourForOutputSignal(blockPos, BCTransportBlocks.pipeHolder.get());
-/*                if (tileRotation != Rotation.NONE) {
-                    tileEntity(tileRotation);
-                }*/
+                if (tileRotation != Rotation.NONE && tileEntity instanceof TilePipeHolder pipeTile) {
+                	pipeTile.rotate(tileRotation);
+                }
                 return true;
             }
         }
@@ -110,9 +111,9 @@ public class SchematicBlockPipe implements ISchematicBlock {
                 tileEntity.setLevel(world);
                 world.setBlockEntity(tileEntity);
                 world.updateNeighbourForOutputSignal(blockPos, BCTransportBlocks.pipeHolder.get());
-/*                if (tileRotation != Rotation.NONE) {
-                    tileEntity.rotate(tileRotation);
-                }*/
+                if (tileRotation != Rotation.NONE && tileEntity instanceof TilePipeHolder pipeTile) {
+                	pipeTile.rotate(tileRotation);
+                }
                 return true;
             }
         }

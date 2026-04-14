@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -126,6 +127,27 @@ public class WireManager implements IWireManager {
             .flatMap(element -> getWireSystems().getWireSystemsWithElement(element).stream())
             .forEach(getWireSystems()::removeWireSystem);
 //        holder.getPipeTile().setChanged();
+    }
+    
+    public void rotate(Rotation rotation) {
+        if (rotation == Rotation.NONE) {
+            return;
+        }
+        
+        Map<EnumWirePart, DyeColor> rotatedParts = Map.copyOf(parts);
+        parts.clear();
+        for (Map.Entry<EnumWirePart, DyeColor> entry : rotatedParts.entrySet()) 
+            parts.put(entry.getKey().rotate(rotation), entry.getValue());
+        
+        Set<EnumWirePart> rotatedPowered = EnumSet.copyOf(poweredClient);
+        poweredClient.clear();
+        for (EnumWirePart part : rotatedPowered) 
+        	poweredClient.add(part.rotate(rotation));
+        
+        Map<EnumWireBetween, DyeColor> rotatedBetweens = Map.copyOf(betweens);
+        rotatedBetweens.clear();
+        for (Map.Entry<EnumWireBetween, DyeColor> entry : rotatedBetweens.entrySet()) 
+        	betweens.put(entry.getKey().rotate(rotation), entry.getValue());
     }
 
     @Override

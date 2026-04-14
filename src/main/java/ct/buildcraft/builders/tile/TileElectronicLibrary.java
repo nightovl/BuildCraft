@@ -16,14 +16,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.primitives.Bytes;
 
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.data.NbtSquishConstants;
 import ct.buildcraft.builders.BCBuildersBlocks;
-import ct.buildcraft.builders.gui.MenuElectronicLibrary;
 import ct.buildcraft.builders.item.ItemSnapshot;
 import ct.buildcraft.builders.menu.ContainerElectronicLibrary;
 import ct.buildcraft.builders.snapshot.GlobalSavedDataSnapshots;
@@ -40,9 +37,9 @@ import ct.buildcraft.lib.tile.item.ItemHandlerSimple;
 import ct.buildcraft.lib.tile.item.StackInsertionFunction;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -308,6 +305,14 @@ public class TileElectronicLibrary extends TileBC_Neptune implements MenuProvide
             }
         }
     }
+    
+    
+
+	@Override
+	public void saveAdditional(CompoundTag nbt) {
+		// TODO Auto-generated method stub
+		super.saveAdditional(nbt);
+	}
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {

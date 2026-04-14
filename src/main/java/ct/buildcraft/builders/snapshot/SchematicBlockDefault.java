@@ -244,11 +244,11 @@ public class SchematicBlockDefault implements ISchematicBlock {
 
     @Override
     @SuppressWarnings("Duplicates")
-    public boolean build(Level Level, BlockPos blockPos) {
+    public boolean build(Level level, BlockPos blockPos) {
         if (placeBlock == Blocks.AIR) {
             return true;
         }
-        Level.getProfiler().push("prepare block");
+        level.getProfiler().push("prepare block");
         BlockState newBlockState = blockState;
         if (placeBlock != blockState.getBlock()) {
             newBlockState = placeBlock.defaultBlockState();
@@ -269,18 +269,21 @@ public class SchematicBlockDefault implements ISchematicBlock {
                 placeBlock.defaultBlockState()
             );
         }
-        Level.getProfiler().pop();
-        Level.getProfiler().push("place block");
-        boolean b = Level.setBlock(blockPos, newBlockState, 11);
-        Level.getProfiler().pop();
+        level.getProfiler().pop();
+        level.getProfiler().push("place block");
+        if (tileRotation != Rotation.NONE) {
+        	newBlockState.rotate(level, blockPos, tileRotation);
+        }
+        boolean b = level.setBlock(blockPos, newBlockState, 11);
+        level.getProfiler().pop();
         if (b) {
-            Level.getProfiler().push("notify");
+            level.getProfiler().push("notify");
             updateBlockOffsets.stream()
                 .map(blockPos::offset)
-                .forEach(updatePos -> Level.updateNeighborsAt(updatePos, placeBlock));//TODO : check
-            Level.getProfiler().pop();
+                .forEach(updatePos -> level.updateNeighborsAt(updatePos, placeBlock));//TODO : check
+            level.getProfiler().pop();
             if (tileNbt != null && blockState.hasBlockEntity()) {
-                Level.getProfiler().push("prepare tile");
+                level.getProfiler().push("prepare tile");
                 Set<JsonRule> rules = RulesLoader.getRules(blockState, tileNbt);
                 CompoundTag replaceNbt = rules.stream()
                     .map(rule -> rule.replaceNbt)
@@ -296,8 +299,8 @@ public class SchematicBlockDefault implements ISchematicBlock {
                 newTileNbt.putInt("x", blockPos.getX());
                 newTileNbt.putInt("y", blockPos.getY());
                 newTileNbt.putInt("z", blockPos.getZ());
-                Level.getProfiler().pop();
-                Level.getProfiler().push("place tile");
+                level.getProfiler().pop();
+                level.getProfiler().push("place tile");
                 BlockEntity tileEntity = BlockEntity.loadStatic(
                     blockPos,
                     blockState,
@@ -306,13 +309,11 @@ public class SchematicBlockDefault implements ISchematicBlock {
                         : newTileNbt
                 );
                 if (tileEntity != null) {
-                    tileEntity.setLevel(Level);
-                    Level.setBlockEntity(tileEntity);
-                    if (tileRotation != Rotation.NONE && tileEntity instanceof StructureBlockEntity sbe) {
-                    	sbe.setRotation(tileRotation);
-                    }
+                    tileEntity.setLevel(level);
+                    level.setBlockEntity(tileEntity);
+
                 }
-                Level.getProfiler().pop();
+                level.getProfiler().pop();
             }
             return true;
         }

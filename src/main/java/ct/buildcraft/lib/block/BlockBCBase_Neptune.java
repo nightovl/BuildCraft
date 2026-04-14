@@ -4,8 +4,7 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.lib.block;
 
-import java.util.List;
-
+import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -61,6 +60,7 @@ public class BlockBCBase_Neptune extends Block {
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
+    	
         if (this instanceof IBlockWithFacing) {
             EnumProperty<Direction> prop = ((IBlockWithFacing) this).getFacingProperty();
             Direction facing = state.getValue(prop);
@@ -102,12 +102,9 @@ public class BlockBCBase_Neptune extends Block {
 
 	@Override
     public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation axis) {
-        if (this instanceof IBlockWithFacing) {
-            if (!((IBlockWithFacing) this).canBeRotated(world, pos, state)) {
-                return state;
-            }
-        }
-        return super.rotate(state, world, pos, axis);
+        if(world.getBlockEntity(pos) instanceof TileBC_Neptune tile) 
+        	tile.rotate(axis);
+        return rotate(state, axis);
     }
 
 /*    public static boolean isExceptBlockForAttachWithPiston(Block attachBlock) {

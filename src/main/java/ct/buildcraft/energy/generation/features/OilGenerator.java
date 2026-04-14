@@ -120,7 +120,7 @@ public class OilGenerator {
         boolean oilBiome = config.surfaceDepositBiomes().contains(key);
 
         double bonus = oilBiome ? 3.0 : 1.0;
-        bonus *= config.oilWellGenerationRate();
+        bonus *= config.oilWellGenerationRate()/100;
 /*        if (BCEnergyWorldGen.isTerraBlenderLoaded) {
 	        if (BCEnergyConfig.excessiveBiomes.contains(key)) 
 	            bonus *= 30.0;

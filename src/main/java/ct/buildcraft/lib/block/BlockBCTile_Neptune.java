@@ -4,9 +4,8 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.lib.block;
 
+import java.util.Collections;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.lib.tile.TileBC_Neptune;
 import net.minecraft.core.BlockPos;
@@ -85,7 +84,7 @@ public abstract class BlockBCTile_Neptune extends BlockBCBase_Neptune implements
     
 	@Override
 	public List<ItemStack> getDrops(BlockState p_60537_, Builder p_60538_) {
-		return ImmutableList.of();
+		return Collections.singletonList(new ItemStack(p_60537_.getBlock()));
 	}
 
 	@Override

@@ -61,6 +61,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -432,17 +433,17 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
      * If this exchanger is not part of a larger structure then this will rotate this block 90 degrees. If this is part
      * of a larger structure then all adjacent heat exchangers will be rotated 180 degrees to swap the start and end
      * blocks. */
-    public BlockState rotate() {
+    @Override
+    public void rotate(Rotation axis) {//TODO
     	BlockState state = this.getBlockState();
         Direction thisFacing = getFacing();
         if (thisFacing == null) {
-            return state;
+            return;
         }
         Deque<TileHeatExchange> exchangers = findAdjacentExchangers();
         if (exchangers.size() == 1) {
             // Just this one tile, so rotate this by 90 degrees
         	state.setValue(BlockHeatExchange.PROP_FACING, VanillaRotationHandlers.ROTATE_HORIZONTAL.next(thisFacing));
-            return state;
         } else {
             // Rotate every heat exchanger 180 degrees
             ExchangeSectionStart start = null;
@@ -480,7 +481,6 @@ public class TileHeatExchange extends TileBC_Neptune implements IDebuggable, Men
         }
 
         SoundUtil.playSlideSound(getLevel(), getBlockPos());
-        return state;
     }
 
     public boolean isStart() {

@@ -70,6 +70,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -794,4 +795,7 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     public IDetachedRenderer getDebugRenderer() {
         return null;
     }
+
+	public void rotate(Rotation axis) {
+	}
 }

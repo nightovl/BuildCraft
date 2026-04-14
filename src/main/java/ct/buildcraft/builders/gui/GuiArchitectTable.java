@@ -11,6 +11,7 @@ import ct.buildcraft.builders.menu.ContainerArchitectTable;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,10 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
     private static final GuiRectangle RECT_PROGRESS = new GuiRectangle(159, 34, 24, 17);
 
     private EditBox nameField;
+    
+    private CycleButton<Boolean> rotateButton;
+    
+    boolean canRotate = true;
 
     public GuiArchitectTable(ContainerArchitectTable container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -37,6 +42,13 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
         nameField = new EditBox(font, leftPos + 90, topPos + 62, 156, 12, Component.empty());
         nameField.setValue(container.tile.name);
         nameField.setResponder((s) -> container.sendNameToServer(s.trim()));
+        this.rotateButton = this.addRenderableWidget(CycleButton.booleanBuilder(
+        		Component.translatable("block.architect.rotate"), 
+        		Component.translatable("block.architect.norotate")).
+        			displayOnlyValue().withInitialValue(canRotate).
+        			create(this.width / 2 - 122, this.height/2 - 55, 77, 20, Component.translatable("advMode.type"), (p_169727_, p_169728_) -> {
+            this.canRotate = p_169728_;
+         }));
         this.addWidget(nameField);
         setInitialFocus(nameField);
     }

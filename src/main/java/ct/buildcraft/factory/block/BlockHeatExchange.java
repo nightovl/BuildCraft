@@ -123,7 +123,8 @@ public class BlockHeatExchange extends BlockBCTile_Neptune implements ICustomPip
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileHeatExchange) {
             TileHeatExchange exchange = (TileHeatExchange) tile;
-            return exchange.rotate();
+            exchange.rotate(axis);
+            return exchange.getBlockState();
         }
         return state;
 	}

@@ -2,6 +2,7 @@ package ct.buildcraft.api.transport;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -79,5 +80,48 @@ public enum EnumWirePart {
                 return z ? WEST_DOWN_SOUTH : WEST_DOWN_NORTH;
             }
         }
+    }
+    
+    public EnumWirePart rotate(Rotation rotation) {
+        if (rotation == Rotation.NONE) {
+            return this;
+        }
+        
+        // 获取当前三个轴的方向（作为布尔值，true=正方向，false=负方向）
+        boolean currentX = this.x == AxisDirection.POSITIVE;
+        boolean currentY = this.y == AxisDirection.POSITIVE;
+        boolean currentZ = this.z == AxisDirection.POSITIVE;
+        
+        // Y 轴方向不变（绕 Y 轴旋转）
+        boolean newY = currentY;
+        
+        boolean newX, newZ;
+        
+        switch (rotation) {
+            case CLOCKWISE_90:
+                // 顺时针旋转90°: X -> Z, Z -> -X
+                // 原 +X 方向变为 +Z，原 -X 方向变为 -Z
+                // 原 +Z 方向变为 -X，原 -Z 方向变为 +X
+                newX = !currentZ;  // Z 轴取反后给 X
+                newZ = currentX;   // X 轴直接给 Z
+                break;
+                
+            case CLOCKWISE_180:
+                // 旋转180°: X -> -X, Z -> -Z
+                newX = !currentX;
+                newZ = !currentZ;
+                break;
+                
+            case COUNTERCLOCKWISE_90:
+                // 逆时针旋转90°: X -> -Z, Z -> X
+                newX = currentZ;   // Z 轴直接给 X
+                newZ = !currentX;  // X 轴取反后给 Z
+                break;
+                
+            default:
+                return this;
+        }
+        
+        return get(newX, newY, newZ);
     }
 }

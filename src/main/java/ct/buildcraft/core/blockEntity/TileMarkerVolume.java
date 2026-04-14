@@ -207,9 +207,9 @@ public class TileMarkerVolume extends TileMarker<VolumeConnection> implements IT
             List<BlockPos> allPositions = ImmutableList.copyOf(connection.getMarkerPositions());
             NonNullList<ItemStack> drops = NonNullList.create();
             if(player instanceof ServerPlayer serverPlayer) {
-            	boolean isCreative = !serverPlayer.isCreative();
+            	boolean isCreative = serverPlayer.isCreative();
 	            for (BlockPos p : allPositions) {
-					if(isCreative)
+					if(!isCreative)
 	            		drops.addAll(level.getBlockState(p).getDrops(new LootContext.Builder((ServerLevel) level)));
 	                level.destroyBlock(p, false);
 	            }

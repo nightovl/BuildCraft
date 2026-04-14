@@ -1182,7 +1182,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {//TODO return pluggable
 		return new ItemStack(
 				BCTransportItems.PIPE_MAP.get(((TilePipeHolder) level.getBlockEntity(pos)).getPipe().definition).get());
 	}
@@ -1220,14 +1220,6 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		}
 		return 0;
 	}
-
-	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
-			Player player) {
-		return super.getCloneItemStack(state, target, level, pos, player);//TODO
-	}
-
-
 
 	/** a wrapper of {@link BlockHitResult} */
 	protected static class BCBlockHitResult {

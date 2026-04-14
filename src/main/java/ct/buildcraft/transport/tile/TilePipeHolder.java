@@ -55,6 +55,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
@@ -565,10 +566,28 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     public int getRedstoneOutput(Direction side) {
         return redstoneValues[side.ordinal()];
     }
+    
+    @Override
+	public void rotate(Rotation axis) {
+    	PluggableHolder initPlug = pluggables.get(Direction.SOUTH);
+        for (int i = 0; i < 3; i++) {
+        	Direction face = Direction.from2DDataValue(i);
+            pluggables.replace(axis.rotate(face), pluggables.get(face));
+        }
+        pluggables.replace(axis.rotate(Direction.SOUTH), initPlug);
+
+        wireManager.rotate(axis);
+        nbt.put("wireManager", wireManager.writeToNbt());
+        nbt.putIntArray("redstone", redstoneValues);
+		super.rotate(axis);
+	}
+    
+    
 
     // Caps
 
-    @Override
+    
+	@Override
     public <T> @NotNull LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (facing != null) {
             PipePluggable plug = getPluggable(facing);
