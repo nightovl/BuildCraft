@@ -17,6 +17,7 @@ import ct.buildcraft.silicon.BCSiliconStatements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,7 +39,8 @@ public class TriggerLightSensor extends BCStatement implements ITriggerInternalS
     public boolean isTriggerActive(Direction side, IStatementContainer source, IStatementParameter[] parameters) {
         BlockEntity tile = source.getTile();
         BlockPos pos = tile.getBlockPos().offset(side.getNormal());
-        int light = tile.getLevel().getLightEngine().getRawBrightness(pos, 15);
+        Level level = tile.getLevel();
+		int light = level.getRawBrightness(pos, level.getSkyDarken());
         return (light < 8) ^ bright;
     }
 

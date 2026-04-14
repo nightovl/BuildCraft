@@ -6,14 +6,8 @@
 
 package ct.buildcraft.factory;
 
-import ct.buildcraft.factory.client.render.RenderDistiller;
-import ct.buildcraft.factory.client.render.RenderHeatExchange;
-import ct.buildcraft.factory.client.render.RenderMiningWell;
-import ct.buildcraft.factory.client.render.RenderPump;
-import ct.buildcraft.factory.client.render.RenderTank;
 import ct.buildcraft.factory.tile.TileDistiller_BC8;
 import ct.buildcraft.lib.client.model.ModelHolderVariable;
-import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 
 public class BCFactoryModels {
@@ -43,12 +37,7 @@ public class BCFactoryModels {
         }
     }*/
 
-	public static void registryRender(RegisterRenderers e) {
-    	e.registerBlockEntityRenderer(BCFactoryBlocks.ENTITYBLOCKTANK.get(), RenderTank::new);
-    	e.registerBlockEntityRenderer(BCFactoryBlocks.ENTITYBLOCKPUMP.get(), RenderPump::new);
-    	e.registerBlockEntityRenderer(BCFactoryBlocks.ENTITYBLOCKMININGWELL.get(), RenderMiningWell::new);
-    	e.registerBlockEntityRenderer(BCFactoryBlocks.ENTITYBLOCKDISTILLER.get(), RenderDistiller::new);
-    	e.registerBlockEntityRenderer(BCFactoryBlocks.ENTITYBLOCKHEATEXCHANGE.get(), RenderHeatExchange::new);
+	public static void init() {
 	}
 
     public static void onModelBake(BakingCompleted event) {

@@ -547,7 +547,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         if (side == null) {
             return level.getBestNeighborSignal(worldPosition);
         } else {
-            return level.getDirectSignal(worldPosition.offset(side.getNormal()), side);
+            return level.getSignal(worldPosition.offset(side.getNormal()), side);
         }
     }
 

@@ -61,6 +61,7 @@ public class BCFactory
         public static void onClientSetup(FMLClientSetupEvent event)
         {
         	BCFactorySprites.init();
+        	BCFactoryModels.init();
         }
         
         @SubscribeEvent

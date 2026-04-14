@@ -63,14 +63,4 @@ public class BlockDistiller extends BlockBCTile_Neptune implements EntityBlock, 
     public float getShadeBrightness(BlockState p_48731_, BlockGetter p_48732_, BlockPos p_48733_) {
         return 1.0F;
     }
-    
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level lev, BlockState p_153213_,
-			BlockEntityType<T> bet) {
-		return bet == BCFactoryBlocks.ENTITYBLOCKDISTILLER.get() ? ($0,pos,$1,BlockEntity) -> {
-			if(BlockEntity instanceof TileDistiller) {
-				((TileDistiller) BlockEntity).update();
-			}
-		} : null;
-	}
 }

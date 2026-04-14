@@ -8,7 +8,6 @@ package ct.buildcraft.factory.tile;
 import java.io.IOException;
 import java.util.List;
 
-import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.SafeTimeTracker;
 import ct.buildcraft.api.mj.MjAPI;
@@ -223,7 +222,7 @@ public class TileDistiller_BC8 extends TileBC_Neptune implements IDebuggable {
         DefaultContexts.RENDER_PARTIAL_TICKS.value = partialTicks;
 
         MODEL_ACTIVE.value = isActive;
-        MODEL_POWER_AVG.value = 2;//powerAvgClient / MjAPI.MJ;
+        MODEL_POWER_AVG.value = powerAvgClient / MjAPI.MJ;
         MODEL_POWER_MAX.value = MAX_MJ_PER_TICK / MjAPI.MJ;
         MODEL_FACING.value = Direction.WEST;
 
