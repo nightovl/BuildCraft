@@ -265,12 +265,12 @@ public class GuiUtil {
     }
 
     public static void drawFluid(PoseStack pose, IGuiArea position, FluidStack fluid, int capacity) {
-        if (fluid == null || fluid.getAmount() <= 0) return;
+        if (fluid == null || fluid.isEmpty()) return;
         drawFluid(pose, position, fluid, fluid.getAmount(), capacity);
     }
 
     public static void drawFluid(PoseStack pose, IGuiArea position, FluidStack fluid, int amount, int capacity) {
-        if (fluid == null || amount <= 0) return;
+        if (fluid.isEmpty() || amount <= 0) return;
 
         double height = amount * position.getHeight() / capacity;
 

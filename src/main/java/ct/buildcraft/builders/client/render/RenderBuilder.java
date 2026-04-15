@@ -82,7 +82,8 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
 
         Minecraft.getInstance().getProfiler().pop();
 
-        matrix.translate(posx, posy, posz);
+   //     matrix.translate(posx, posy, posz);
+//        matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
         if (tile.getBuilder() != null) {
             RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }

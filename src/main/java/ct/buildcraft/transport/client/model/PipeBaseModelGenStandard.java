@@ -70,7 +70,7 @@ public enum PipeBaseModelGenStandard implements IPipeBaseModelGen {
     }
     
     public static void loadSpritesCache() {
-        SPRITES.clear();
+    	SPRITES.clear();
         var texAtlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
         for (PipeDefinition def : PipeApi.pipeRegistry.getAllRegisteredPipes()) {
             TextureAtlasSprite[] array = new TextureAtlasSprite[def.textures.length];

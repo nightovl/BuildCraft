@@ -569,14 +569,13 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     
     @Override
 	public void rotate(Rotation axis) {
-    	PluggableHolder initPlug = pluggables.get(Direction.SOUTH);
-        for (int i = 0; i < 3; i++) {
-        	Direction face = Direction.from2DDataValue(i);
-            PluggableHolder plug = pluggables.get(face);
-            plug.rotate(axis);
-			pluggables.replace(axis.rotate(face), plug);
+    	Map<Direction, PluggableHolder> copyPluggables = Map.copyOf(pluggables);
+    	pluggables.clear();
+        for (Map.Entry<Direction, PluggableHolder> e : copyPluggables.entrySet()) {
+            PluggableHolder plug = e.getValue();
+			plug.rotate(axis);
+            pluggables.put(axis.rotate(e.getKey()), plug);
         }
-        pluggables.replace(axis.rotate(Direction.SOUTH), initPlug);
 
         wireManager.rotate(axis);
         int[] newRedstione = new int[6];

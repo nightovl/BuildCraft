@@ -33,7 +33,7 @@ public final class PluggableHolder {
     public static final int ID_CREATE_PLUG = ID_ALLOC.allocId("CREATE_PLUG");
 
     public final TilePipeHolder holder;
-    public final Direction side;
+    public /*final*/ Direction side;
     public PipePluggable pluggable = PipePluggable.EMPTY;
 
     public PluggableHolder(TilePipeHolder holder, Direction side) {
@@ -162,6 +162,7 @@ public final class PluggableHolder {
     }
 
 	public void rotate(Rotation axis) {
+		side = axis.rotate(side);
 		pluggable.rotate(axis);
 	}
 }

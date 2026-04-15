@@ -31,15 +31,16 @@ public enum PipeBehaviourRendererStripes implements IPipeBehaviourRenderer<PipeB
 			int combinedLight, int combinedOverlay) {
         Direction dir = stripes.direction;
         if (dir == null) return;
+        poseStack.translate(-0.5, -0.5, -0.5);
         VertexConsumer cutout = buffer.getBuffer(RenderType.cutout());
         MutableQuad[] quads = BCTransportModels.getStripesDynQuads(dir);
-        int light = stripes.pipe.getHolder().getPipeWorld().getLightEngine().getRawBrightness(stripes.pipe.getHolder().getPipePos(), 0);//TODO
+//        int light = stripes.pipe.getHolder().getPipeWorld().getLightEngine().getRawBrightness(stripes.pipe.getHolder().getPipePos(), 0);//TODO
         Pose pose = poseStack.last();
         Matrix4f trans = pose.pose();
         Matrix3f normal = pose.normal();
         for (MutableQuad q : quads) {
             q.multShade();
-            q.lighti(light);
+            q.lighti(combinedLight);
             q.render(trans, normal, cutout);
         }
     }

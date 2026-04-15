@@ -128,9 +128,9 @@ public final class BlockUtil {
         }
 
         state.getBlock().playerWillDestroy(world, pos, state, fakePlayer);
-        state.getBlock().playerDestroy(world, fakePlayer, pos, state, world.getBlockEntity(pos), tool);
+    //    state.getBlock().playerDestroy(world, fakePlayer, pos, state, world.getBlockEntity(pos), tool);
         // Don't drop items as we do that ourselves
-        world.destroyBlock(pos, /* dropBlock = */ false);
+        world.destroyBlock(pos, /* dropBlock = */ true);
 
         return true;
     }

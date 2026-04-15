@@ -4,14 +4,15 @@
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 package ct.buildcraft.core.blockEntity;
 
+import com.google.common.collect.ImmutableList;
+
 import ct.buildcraft.api.core.IPathProvider;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.core.marker.PathCache;
 import ct.buildcraft.core.marker.PathConnection;
 import ct.buildcraft.lib.tile.TileMarker;
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileMarkerPath extends TileMarker<PathConnection> implements IPathProvider {
@@ -30,9 +31,10 @@ public class TileMarkerPath extends TileMarker<PathConnection> implements IPathP
     }
 
     @Override
-    public void removeFromWorld() {
+    public void removeFromWorld(Player player) {
+    	boolean shouldDrop = player == null || !player.isCreative();
         for (BlockPos pos : getPath()) {
-            level.destroyBlock(pos, true);
+            level.destroyBlock(pos, shouldDrop);
         }
     }
 

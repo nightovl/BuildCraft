@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.transport.IStripesActivator;
 import ct.buildcraft.api.transport.IStripesHandlerItem;
-import com.mojang.logging.LogUtils;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -27,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -41,11 +38,12 @@ public enum StripesHandlerDispenser implements IStripesHandlerItem {
     static{
     	for(Field f :DispenserBlock.class.getDeclaredFields()) {
     		f.setAccessible(true);
-    		if(f.getType() == Object2ObjectOpenHashMap.class) {
+    		if(f.getType() == Map.class) {
     			try {
 					DISPENSER_REGISTRY = (Map<Item, DispenseItemBehavior>) f.get(null);
+					break;
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					LogUtils.getLogger().error("Failed to get DispenserBlock#DISPENSER_REGISTRY");
+					BCLog.logger.error("Failed to get DispenserBlock#DISPENSER_REGISTRY");
 					e.printStackTrace();
 				}
     		}

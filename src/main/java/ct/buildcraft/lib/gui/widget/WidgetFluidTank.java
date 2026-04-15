@@ -64,7 +64,7 @@ public class WidgetFluidTank extends Widget_Neptune<MenuBC_Neptune> {
 
         @Override
         public void drawBackground(PoseStack pose, float partialTicks) {
-        		GuiUtil.drawFluid(pose, this, tank);
+        	GuiUtil.drawFluid(pose, this, tank);
             if (overlay != null) {
                 overlay.drawCutInside(pose, this);
             }

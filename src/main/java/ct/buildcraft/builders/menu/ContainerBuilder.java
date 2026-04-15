@@ -25,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
     public final List<WidgetFluidTank> widgetTanks;
-    public final DataSlot setting;
+   
     
 	public ContainerBuilder(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
 		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(27),
@@ -51,7 +51,6 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
                 .map(this::addWidget)
                 .collect(Collectors.toList());
         
-		this.setting = setting;
 		addDataSlot(setting);
 
         for(int y = 0; y < 6; y++) {

@@ -264,7 +264,7 @@ public enum PipeExtensionManager implements IPipeExtensionManager {
                     list.add(stack);
                 }
             }
-            if (canceled = result != InteractionResult.SUCCESS) {
+            if (canceled = result != InteractionResult.CONSUME) {
                 blockSnapshot1.restore(true);
                 BlockEntity tile = w.getBlockEntity(r.pos);
                 if (tile != null) {

@@ -76,6 +76,7 @@ public class BCTransport {
     
     public void init(final FMLCommonSetupEvent event) {
     	BCTransportConfig.reloadConfig();
+    	BCTransportRegistries.init();
     	tabPipes.setItem(BCTransportItems.PIPE_ITEM_DIAMOND.get());
     	tabPlugs.setItem(BCTransportItems.plugBlocker.get());
     }

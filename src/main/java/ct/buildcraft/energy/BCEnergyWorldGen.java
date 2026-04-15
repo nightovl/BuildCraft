@@ -19,6 +19,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 
 import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.energy.generation.features.OilFeatureConfiguration;
 import ct.buildcraft.energy.generation.features.OilGenFeature;
 import ct.buildcraft.lib.misc.JsonUtil;
 import net.minecraft.core.Registry;
@@ -57,7 +58,7 @@ public class BCEnergyWorldGen {
     public static final Biome OIL_DESERT_BIOME ; 
     public static final Biome OIL_DEEP_OCEAN_BIOME;
     
-    public static final OilGenFeature OIL_FEATURE = new OilGenFeature(NoneFeatureConfiguration.CODEC);
+    public static final OilGenFeature OIL_FEATURE = new OilGenFeature(OilFeatureConfiguration.CODEC);
     
     public static final boolean isTerraBlenderLoaded = ModList.get().isLoaded("terrablender");
     

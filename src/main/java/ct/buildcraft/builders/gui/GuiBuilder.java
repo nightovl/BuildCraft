@@ -13,7 +13,6 @@ import ct.buildcraft.builders.menu.ContainerBuilder;
 import ct.buildcraft.lib.gui.GuiBC8;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.pos.GuiRectangle;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,12 +35,10 @@ public class GuiBuilder extends GuiBC8<ContainerBuilder> {
     private static final GuiIcon ICON_TANK_OVERLAY = new GuiIcon(TEXTURE_BLUEPRINT, 0, 54, 16, 47);
     
 //    private CycleButton<Boolean> needMaterialButton;
-    private CycleButton<Boolean> enableRotateButton;
-    private CycleButton<Boolean> canExcavateButton;
+
     
-    private boolean needMaterial = true;
-    private boolean canRotate = true;
-    private boolean canExcavate = true;
+ //   private boolean needMaterial = true;
+
     
     public GuiBuilder(ContainerBuilder container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -59,10 +56,9 @@ public class GuiBuilder extends GuiBC8<ContainerBuilder> {
                     .get(i).createGuiElement(mainGui, new GuiRectangle(179 + i * 18, 145, 16, 47).offset(mainGui.rootElement), ICON_TANK_OVERLAY)
             );
         }
-        int p = container.setting.get();
-		needMaterial = (p&0b1) == 1;
-		canRotate = (p&0b10) == 0b10;
-		canExcavate = (p&0b100) == 0b100;
+        
+//		needMaterial = (p&0b1) == 1;
+
 		
  /*       this.needMaterialButton = this.addRenderableWidget(CycleButton.booleanBuilder(
         		Component.translatable("block.architect.needMaterial"), 
@@ -71,17 +67,7 @@ public class GuiBuilder extends GuiBC8<ContainerBuilder> {
         			create(this.width / 2 - 122, this.height/2 - 55, 77, 20, Component.translatable("advMode.type"), (p_169727_, p_169728_) -> {
             this.needMaterial = p_169728_;
          }));*/
-        this.enableRotateButton = this.addRenderableWidget(CycleButton.onOffBuilder(canRotate).
-        			create(this.width / 2 - 122, this.height/2 - 45, 77, 20, Component.translatable("block.architect.rotate"), (p_169727_, p_169728_) -> {
-            this.canRotate = p_169728_;
-            container.setting.set((needMaterial ? 1 : 0) | (canRotate ? 0b10 : 0) | (canExcavate ? 0b100 : 0));
-         }));
 
-        this.canExcavateButton = this.addRenderableWidget(CycleButton.onOffBuilder(canRotate).
-        			create(this.width / 2 - 122, this.height/2 - 35, 77, 20, Component.translatable("block.architect.excavate"), (p_169727_, p_169728_) -> {
-            this.canExcavate = p_169728_;
-            container.setting.set((needMaterial ? 1 : 0) | (canRotate ? 0b10 : 0) | (canExcavate ? 0b100 : 0));
-         }));
 
 //        buttonList.add(
 //                new GuiButtonSmall(

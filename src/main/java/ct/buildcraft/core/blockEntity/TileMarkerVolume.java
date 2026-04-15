@@ -25,17 +25,12 @@ import ct.buildcraft.lib.tile.TileBC_Neptune;
 import ct.buildcraft.lib.tile.TileMarker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -205,8 +200,12 @@ public class TileMarkerVolume extends TileMarker<VolumeConnection> implements IT
         if (connection != null) {
             // Copy the list over because the iterator doesn't like it if you change the connection while using it
             List<BlockPos> allPositions = ImmutableList.copyOf(connection.getMarkerPositions());
-            NonNullList<ItemStack> drops = NonNullList.create();
-            if(player instanceof ServerPlayer serverPlayer) {
+  //          NonNullList<ItemStack> drops = NonNullList.create();
+            for (BlockPos p : allPositions) {
+                level.destroyBlock(p, player == null || !player.isCreative());
+            }
+            
+/*            if(player instanceof ServerPlayer serverPlayer) {//TODO
             	boolean isCreative = serverPlayer.isCreative();
 	            for (BlockPos p : allPositions) {
 					if(!isCreative)
@@ -219,7 +218,7 @@ public class TileMarkerVolume extends TileMarker<VolumeConnection> implements IT
 	            for (BlockPos p : allPositions) {
 	                level.destroyBlock(p, false);
 	            }
-            }
+            }*/
         }
     }
 

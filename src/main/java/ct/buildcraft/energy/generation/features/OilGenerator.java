@@ -46,6 +46,9 @@ public class OilGenerator {
     
     static OilFeatureConfiguration config = null;
     
+    static double xOffset = -1;
+    static double zOffset = -1;
+    
     private static WorldGenLevel level;
     
     public static int worldHeight = -1;//384
@@ -64,7 +67,18 @@ public class OilGenerator {
     }
     
     public static List<OilStructure> getStructures(WorldGenLevel world, int cx, int cz) {
-    	if(level != world) level = world;
+    	if(level != world) {
+    		level = world;
+        	Random rand = new Random(world.getSeed());
+            int OFFSET_RANGE = 500000;
+        	OilGenerator.xOffset = rand.nextInt(OFFSET_RANGE) - (OFFSET_RANGE / 2);
+        	OilGenerator.zOffset = rand.nextInt(OFFSET_RANGE) - (OFFSET_RANGE / 2);
+        	ServerLevel serverLevel = world.getLevel();
+        	DimensionType dimensionType = serverLevel.dimensionType();
+        	worldHeight = dimensionType.height();
+        	seaLevel = serverLevel.getSeaLevel();  
+        	bottomY = dimensionType.minY();
+    	}
     	return structureCache.getUnchecked((((long)(cz))<<32)|(cx&0xFFFFFFFFL));
     }
 
@@ -72,20 +86,11 @@ public class OilGenerator {
     protected static List<OilStructure> getStructures(WorldGenLevel world, int cx, int cz, boolean log) {
         Random rand = RandUtil.createRandomForChunk(world, cx, cz, MAGIC_GEN_NUMBER);
         
-        ServerLevel serverlevel = world.getLevel();
-        if(worldHeight == -1) {
-        	DimensionType dimensionType = serverlevel.dimensionType();
-        	worldHeight = dimensionType.height();
-        	seaLevel = serverlevel.getSeaLevel();  
-        	bottomY = dimensionType.minY();
-        }
         // shift to world coordinates
         int x = cx * 16 + 8 + rand.nextInt(16);
         int z = cz * 16 + 8 + rand.nextInt(16);
 
-        int OFFSET_RANGE = 500000;
-        double xOffset = rand.nextInt(OFFSET_RANGE) - (OFFSET_RANGE / 2);
-        double zOffset = rand.nextInt(OFFSET_RANGE) - (OFFSET_RANGE / 2);
+
         
         Holder<Biome> biome = world.getBiome(new BlockPos(x, seaLevel, z));//TODO
         ResourceLocation key = biome.unwrapKey().get().location();
@@ -120,7 +125,7 @@ public class OilGenerator {
         boolean oilBiome = config.surfaceDepositBiomes().contains(key);
 
         double bonus = oilBiome ? 3.0 : 1.0;
-        bonus *= config.oilWellGenerationRate()/100;
+        bonus *= config.oilWellGenerationRate();
 /*        if (BCEnergyWorldGen.isTerraBlenderLoaded) {
 	        if (BCEnergyConfig.excessiveBiomes.contains(key)) 
 	            bonus *= 30.0;
@@ -146,13 +151,13 @@ public class OilGenerator {
 	    }
 	    GenSetting genSetting = config.genSetting();
         final GenType type;
-        if (rand.nextDouble() <=  genSetting.largeOilGenProb() * bonus/100) {
+        if (rand.nextDouble() * 100 <=  genSetting.largeOilGenProb() * bonus) {
             // 0.04%
             type = GenType.LARGE;
-        } else if (rand.nextDouble() <= genSetting.mediumOilGenProb() * bonus/100) {
+        } else if (rand.nextDouble()* 100 <= genSetting.mediumOilGenProb() * bonus) {
             // 0.1%
             type = GenType.MEDIUM;
-        } else if (oilBiome && rand.nextDouble() <= genSetting.smallOilGenProb() * bonus/100) {
+        } else if (oilBiome && rand.nextDouble()* 100 <= genSetting.smallOilGenProb() * bonus) {
             // 2%
             type = GenType.LAKE;
         } else {
@@ -164,7 +169,7 @@ public class OilGenerator {
             }
             return ImmutableList.of();
         }
-        if (DEBUG_OILGEN_BASIC & true) {
+        if (/*DEBUG_OILGEN_BASIC & */true) {
             BCLog.logger.info(
                 "[energy.oilgen] Generating an oil well (" + type.name().toLowerCase(Locale.ROOT)
                     + ") in " + toStr(world) + " chunk " + cx + ", " + cz + " at " + x + ", " + z

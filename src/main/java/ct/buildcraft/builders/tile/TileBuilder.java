@@ -125,7 +125,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     
     private boolean shouldInit = false;
     
-    
+    //TODO
     private boolean needMaterial = true;
     private boolean canRotate = true;
     private boolean canExcavate = true;
@@ -293,7 +293,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             ImmutableList<BlockPos> copiedPath = ImmutableList.copyOf(provider.getPath());
             if (copiedPath.size() >= 2) {
                 path = copiedPath;
-                provider.removeFromWorld();
+                provider.removeFromWorld(placer instanceof Player player ? player : null);
             }
         }
         updateBasePoses();

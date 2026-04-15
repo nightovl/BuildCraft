@@ -66,6 +66,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -111,6 +112,25 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
         "progress",
         DeltaManager.EnumNetworkVisibility.GUI_ONLY
     );
+    
+    private boolean isCreative = true;
+    private boolean canRotate = true;
+    private boolean canExcavate = true;
+    
+    private DataSlot menuSetting = new DataSlot() {
+		
+		@Override
+		public void set(int p) {
+			isCreative = (p&0b1) == 1;
+			canRotate = (p&0b10) == 0b10;
+			canExcavate = (p&0b100) == 0b100;
+		}
+		
+		@Override
+		public int get() {
+			return (isCreative ? 1 : 0) | (canRotate ? 0b10 : 0) | (canExcavate ? 0b100 : 0);
+		}
+	};
     
     public TileArchitectTable(BlockPos pos, BlockState state) {
 		super(BCBuildersBlocks.ARCHITECT_TILE_BC8.get(), pos, state);
@@ -178,6 +198,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
 
         if (!invSnapshotIn.getStackInSlot(0).isEmpty() && invSnapshotOut.getStackInSlot(0).isEmpty() && isValid) {
             if (!scanning) {
+            	//TODO add blueprint info
                 snapshotType = ItemSnapshot.EnumItemSnapshotType.getFromStack(
                     invSnapshotIn.getStackInSlot(0)
                 ).snapshotType;
@@ -405,7 +426,7 @@ public class TileArchitectTable extends TileBC_Neptune implements IDebuggable, M
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return new ContainerArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut,/* deltaProgress.getContainerData(), */ContainerLevelAccess.create(getLevel(), worldPosition));
+		return new ContainerArchitectTable(id, inventory, invSnapshotIn, invSnapshotOut, menuSetting, /* deltaProgress.getContainerData(), */ContainerLevelAccess.create(getLevel(), worldPosition));
 	}
 
 	@Override

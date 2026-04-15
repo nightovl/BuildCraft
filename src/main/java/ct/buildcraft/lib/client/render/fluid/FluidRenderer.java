@@ -12,21 +12,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import ct.buildcraft.api.core.BCLog;
-import ct.buildcraft.lib.BCLib;
-import ct.buildcraft.lib.client.model.MutableVertex;
-import ct.buildcraft.lib.misc.MathUtil;
-import ct.buildcraft.lib.misc.SpriteUtil;
-import ct.buildcraft.lib.misc.VecUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.lib.BCLib;
+import ct.buildcraft.lib.client.model.MutableVertex;
+import ct.buildcraft.lib.misc.GuiUtil;
+import ct.buildcraft.lib.misc.MathUtil;
+import ct.buildcraft.lib.misc.SpriteUtil;
+import ct.buildcraft.lib.misc.VecUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -73,7 +74,7 @@ public class FluidRenderer {
     private static int spriteW = 16;//may change
     private static int spriteH = 16;
     private static TexMap texmap;
-    private static int color = 0xFFFFFFFF;
+    private static int color = 0xFFFFFFFF; //ARGB
     private static boolean invertU, invertV;
     private static double xTexDiff, yTexDiff, zTexDiff;
     
@@ -406,9 +407,10 @@ public class FluidRenderer {
 
         // draw all the full sprites
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+   //     RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(((color>>16)&0xFF)/255f, ((color>>8)&0xFF)/255f, ((color)&0xFF)/255f, ((color>>24)&0xFF)/255f);//rgba
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bb = bufferbuilder;
         pose = matrix;
 
@@ -425,12 +427,10 @@ public class FluidRenderer {
         for (int xc = 0; xc < loopCountX; xc++) {
             double y = startY;
             for (int yc = 0; yc < loopCountY; yc++) {
-            	bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
                 guiVertex(x, y, 0, 0);
                 guiVertex(x + stepX, y, 16, 0);
                 guiVertex(x + stepX, y + stepY, 16, 16);
                 guiVertex(x, y + stepY, 0, 16);
-                BufferUploader.drawWithShader(bufferbuilder.end());
                 y += stepY;
             }
             x += stepX;
@@ -442,12 +442,10 @@ public class FluidRenderer {
             double xTex = Math.abs(additionalWidth);
             double y = startY;
             for (int yc = 0; yc < loopCountY; yc++) {
-            	bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
                 guiVertex(x, y, 0, 0);
                 guiVertex(endX, y, xTex, 0);
                 guiVertex(endX, y + stepY, xTex, 16);
                 guiVertex(x, y + stepY, 0, 16);
-                BufferUploader.drawWithShader(bufferbuilder.end());
                 y += stepY;
             }
         }
@@ -458,13 +456,11 @@ public class FluidRenderer {
             double yTex = Math.abs(additionalHeight);
             x = startX;
             for (int xc = 0; xc < loopCountX; xc++) {
-            	bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
                 guiVertex(x, y, 0, 0);
                 guiVertex(x + stepX, y, 16, 0);
                 guiVertex(x + stepX, endY, 16, yTex);
                 guiVertex(x, endY, 0, yTex);
                 x += stepX;
-                BufferUploader.drawWithShader(bufferbuilder.end());
             }
         }
 
@@ -475,16 +471,14 @@ public class FluidRenderer {
             double y = endY - h;
             double tx = w < 0 ? -w : w;
             double ty = h < 0 ? -h : h;
-            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
             guiVertex(x, y, 0, 0);
             guiVertex(endX, y, tx, 0);
             guiVertex(endX, endY, tx, ty);
             guiVertex(x, endY, 0, ty);
-            BufferUploader.drawWithShader(bufferbuilder.end());
+            
         }
-
-//        tess.draw();
-        
+        BufferUploader.drawWithShader(bufferbuilder.end());
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         sprite = null;
         bb = null;
         color = 0xFFFFFFFF;
@@ -495,7 +489,6 @@ public class FluidRenderer {
         float ru = sprite.getU(u);
         float rv = sprite.getV(v);
         bb.vertex(pose.pose(),(float)x, (float)y, 0);
-        bb.color(color);
         bb.uv(ru, rv);
         bb.endVertex();
     }

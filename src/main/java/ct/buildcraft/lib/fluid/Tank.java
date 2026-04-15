@@ -345,14 +345,13 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
     }
     
     public void onGuiClicked(MenuBC_Neptune container) {
-        Inventory inv = container.playerInventory;
         Player player = container.playerInventory.player;
         ItemStack held = container.getCarried();
         if (held.isEmpty()) {
             return;
         }
         ItemStack stack = transferStackToTank(player, held);
-        inv.add(stack);
+        container.setCarried(stack);
         //((ServerPlayer) player).updatingUsingItem();
         player.inventoryMenu.broadcastChanges();
         if (player.hasContainerOpen()) {

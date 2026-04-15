@@ -23,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -30,18 +31,22 @@ public class ContainerArchitectTable extends ContainerBCTile<TileArchitectTable>
     private static final IdAllocator IDS = MenuBC_Neptune.IDS.makeChild("architect_table");
     private static final int ID_NAME = IDS.allocId("NAME");
     public String name = "";
+    public final DataSlot setting;
    // public final ContainerData deltaProgress;
     
 	public ContainerArchitectTable(int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
-		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(1),/* new SimpleContainerData(2),*/ CreateClientLevelAccess(buf));
+		this(containerId, playerInventory, new ItemHandlerSimple(1), new ItemHandlerSimple(1), DataSlot.standalone(), CreateClientLevelAccess(buf));
 	}
 
-    public ContainerArchitectTable(int containerId, Inventory playerInventory, IItemHandlerAdv in, IItemHandlerAdv out,/* ContainerData containerData, */ContainerLevelAccess access) {
+    public ContainerArchitectTable(int containerId, Inventory playerInventory, IItemHandlerAdv in, IItemHandlerAdv out, DataSlot setting, ContainerLevelAccess access) {
 		super(BCBuildersGuis.MENU_ARCHITECT_TABLE.get(), playerInventory, containerId, access);
         addFullPlayerInventory(88, 84);
 
         addSlot(new SlotBase(in, 0, 135, 35));
         addSlot(new SlotOutput(out, 0, 194, 35));
+        
+        this.setting = setting;
+        addDataSlot(setting);
         
 //        this.deltaProgress = containerData;
        // addDataSlots(containerData);

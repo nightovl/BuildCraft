@@ -17,7 +17,7 @@ public record OilFeatureConfiguration(List<ResourceLocation> excludedBiomes, Lis
 	    		  Codec.list(ResourceLocation.CODEC).fieldOf("excludedBiomes").forGetter((cfg) -> cfg.excludedBiomes),
 	    		  Codec.list(ExcessiveBiome.CODEC).fieldOf("excessiveBiomes").forGetter((cfg) -> cfg.excessiveBiomes),
 	    		  Codec.list(ResourceLocation.CODEC).fieldOf("surfaceDepositBiomes").forGetter((cfg) -> cfg.surfaceDepositBiomes),
-	    		  Codec.doubleRange(0, 100).fieldOf("noiseThreshold").forGetter((cfg) ->  cfg.oilWellGenerationRate),
+	    		  Codec.doubleRange(0, 100).fieldOf("oilWellGenerationRate").forGetter((cfg) ->  cfg.oilWellGenerationRate),
 	    		  Codec.BOOL.fieldOf("genOilInEveryVanillaBiomes").forGetter((cfg) ->  cfg.genOilInEveryVanillaBiomes),
 	    		  Codec.BOOL.fieldOf("genOilInEveryModBiomes").forGetter((cfg) ->  cfg.genOilInEveryModBiomes),
 	    		  GenSetting.CODEC.fieldOf("oilStructureSetting").forGetter((cfg) -> cfg.genSetting)

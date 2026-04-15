@@ -1,6 +1,7 @@
 package ct.buildcraft.energy.generation.features;
 
 import java.util.List;
+import java.util.Random;
 
 import com.mojang.serialization.Codec;
 
@@ -10,9 +11,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
+public class OilGenFeature extends Feature<OilFeatureConfiguration>{
 	
     private static final double DESERT_NOISE_FIELD_SCALE = 0.001;
     private static final double DESERT_NOISE_FIELD_THRESHOLD = 0.7;
@@ -24,17 +24,19 @@ public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
     private static final int MAX_CHUNK_RADIUS = 5;
     
 
-	public OilGenFeature(Codec<NoneFeatureConfiguration> p_65786_) {
+	public OilGenFeature(Codec<OilFeatureConfiguration> p_65786_) {
 		super(p_65786_);
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pfc) {
+	public boolean place(FeaturePlaceContext<OilFeatureConfiguration> pfc) {
         WorldGenLevel world = pfc.level();
         BlockPos orginPos = pfc.origin();
         ChunkPos chunkPos = world.getChunk(orginPos).getPos();
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
+        
+        OilGenerator.config = pfc.config();
 
 /*        if (world.getLevelType() == LevelType.FLAT) {
             if (DEBUG_OILGEN_BASIC) {
@@ -68,18 +70,18 @@ public class OilGenFeature extends Feature<NoneFeatureConfiguration>{
                 int cx = chunkX + cdx;
                 int cz = chunkZ + cdz;
 //                world.getProfiler().startSection("scan");
-                List<OilGenStructure> structures = OilStructureGen.getStructures(world, cx, cz/*, cdx == 0 && cdz == 0*/);
-                OilGenStructure.Spring spring = null;
+                List<OilStructure> structures = OilGenerator.getStructures(world, cx, cz/*, cdx == 0 && cdz == 0*/);
+                OilStructure.Spring spring = null;
 //                world.getProfiler().endStartSection("gen");
-                for (OilGenStructure struct : structures) {
+                for (OilStructure struct : structures) {
                     struct.generate(world, box);
-                    if (struct instanceof OilGenStructure.Spring) {
-                        spring = (OilGenStructure.Spring) struct;
+                    if (struct instanceof OilStructure.Spring) {
+                        spring = (OilStructure.Spring) struct;
                     }
                 }
                 if (spring != null && box.contains(spring.pos)) {
                     
-                    for (OilGenStructure struct : structures) {
+                    for (OilStructure struct : structures) {
                         count += struct.countOilBlocks();
                     }
                     spring.generate(world, count);

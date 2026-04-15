@@ -261,12 +261,12 @@ public abstract class TileBC_Neptune extends BlockEntity implements IPayloadRece
     /** Called whenever the block is removed. Called by {@link #onExplode(Explosion)}, and
      * {@link Block#breakBlock(Level, BlockPos, BlockState)} */
     public void onRemove(boolean dropSelf) {
-        NonNullList<ItemStack> toDrop = NonNullList.create();
+/*        NonNullList<ItemStack> toDrop = NonNullList.create();
         if(dropSelf)
         	toDrop.add(this.getBlockState()
         			.getBlock().getCloneItemStack(getBlockState(), null, level, worldPosition, null));//TODO
         addDrops(toDrop, 0);
-        Containers.dropContents(level, worldPosition, toDrop);
+        Containers.dropContents(level, worldPosition, toDrop);*/
     }
     
 
