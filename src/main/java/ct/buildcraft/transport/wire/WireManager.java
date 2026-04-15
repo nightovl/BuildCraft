@@ -145,7 +145,7 @@ public class WireManager implements IWireManager {
         	poweredClient.add(part.rotate(rotation));
         
         Map<EnumWireBetween, DyeColor> rotatedBetweens = Map.copyOf(betweens);
-        rotatedBetweens.clear();
+        betweens.clear();
         for (Map.Entry<EnumWireBetween, DyeColor> entry : rotatedBetweens.entrySet()) 
         	betweens.put(entry.getKey().rotate(rotation), entry.getValue());
     }

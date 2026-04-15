@@ -49,14 +49,18 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
         matrix.pushPose();
 		VertexConsumer bb = buffer.getBuffer(RenderType.cutout());
 		BlockPos pos = tile.getBlockPos();
+		int posx = pos.getX();
+		int posy = pos.getY();
+		int posz = pos.getZ();
 		Direction face = tile.getBlockState().getValue(BlockBCBase_Neptune.PROP_FACING);
-		matrix.translate(0.5 - face.getStepX(), 0.5 - face.getStepY(), 0.5 - face.getStepZ());
+		
 		Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
         Minecraft.getInstance().getProfiler().push("box");
         Box box = tile.getBox();
+        matrix.translate(-posx, -posy, -posz);
         LaserBoxRenderer.renderLaserBoxDynamic(box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
-
+        matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
         Minecraft.getInstance().getProfiler().popPush("path");
 
         List<BlockPos> path = tile.path;
@@ -78,7 +82,7 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
 
         Minecraft.getInstance().getProfiler().pop();
 
-        matrix.translate(pos.getX(), pos.getY(), pos.getZ());
+        matrix.translate(posx, posy, posz);
         if (tile.getBuilder() != null) {
             RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }

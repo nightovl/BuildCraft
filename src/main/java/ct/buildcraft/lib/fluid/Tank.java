@@ -347,7 +347,7 @@ public class Tank implements IFluidHandlerAdv, IFluidHandler, IFluidTank {
     public void onGuiClicked(MenuBC_Neptune container) {
         Inventory inv = container.playerInventory;
         Player player = container.playerInventory.player;
-        ItemStack held = inv.getSelected();
+        ItemStack held = container.getCarried();
         if (held.isEmpty()) {
             return;
         }

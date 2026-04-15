@@ -193,6 +193,10 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
         }
         return false;
     }
+    
+    public boolean doesContainFluid(@NotNull FluidStack fluid) {
+    	return (fluid.isEmpty() || fluid.isFluidEqual(currentFluid)) ? doesContainFluid() : false;
+    }
 
     @PipeEventHandler
     public static void addTriggers(PipeEventStatement.AddTriggerInternal event) {
