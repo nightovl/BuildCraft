@@ -33,6 +33,9 @@ public class BCLiquidBlock extends LiquidBlock{
 	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 		if(BCEnergyConfig.oilIsSticky && isStick)
 			entity.makeStuckInBlock(state	, new Vec3(0.25D, (double)0.05F, 0.25D));
+		if(getFluid().getFluidType().getTemperature()>350) {
+			entity.lavaHurt();
+		}
 	}
 
 	@Override
@@ -56,9 +59,5 @@ public class BCLiquidBlock extends LiquidBlock{
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
 		return false;//BCEnergyConfig.enableOilBurn && igniteOdds > 0;
 	}
-	
-	
-
-	
 	
 }

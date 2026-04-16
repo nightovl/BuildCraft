@@ -6,6 +6,8 @@
 
 package ct.buildcraft.transport.pipe.behaviour;
 
+import java.util.List;
+
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.transport.pipe.IPipe;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkHooks;
@@ -112,4 +115,17 @@ public abstract class PipeBehaviourDiamond extends PipeBehaviour implements Menu
 	public Component getDisplayName() {
 		return Component.translatable(pipe.getDefinition().identifier.toLanguageKey());
 	}
+
+	@Override
+	public void rotate(Rotation rot) {
+		List<ItemStack> copy = List.copyOf(filters.stacks);
+		for(Direction face : Direction.values()) {
+			Direction rotate = rot.rotate(face);
+			for(int i = 0 ; i < FILTERS_PER_SIDE ;i++) {
+				filters.stacks.set(i + rotate.ordinal(), copy.get(i + face.ordinal()));
+			}
+		}
+	}
+	
+	
 }

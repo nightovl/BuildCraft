@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.transport.client.render.RenderPipeHolder;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
@@ -92,11 +92,8 @@ public abstract class PipeBehaviour implements ICapabilityProvider {
 
     public void addDrops(NonNullList<ItemStack> toDrop, int fortune) {}
 
-	public void onEntityCollide(Entity entity) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onEntityCollide(Entity entity) {}
 	
-	
+	public void rotate(Rotation rot) {}
 	
 }

@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
@@ -148,4 +149,14 @@ public abstract class PipeBehaviourDirectional extends PipeBehaviour {
             }
         }
     }
+
+	@Override
+	public void rotate(Rotation rot) {
+		if(currentDir == EnumPipePart.CENTER || currentDir.ordinal() <2) {
+			return;
+		}
+		currentDir = EnumPipePart.fromFacing(rot.rotate(getCurrentDir()));
+	}
+    
+    
 }

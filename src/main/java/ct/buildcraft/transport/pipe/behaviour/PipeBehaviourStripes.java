@@ -46,6 +46,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
@@ -251,4 +252,14 @@ public class PipeBehaviourStripes extends PipeBehaviour implements IStripesActiv
         }
         return super.getCapability(capability, facing);
     }
+
+	@Override
+	public void rotate(Rotation rot) {
+		if(direction == null || direction.ordinal() <2) {
+			return;
+		}
+		direction = rot.rotate(direction);
+	}
+    
+    
 }

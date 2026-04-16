@@ -569,6 +569,8 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
     
     @Override
 	public void rotate(Rotation axis) {
+    	if(axis == Rotation.NONE)
+    		return;
     	Map<Direction, PluggableHolder> copyPluggables = Map.copyOf(pluggables);
     	pluggables.clear();
         for (Map.Entry<Direction, PluggableHolder> e : copyPluggables.entrySet()) {
@@ -582,7 +584,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         for(Direction face : Direction.values())
         	newRedstione[axis.rotate(face).ordinal()] = redstoneValues[face.ordinal()];
         redstoneValues = newRedstione;
-		super.rotate(axis);
+        pipe.getBehaviour().rotate(axis);
 	}
 
     // Caps

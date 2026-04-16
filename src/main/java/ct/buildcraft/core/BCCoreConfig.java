@@ -39,7 +39,7 @@ public class BCCoreConfig {
     public static int pumpMaxDistance;
     public static int networkUpdateRate;//10
     public static double miningMultiplier;//1
-    public static int miningMaxDepth;GuiRecipeBookPhantom
+    public static int miningMaxDepth;
 
     private static BooleanValue propColourBlindMode;
     private static BooleanValue propUseColouredLabels;
