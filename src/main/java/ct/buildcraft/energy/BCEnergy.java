@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import ct.buildcraft.core.BCCore;
+import ct.buildcraft.energy.generation.BCOverWorldRegion;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import terrablender.api.Regions;
 
 @Mod(BCEnergy.MODID)
 public class BCEnergy {
@@ -67,11 +69,12 @@ public class BCEnergy {
     	BCEnergyFluids.init();
     	BCEnergyRecipes.init();
     	BCEnergyConfig.reloadConfig(MODID);
-//    	event.enqueueWork(() -> 
-//    	if(BCEnergyWorldGen.isTerraBlenderLoaded) {
-//	    	Regions.register(new BCOverWorldRegion(40));
-//  	  	SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, BCSurfaceRuleData.oilDesertRule());
-//    	});
+        event.enqueueWork(() -> {
+            if (BCEnergyWorldGen.isTerraBlenderLoaded) {
+                Regions.register(new BCOverWorldRegion(40));
+                LOGGER.info("TerraBlender detected, registered BuildCraft oil biome region.");
+            }
+        });
     	//event.enqueueWork(BCEnergyWorldGen::registryFeature);
         
     }
