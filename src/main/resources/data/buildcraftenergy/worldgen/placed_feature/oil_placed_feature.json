@@ -32,7 +32,7 @@
 				}
 			],
 			"surfaceDepositBiomes":[
-				
+				{"biome" : "minecraft:desert"}
 			],
 			"oilWellGenerationRate" : 1.0,
 			"genOilInEveryVanillaBiomes" : true,

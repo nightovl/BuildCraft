@@ -46,9 +46,8 @@ public class BCSiliconItems {
     
     public static void registerItemProperties() {
     	ResourceLocation label = new ResourceLocation("buildcraftsilicon","isempty");
-    	ItemProperties.register(GATE_COPIER_ITEM.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
-    			return itemStack.getOrCreateTag().contains(ItemGateCopier.NBT_DATA) ? 0 : 1;
-    	});
+    	ItemProperties.register(GATE_COPIER_ITEM.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> 
+    			(itemStack.getTag()!= null&&itemStack.getTag().contains(ItemGateCopier.NBT_DATA)) ? 0f : 1f);
 
 /*    	ItemProperties.register(TEMPLATE.get(), label, (itemStack, ClientWorld, entity, p_174638_) -> {
 			return itemStack.getDamageValue() == ItemSchematicSingle.DAMAGE_CLEAN ? 0.0F : 1.0F;

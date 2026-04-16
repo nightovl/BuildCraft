@@ -166,9 +166,9 @@ public class PipeBehaviourObsidian extends PipeBehaviour implements IMjRedstoneR
                 powerReqPerItem = (long) (Math.max(1, distance) * POWER_PER_METRE + POWER_PER_ITEM);
                 max = (int) (power / powerReqPerItem);
             }
-            ItemStack extracted = transactor.extract(StackFilter.ALL, 1, max, simulate == FluidAction.SIMULATE);
+            ItemStack extracted = transactor.extract(StackFilter.ALL, 1, max, simulate.simulate());
             if (!extracted.isEmpty()) {
-                if (simulate == FluidAction.EXECUTE) {
+                if (simulate.execute()) {
                     flowItem.insertItemsForce(extracted, faceFrom, null, INSERT_SPEED);
                 }
                 return power - powerReqPerItem * extracted.getCount();
@@ -195,7 +195,7 @@ public class PipeBehaviourObsidian extends PipeBehaviour implements IMjRedstoneR
     @Override
     public long getPowerRequested() {
         final long power = 512 * MjAPI.MJ;
-        return power - receivePower(power, FluidAction.EXECUTE);
+        return power - receivePower(power, FluidAction.SIMULATE);
     }
 
     @Override

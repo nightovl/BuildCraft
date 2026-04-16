@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 
 import ct.buildcraft.core.BCCore;
 import ct.buildcraft.lib.misc.NBTUtilBC;
-import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -58,13 +57,13 @@ public class ItemGateCopier extends Item {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
         if (player.isDescending()) {
-            return clearData(StackUtil.asNonNull(stack));
+            return clearData(stack);
         }
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 	}
 
     private InteractionResultHolder<ItemStack> clearData(@Nonnull ItemStack stack) {
-        if (getCopiedGateData(stack) != null) {
+        if (getCopiedGateData(stack) == null) {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
         CompoundTag nbt = NBTUtilBC.getItemData(stack);
@@ -81,6 +80,6 @@ public class ItemGateCopier extends Item {
     }
 
     public static void setCopiedGateData(ItemStack stack, CompoundTag nbt) {
-        NBTUtilBC.getItemData(stack).put(NBT_DATA, nbt);
+    	stack.getOrCreateTag().put(NBT_DATA, nbt);
     }
 }

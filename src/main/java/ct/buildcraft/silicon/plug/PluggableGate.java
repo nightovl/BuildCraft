@@ -352,20 +352,32 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
 		switch (axis) {
 		case CLOCKWISE_90 ->{
 			for(StatementPair pair : logic.statements) {
-				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft());
-				pair.action.set((ActionWrapper) pair.action.get().rotateLeft());
+				TriggerWrapper triggerWrapper = pair.trigger.get();
+				if(triggerWrapper != null)
+					pair.trigger.set((TriggerWrapper) triggerWrapper.rotateLeft());
+				ActionWrapper actionWrapper = pair.action.get();
+				if(actionWrapper != null)
+					pair.action.set((ActionWrapper) actionWrapper.rotateLeft());
 			}
 		}
 		case CLOCKWISE_180 ->{
 			for(StatementPair pair : logic.statements) {
-				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft().rotateLeft());
-				pair.action.set((ActionWrapper) pair.action.get().rotateLeft().rotateLeft());
+				TriggerWrapper triggerWrapper = pair.trigger.get();
+				if(triggerWrapper != null) 
+					pair.trigger.set((TriggerWrapper) triggerWrapper.rotateLeft().rotateLeft());
+				ActionWrapper actionWrapper = pair.action.get();
+				if(actionWrapper != null) 
+					pair.action.set((ActionWrapper) actionWrapper.rotateLeft().rotateLeft());
 			}
 		}
 		case COUNTERCLOCKWISE_90 ->{
 			for(StatementPair pair : logic.statements) {
-				pair.trigger.set((TriggerWrapper) pair.trigger.get().rotateLeft().rotateLeft().rotateLeft());
-				pair.action.set((ActionWrapper) pair.action.get().rotateLeft().rotateLeft().rotateLeft());
+				TriggerWrapper triggerWrapper = pair.trigger.get();
+				if(triggerWrapper != null) 
+					pair.trigger.set((TriggerWrapper) triggerWrapper.rotateLeft().rotateLeft().rotateLeft());
+				ActionWrapper actionWrapper = pair.action.get();
+				if(actionWrapper != null)
+					pair.action.set((ActionWrapper) actionWrapper.rotateLeft().rotateLeft().rotateLeft());
 			}
 		}
 		case NONE ->{}

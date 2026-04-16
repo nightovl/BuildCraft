@@ -12,7 +12,7 @@
 	        },
 	        {
 	            "predicate": {
-	                "buildcraftbuilder:isempty": 1
+	                "buildcraftsilicon:isempty": 1
 	            },
 	            "model": "buildcraftsilicon:item/gatecopier_empty"
 	        }

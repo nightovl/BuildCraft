@@ -165,8 +165,8 @@ public abstract class OilStructure {
 
         public static PatternTerrainHeight create(BlockPos.MutableBlockPos start, ReplaceType replaceType, boolean[][] pattern,
             int depth) {
-            BlockPos.MutableBlockPos min = start.setY(1);
-            BlockPos.MutableBlockPos max = min.move(pattern.length - 1, 255, pattern.length == 0 ? 0 : pattern[0].length - 1);
+            BlockPos min = start.setY(1).immutable();
+            BlockPos max = start.move(pattern.length - 1, 255, pattern.length == 0 ? 0 : pattern[0].length - 1).immutable();
             Box box = new Box(min, max);
             return new PatternTerrainHeight(box, replaceType, pattern, depth);
         }

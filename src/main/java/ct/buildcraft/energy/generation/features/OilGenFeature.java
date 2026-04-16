@@ -9,6 +9,7 @@ import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
@@ -62,6 +63,7 @@ public class OilGenFeature extends Feature<OilFeatureConfiguration>{
         int count = 0;
         int x = chunkX * 16 + 8;
         int z = chunkZ * 16 + 8;
+        world.setBlock(orginPos, Blocks.REDSTONE_BLOCK.defaultBlockState(), 2);
         BlockPos min = new BlockPos(x, world.dimensionType().minY(), z);
         Box box = new Box(min, min.offset(15, world.getHeight(), 15));
 

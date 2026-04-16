@@ -105,13 +105,15 @@ public class MessageManager {
     	Function<FriendlyByteBuf, I> deCoder, Dist... sides) {
         //PerModHandler modHandler = MOD_HANDLERS.computeIfAbsent(module, PerModHandler::new);
     	PerModHandler modHandler;
-    	if(!MOD_HANDLERS.containsKey(module)) {
-    		modHandler = new PerModHandler(module);
-    		MOD_HANDLERS.put(module, modHandler);
+    	synchronized(MOD_HANDLERS) {
+	    	if(!MOD_HANDLERS.containsKey(module)) {
+	    		modHandler = new PerModHandler(module);
+	    		MOD_HANDLERS.put(module, modHandler);
+	    	}
+	    	else {
+				modHandler = MOD_HANDLERS.get(module);
+			}
     	}
-    	else {
-			modHandler = MOD_HANDLERS.get(module);
-		}
         PerMessageInfo<I> messageInfo = (PerMessageInfo<I>) modHandler.knownMessages.get(messageClass);
         if (messageInfo == null) {
             messageInfo = new PerMessageInfo<>(modHandler, messageClass, enCoder, deCoder);
