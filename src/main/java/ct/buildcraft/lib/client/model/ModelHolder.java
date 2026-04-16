@@ -36,7 +36,7 @@ public abstract class ModelHolder {
 
     protected abstract void onModelBake(BakingCompleted event);
 
-    protected abstract void onTextureStitchPre(Set<ResourceLocation> toRegisterSprites);
+    protected abstract void onTextureStitch(Set<ResourceLocation> toRegisterSprites);
 
     public abstract boolean hasBakedQuads();
 }

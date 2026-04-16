@@ -114,7 +114,7 @@ public class SpriteHolderRegistry {
                 sprite.sprite = stitched;
                 String status = "  ";
                 if (missing.getU0() == stitched.getU0() && missing.getV0() == stitched.getV0()) {
-                    status += "fail to load sprite "+r +" ,using missinggo instead";
+                    status += "fail to load sprite "+r +" ,using missingno instead";
                 }
 
                 BCLog.logger.info("  - " + r + status);

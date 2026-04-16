@@ -74,9 +74,7 @@ public class LaserContext {
 	@OnlyIn(Dist.CLIENT)
 	public void setFaceNormal(double nx, double ny, double nz) {
 		if (useNormalColour) {
-			normal.setX((float) nx);
-			normal.setY((float) ny);
-			normal.setZ((float) nz);
+			normal.set((float) nx, (float) ny, (float) nz);
 			normal.transform(matrix);
 //			normal.add(offset);
 			n[0] = normal.x();
@@ -98,9 +96,7 @@ public class LaserContext {
 
 	@OnlyIn(Dist.CLIENT)
 	public void addPoint(double xIn, double yIn, double zIn, double uIn, double vIn) {
-		point.setX((float) xIn);
-		point.setY((float) yIn);
-		point.setZ((float) zIn);
+		point.set((float) xIn, (float) yIn, (float) zIn);
 		point.transform(matrix);
 		
 		float rx = offset.x() + point.x();//real X position

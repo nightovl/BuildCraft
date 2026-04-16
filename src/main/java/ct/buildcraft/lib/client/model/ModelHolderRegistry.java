@@ -29,7 +29,7 @@ public class ModelHolderRegistry {
     public static void onTextureStitchPre(Pre event) {
         Set<ResourceLocation> toStitch = new HashSet<>();
         for (ModelHolder holder : HOLDERS_JSONBAKE) {
-            holder.onTextureStitchPre(toStitch);
+            holder.onTextureStitch(toStitch);
         }
 
         for (ResourceLocation res : toStitch) {

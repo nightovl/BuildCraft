@@ -53,7 +53,7 @@ public class ModelHolderVariable extends ModelHolder {
     }
 
     @Override
-    protected void onTextureStitchPre(Set<ResourceLocation> toRegisterSprites) {
+    protected void onTextureStitch(Set<ResourceLocation> toRegisterSprites) {
         rawModel = null;
         failReason = null;
 
