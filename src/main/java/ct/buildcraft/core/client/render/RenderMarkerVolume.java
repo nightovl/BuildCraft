@@ -48,6 +48,16 @@ public class RenderMarkerVolume implements BlockEntityRenderer<TileMarkerVolume>
 	public boolean shouldRenderOffScreen(TileMarkerVolume p_112306_) {
 		return true;
 	}
+
+	@Override
+	public int getViewDistance() {
+		return 256;
+	}
+
+	@Override
+	public boolean shouldRender(TileMarkerVolume marker, Vec3 cameraPos) {
+		return true;
+	}
     
     @Override
 	public void render(TileMarkerVolume marker, float partialTicks, PoseStack matrix, MultiBufferSource buffer,
