@@ -119,10 +119,11 @@ public abstract class PipeBehaviourDiamond extends PipeBehaviour implements Menu
 	@Override
 	public void rotate(Rotation rot) {
 		List<ItemStack> copy = List.copyOf(filters.stacks);
+		filters.stacks.clear();
 		for(Direction face : Direction.values()) {
 			Direction rotate = rot.rotate(face);
 			for(int i = 0 ; i < FILTERS_PER_SIDE ;i++) {
-				filters.stacks.set(i + rotate.ordinal(), copy.get(i + face.ordinal()));
+				filters.stacks.set(i + rotate.ordinal()*FILTERS_PER_SIDE, copy.get(i + face.ordinal()*FILTERS_PER_SIDE));
 			}
 		}
 	}

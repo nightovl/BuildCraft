@@ -9,6 +9,7 @@ package ct.buildcraft.transport.pipe;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -39,6 +40,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -434,4 +436,18 @@ public final class Pipe implements IPipe, IDebuggable {
             right.add(face + " = " + types.get(face) + ", " + getConnectedDist(face));
         }
     }
+
+	@Override
+	public void rotate(Rotation rot) {
+		Map<Direction, Float> copyConnected = new EnumMap<Direction, Float>(connected);
+		Map<Direction, ConnectedType> copyTypes = new EnumMap<Direction, ConnectedType>(types);
+		connected.clear();
+		types.clear();
+		for(Direction dir : Direction.values()) {
+			Direction targetDir = rot.rotate(dir);
+			connected.put(targetDir, copyConnected.get(dir));
+			types.put(targetDir, copyTypes.get(dir));
+		}
+		behaviour.rotate(rot);
+	}
 }

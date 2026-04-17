@@ -214,7 +214,7 @@ public enum EnumWireBetween {
                 break;
         }
         
-        return CENTRES[(newMainAxis.ordinal()<<4) | (newXy ? 0 : 1) | (newYz ? 0 : 0b10)];
+        return CENTRES[(newMainAxis.ordinal()<<2) | (newXy ? 0 : 1) | (newYz ? 0 : 0b10)];
     }
 
     private EnumWireBetween rotateConnection(Rotation rotation) {

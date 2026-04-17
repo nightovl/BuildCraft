@@ -66,7 +66,7 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
 						}));
 		
 		this.enableRotateButton = this.addRenderableWidget(
-				CycleButton.onOffBuilder(canRotate).create(this.width / 2 - 122, this.height / 2 - 35, 77, 20,
+				CycleButton.onOffBuilder(canRotate).create(this.width / 2 - 122, this.height / 2 - 30, 77, 20,
 						Component.translatable("block.architect.rotate"), (p_169727_, p_169728_) -> {
 							this.canRotate = p_169728_;
 							container.setting
@@ -74,7 +74,7 @@ public class GuiArchitectTable extends GuiBC8<ContainerArchitectTable> {
 						}));
 
 		this.canExcavateButton = this.addRenderableWidget(
-				CycleButton.onOffBuilder(canRotate).create(this.width / 2 - 122, this.height / 2 - 15, 77, 20,
+				CycleButton.onOffBuilder(canRotate).create(this.width / 2 - 122, this.height / 2 - 5, 77, 20,
 						Component.translatable("block.architect.excavate"), (p_169727_, p_169728_) -> {
 							this.canExcavate = p_169728_;
 							container.setting

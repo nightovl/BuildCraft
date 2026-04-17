@@ -1,21 +1,8 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
-
-apply plugin: 'org.spongepowered.mixin'
 
 
 version = '1.0'
@@ -51,9 +38,6 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -79,9 +63,6 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -101,9 +82,6 @@ minecraft {
         gameTestServer {
             workingDirectory project.file('run')
 
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -119,9 +97,6 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -150,10 +125,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
-    maven { url = 'https://maven.minecraftforge.net/' }
-    maven { name="sponge"; url 'https://repo.spongepowered.org/repository/maven-public/' }
-    mavenCentral()
     jcenter()
+    maven { name="sponge"; url 'https://repo.spongepowered.org/repository/maven-public/' }
 }
 
 dependencies {
@@ -162,7 +135,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
     
-    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:1.19.2-2.0.1.136")
+	implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:1.19.2-2.0.1.128")   //TerraBlender
 //    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
      
     // Real mod deobf dependency examples - these get remapped to your current mappings

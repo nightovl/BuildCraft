@@ -486,7 +486,7 @@ public class PositionUtil {
             }
 
             if (changed) {
-                iter.accept(current);
+                iter.accept(current.immutable());//FIX 
             }
         }
     }

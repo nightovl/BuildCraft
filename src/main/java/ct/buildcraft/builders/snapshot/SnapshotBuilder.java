@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.lib.misc.BlockUtil;
 import ct.buildcraft.lib.misc.MessageUtil;
@@ -300,6 +301,10 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
             }
             currentCheckIndex = (currentCheckIndex + 1) % checkOrder.length;
         }
+        
+        int checkIndex0 = (currentCheckIndex + 1) % checkOrder.length;
+        boolean isDone = checkResults[checkIndex0] != CHECK_RESULT_UNKNOWN; //FIXED add uncheckResult check
+        
         tile.getWorldBC().getProfiler().pop();
 
         tile.getWorldBC().getProfiler().push("remove tasks");
@@ -321,8 +326,6 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
         }
         tile.getWorldBC().getProfiler().pop();
         tile.getWorldBC().getProfiler().pop();
-
-        boolean isDone = true;
 
         tile.getWorldBC().getProfiler().push("add tasks");
         tile.getWorldBC().getProfiler().push("break");
@@ -479,7 +482,14 @@ public abstract class SnapshotBuilder<T extends ITileForSnapshotBuilder> impleme
         if (checkResultsChanged) {
             afterChecks();
         }
-        return isDone;
+//        if(isDone)
+        //	BCLog.d(getBuildingInfo().box+" : done");
+  //      return isDone;
+        boolean isDone0 = true;
+        for(int i0 = 0; (i0 < checkResults.length)&&isDone0 ; i0++) {
+        	isDone0 = (checkResults[i0] == CHECK_RESULT_CORRECT);
+        }
+        return isDone0;
     }
 
    
