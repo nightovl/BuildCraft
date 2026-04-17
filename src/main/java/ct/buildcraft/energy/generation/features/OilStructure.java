@@ -15,7 +15,9 @@ import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -46,8 +48,7 @@ public abstract class OilStructure {
     /** Generates this structure in the world, but only between the given coordinates. */
     protected abstract void generateWithin(WorldGenLevel world, Box intersect);
 
-    /** @return The number of oil blocks that this structure will set. Note that this is called *after*
-     *         {@link #generateWithin(Level, Box)}, by the Spring type, so this can store the number set. */
+
     protected abstract int countOilBlocks();
 
     public void setOilIfCanReplace(WorldGenLevel world, BlockPos pos) {
@@ -69,6 +70,14 @@ public abstract class OilStructure {
         ALWAYS {
             @Override
             public boolean canReplace(WorldGenLevel world, BlockPos pos) {
+                BlockState state = world.getBlockState(pos);
+                if (state.is(BlockTags.LOGS)) {
+                    return false;
+                }
+                ResourceLocation key = net.minecraftforge.registries.ForgeRegistries.BLOCKS.getKey(state.getBlock());
+                if (key != null && key.getPath().contains("mushroom")) {
+                    return false;
+                }
                 return true;
             }
         },
@@ -181,7 +190,7 @@ public abstract class OilStructure {
                     int pz = z - box.min().getZ();
 
                     if (pattern[px][pz]) {
-                        BlockPos.MutableBlockPos upper = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.set(x, 0, z)).mutable().move(0, -1, 0);//TODO CHECK
+                        BlockPos.MutableBlockPos upper = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos.set(x, 0, z)).mutable().move(0, -1, 0);//TODO CHECK
                         int h = upper.getY();
                         if (canReplaceForOil(world, upper)) {
                             for (int y = 0; y < 5; y++) {
