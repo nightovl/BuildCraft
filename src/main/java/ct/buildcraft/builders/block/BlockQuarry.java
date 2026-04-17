@@ -6,6 +6,9 @@
 
 package ct.buildcraft.builders.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.tile.TileQuarry;
 import ct.buildcraft.lib.block.BlockBCTile_Neptune;
@@ -93,13 +96,33 @@ public class BlockQuarry extends BlockBCTile_Neptune implements IBlockWithFacing
         if (tile instanceof TileQuarry) {
             for (BlockPos blockPos : ((TileQuarry) tile).framePoses) {
                 if (world.getBlockState(blockPos).getBlock() == BCBuildersBlocks.FRAME.get()) {
-                    world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                    world.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
                 }
             }
         }
 		return super.onDestroyedByPlayer(state, world, pos, player, willHarvest, fluid);
 	}
 
+
+
+    @Override
+    public void onRemove(BlockState oldState, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (oldState.getBlock() != newState.getBlock()) {
+            BlockEntity tile = world.getBlockEntity(pos);
+            if (tile instanceof TileQuarry quarry) {
+                List<BlockPos> toRemove = new ArrayList<>(quarry.framePoses);
+                if (toRemove.isEmpty() && quarry.frameBox.isInitialized()) {
+                    toRemove.addAll(quarry.frameBox.getBlocksOnEdge());
+                }
+                for (BlockPos blockPos : toRemove) {
+                    if (world.getBlockState(blockPos).getBlock() == BCBuildersBlocks.FRAME.get()) {
+                        world.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
+                    }
+                }
+            }
+        }
+        super.onRemove(oldState, world, pos, newState, isMoving);
+    }
 
 	@Override
 	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
