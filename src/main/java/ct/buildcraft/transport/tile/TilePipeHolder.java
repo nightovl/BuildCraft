@@ -584,7 +584,7 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         for(Direction face : Direction.values())
         	newRedstione[axis.rotate(face).ordinal()] = redstoneValues[face.ordinal()];
         redstoneValues = newRedstione;
-        pipe.getBehaviour().rotate(axis);
+        pipe.rotate(axis);
 	}
 
     // Caps

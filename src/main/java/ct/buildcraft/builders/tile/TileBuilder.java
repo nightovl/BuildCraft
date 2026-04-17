@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableList;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.IPathProvider;
 import ct.buildcraft.api.enums.EnumOptionalSnapshotType;
@@ -263,6 +264,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
         if (currentBox == null) {
             currentBox = new Box();
         }
+        BCLog.d(currentBox + "update");
     }
 
     private void updateBasePoses() {
@@ -300,7 +302,7 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
     }
 
     @Override
-    public void update() {
+    public void update() {//TODO dont update every tick
 //    	if(true)return;
     	if(shouldInit) {
     		updateBasePoses();
@@ -326,7 +328,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                 }
             }
         }
-        level.getProfiler().popPush("net_update");
         sendNetworkUpdate(NET_RENDER_DATA); // FIXME
         level.getProfiler().pop();
         level.getProfiler().pop();

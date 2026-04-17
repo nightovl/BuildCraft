@@ -7,7 +7,10 @@
 package ct.buildcraft.transport.pipe;
 
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableList;
 
 import ct.buildcraft.api.core.InvalidInputDataException;
 import ct.buildcraft.api.schematics.ISchematicBlock;
@@ -17,9 +20,6 @@ import ct.buildcraft.api.transport.pipe.PipeDefinition;
 import ct.buildcraft.lib.misc.NBTUtilBC;
 import ct.buildcraft.transport.BCTransportBlocks;
 import ct.buildcraft.transport.tile.TilePipeHolder;
-
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -43,7 +43,7 @@ public class SchematicBlockPipe implements ISchematicBlock {
         if (tileEntity == null) {
             throw new IllegalStateException();
         }
-        tileNbt = tileEntity.serializeNBT();
+        tileNbt = tileEntity.serializeNBT();//TODO change to saveWithId()
     }
 
     @Nonnull
@@ -122,7 +122,19 @@ public class SchematicBlockPipe implements ISchematicBlock {
 
     @Override
     public boolean isBuilt(Level world, BlockPos blockPos) {
-        return world.getBlockState(blockPos).getBlock() == BCTransportBlocks.pipeHolder.get();
+    	CompoundTag copy = tileNbt.copy();
+    	CompoundTag tileTag = null;
+    	if(world.getBlockEntity(blockPos) instanceof TilePipeHolder tile) {
+	    	copy.putInt("x", blockPos.getX());
+	    	copy.putInt("y", blockPos.getY());
+	    	copy.putInt("z", blockPos.getZ());
+	    	tile.rotate(tileRotation);
+	    	tileTag = tile.serializeNBT();
+	    	int ordinal = tileRotation.ordinal();
+	    	int inverseId = ordinal ^ ((ordinal&1) << 1);
+			tile.rotate(Rotation.values()[inverseId]);
+    	}
+		return tileTag != null && copy.equals(tileTag);
     }
 
     @Override

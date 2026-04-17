@@ -347,10 +347,10 @@ public class SchematicBlockDefault implements ISchematicBlock {
     }
 
     @Override
-    public boolean isBuilt(Level Level, BlockPos blockPos) {
-        return blockState != null &&
-            canBeReplacedWithBlocks.contains(Level.getBlockState(blockPos).getBlock()) &&
-            BlockUtil.blockStatesWithoutBlockEqual(blockState, Level.getBlockState(blockPos), ignoredProperties);
+    public boolean isBuilt(Level world, BlockPos blockPos) {
+        return blockState != null &&((world.getBlockState(blockPos) == blockState) ||
+                (canBeReplacedWithBlocks.contains(world.getBlockState(blockPos).getBlock()) &&
+                        BlockUtil.blockStatesWithoutBlockEqual(blockState, world.getBlockState(blockPos), ignoredProperties)));
     }
 
     @Override
