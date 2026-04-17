@@ -34,6 +34,10 @@ import net.minecraft.world.level.dimension.DimensionType;
 public class OilGenerator {
     /** Random number, used to differentiate generators */
     private static final long MAGIC_GEN_NUMBER = 0xD0_46_B4_E4_0C_7D_07_CFL;
+    /** Salt for sparse chunk grid inside excessive biomes. */
+    private static final long GRID_MAGIC_NUMBER = 0x66_11_2A_7B_3C_59_0D_91L;
+    /** One oil center candidate per 2x2 chunk region in excessive biomes. */
+    private static final int EXCESSIVE_REGION_SIZE = 3;
 
     public static final boolean DEBUG_OILGEN_BASIC = BCDebugging.shouldDebugLog("energy.oilgen");
     public static final boolean DEBUG_OILGEN_ALL = BCDebugging.shouldDebugComplex("energy.oilgen");
@@ -63,6 +67,15 @@ public class OilGenerator {
     	return getStructures(level, (int)(key&0xFFFFFFFFL), (int)((key>>32)&0xFFFFFFFFL), false);
     }
     
+    private static boolean isRegionCandidate(WorldGenLevel world, int chunkX, int chunkZ, int regionSize, long magicNumber) {
+        int regionX = Math.floorDiv(chunkX, regionSize);
+        int regionZ = Math.floorDiv(chunkZ, regionSize);
+        Random rand = RandUtil.createRandomForChunk(world, regionX, regionZ, magicNumber);
+        int candidateX = regionX * regionSize + rand.nextInt(regionSize);
+        int candidateZ = regionZ * regionSize + rand.nextInt(regionSize);
+        return chunkX == candidateX && chunkZ == candidateZ;
+    }
+
     public static List<OilStructure> getStructures(WorldGenLevel world, int cx, int cz) {
     	if(level != world) {
     		level = world;
@@ -120,13 +133,24 @@ public class OilGenerator {
         
 
         boolean oilBiome = config.surfaceDepositBiomes().contains(key);
+        boolean excessiveBiome = config.excessiveBiomes().stream().anyMatch((a) -> a.biome().equals(key));
+
+        if (excessiveBiome && !isRegionCandidate(world, cx, cz, EXCESSIVE_REGION_SIZE, GRID_MAGIC_NUMBER)) {
+            if (DEBUG_OILGEN_ALL & log) {
+                BCLog.logger.info(
+                    "[energy.oilgen] Skipping chunk " + cx + ", " + cz
+                        + " because it is not the selected grid candidate for excessive biome " + key
+                );
+            }
+            return ImmutableList.of();
+        }
 
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= config.oilWellGenerationRate();
-        if (config.excessiveBiomes().stream().anyMatch((a) -> a.biome().equals(key))) {
+        if (excessiveBiome) {
             bonus *= 15.0;
         }
-        GenSetting genSetting = config.genSetting();
+	    GenSetting genSetting = config.genSetting();
         final GenType type;
         if (rand.nextDouble() * 100 <=  genSetting.largeOilGenProb() * bonus) {
             // 0.04%
