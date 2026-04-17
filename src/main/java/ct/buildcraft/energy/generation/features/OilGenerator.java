@@ -124,7 +124,7 @@ public class OilGenerator {
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= config.oilWellGenerationRate();
         if (config.excessiveBiomes().stream().anyMatch((a) -> a.biome().equals(key))) {
-            bonus *= 30.0;
+            bonus *= 15.0;
         }
         GenSetting genSetting = config.genSetting();
         final GenType type;

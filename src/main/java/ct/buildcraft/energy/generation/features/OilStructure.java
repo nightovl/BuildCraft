@@ -181,7 +181,7 @@ public abstract class OilStructure {
                     int pz = z - box.min().getZ();
 
                     if (pattern[px][pz]) {
-                        BlockPos.MutableBlockPos upper = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos.set(x, 0, z)).mutable().move(0, -1, 0);//TODO CHECK
+                        BlockPos.MutableBlockPos upper = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.set(x, 0, z)).mutable().move(0, -1, 0);//TODO CHECK
                         int h = upper.getY();
                         if (canReplaceForOil(world, upper)) {
                             for (int y = 0; y < 5; y++) {
