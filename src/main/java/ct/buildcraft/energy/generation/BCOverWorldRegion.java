@@ -28,12 +28,8 @@ public class BCOverWorldRegion extends Region {
 
 	@Override
 	public void addBiomes(Registry<Biome> registry, Consumer<Pair<ParameterPoint, ResourceKey<Biome>>> mapper) {
-		this.addModifiedVanillaOverworldBiomes(mapper, b -> 
-			BCEnergyWorldGen.OIL_BIOME_REPLACEMENT.forEach((a) -> b.replaceBiome(a.getFirst(), BCEnergyWorldGen.OIL_DESERT_KEY)));
-//		addMidSlice((a) -> {
-//				b.replaceBiome(a.getFirst(), a.getSecond());
-//			}, Weirdness.MID_SLICE_VARIANT_ASCENDING.parameter());
-//		addMidSlice(mapper, Weirdness.MID_SLICE_VARIANT_ASCENDING.parameter());
+		this.addModifiedVanillaOverworldBiomes(mapper, b ->
+			BCEnergyWorldGen.OIL_BIOME_REPLACEMENT.forEach((a) -> b.replaceBiome(a.getFirst(), a.getSecond())));
 	}
 
 	private void addDesertOil(Registry<Biome> registry, Consumer<Pair<ParameterPoint, ResourceKey<Biome>>> mapper) {

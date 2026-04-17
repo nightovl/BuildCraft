@@ -3,7 +3,6 @@ package ct.buildcraft.energy.generation.features;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -17,11 +16,9 @@ import ct.buildcraft.api.core.BCDebugging;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergyConfig;
-import ct.buildcraft.energy.generation.features.OilFeatureConfiguration.ExcessiveBiome;
 import ct.buildcraft.energy.generation.features.OilFeatureConfiguration.GenSetting;
 import ct.buildcraft.energy.generation.features.OilStructure.GenByPredicate;
 import ct.buildcraft.energy.generation.features.OilStructure.ReplaceType;
-import ct.buildcraft.lib.delta.SimplexNoise;
 import ct.buildcraft.lib.misc.RandUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
@@ -99,7 +96,7 @@ public class OilGenerator {
 //        	return ImmutableList.of();
 //        }
 
-        // Do nsot generate oil in excluded biomes
+        // Do not generate oil in excluded biomes
         boolean isExcludedBiome = config.excludedBiomes().contains(key);
         if (isExcludedBiome/* == BCEnergyConfig.excludedBiomesIsBlackList*/) {
             if (DEBUG_OILGEN_BASIC & log){//log) {
@@ -126,30 +123,10 @@ public class OilGenerator {
 
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= config.oilWellGenerationRate();
-/*        if (BCEnergyWorldGen.isTerraBlenderLoaded) {
-	        if (BCEnergyConfig.excessiveBiomes.contains(key)) 
-	            bonus *= 30.0;
-	        if (sampler == null) {
-	            ServerChunkCache serverchunkcache = serverlevel.getChunkSource();
-	            RandomState randomstate = serverchunkcache.randomState();
-	            sampler = randomstate.sampler();
-	        }
-	        DensityFunction.SinglePointContext densityfunction$singlepointcontext = new DensityFunction.SinglePointContext(x&0xFFFFFFFC, seaLevel&0xFFFFFFFC, z&0xFFFFFFFC);
-	        double compute = sampler.weirdness().compute(densityfunction$singlepointcontext);
-	        if(BCEnergyConfig.excessiveBiomes.contains(key) != compute > 0)
-	        BCLog.d("missmatch oil gen");
-	        
-        }*/
-        Optional<ExcessiveBiome> excessiveBiome = config.excessiveBiomes().stream().filter((a) -> a.biome().equals(key)).findAny();
-	    if(excessiveBiome.isPresent()){
-	    	ExcessiveBiome excessiveBiome0 = excessiveBiome.get();
-	    	double d0 = SimplexNoise.noise((x + xOffset)*excessiveBiome0.noiseScale(), (z + zOffset)*excessiveBiome0.noiseScale());
-	    	if(d0 > excessiveBiome0.noiseThreshold()) {
-	        	bonus *= 30.0;
-	        	BCLog.d("gen many oil "+ x + ", "+ z);
-	        }
-	    }
-	    GenSetting genSetting = config.genSetting();
+        if (config.excessiveBiomes().stream().anyMatch((a) -> a.biome().equals(key))) {
+            bonus *= 30.0;
+        }
+        GenSetting genSetting = config.genSetting();
         final GenType type;
         if (rand.nextDouble() * 100 <=  genSetting.largeOilGenProb() * bonus) {
             // 0.04%
@@ -169,7 +146,7 @@ public class OilGenerator {
             }
             return ImmutableList.of();
         }
-        if (/*DEBUG_OILGEN_BASIC & */true) {
+        if (DEBUG_OILGEN_BASIC & log) {
             BCLog.logger.info(
                 "[energy.oilgen] Generating an oil well (" + type.name().toLowerCase(Locale.ROOT)
                     + ") in " + toStr(world) + " chunk " + cx + ", " + cz + " at " + x + ", " + z
