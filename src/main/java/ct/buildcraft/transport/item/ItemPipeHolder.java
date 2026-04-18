@@ -12,12 +12,17 @@ import java.util.List;
 
 
 import ct.buildcraft.api.transport.pipe.IItemPipe;
+import ct.buildcraft.api.transport.pipe.PipeApi;
 import ct.buildcraft.api.transport.pipe.PipeDefinition;
 import ct.buildcraft.transport.BCTransport;
 import ct.buildcraft.transport.BCTransportBlocks;
+import ct.buildcraft.lib.misc.LocaleUtil;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -75,19 +80,17 @@ public class ItemPipeHolder extends BlockItem implements IItemPipe {
 		
 	@Override
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
-/*        String tipName = "tip." + unlocalizedName.replace(".name", "").replace("item.", "");
-        String localised = I18n.get(tipName);
-        if (!localised.equals(tipName))
-            tooltip.add(Component.translatable(localised).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        String tipName = "tip." + unlocalizedName;
+        if (I18n.exists(tipName)) {
+            tooltip.add(Component.translatable(tipName).setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
+        }
         if (definition.flowType == PipeApi.flowFluids) {
             PipeApi.FluidTransferInfo fti = PipeApi.getFluidTransferInfo(definition);
-            tooltip.add(Component.translatable(Component.translatableFluidFlow(fti.transferPerTick)));
+            tooltip.add(LocaleUtil.localizeFluidFlow(fti.transferPerTick));
         } else if (definition.flowType == PipeApi.flowPower) {
             PipeApi.PowerTransferInfo pti = PipeApi.getPowerTransferInfo(definition);
-            tooltip.add(Component.translatable(Component.translatableMjFlow(pti.transferPerTick)));
-            // TODO: remove this! (Not localised b/c localisations happen AFTER this is removed)
-            tooltip.add(Component.literal("Work in progress - the above limit isn't enforced!"));
-        }*/
+            tooltip.add(LocaleUtil.localizeMjFlow(pti.transferPerTick));
+        }
 		super.appendHoverText(stack, world, tooltip, flag);
 	}
 	
