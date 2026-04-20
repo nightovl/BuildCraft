@@ -1,4 +1,5 @@
 /* Copyright (c) 2016 SpaceToad and the BuildCraft team
+<<<<<<< HEAD
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
  * distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/. */
@@ -8,7 +9,6 @@ import ct.buildcraft.api.blocks.CustomPaintHelper;
 import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.lib.item.ItemByEnum;
 import ct.buildcraft.lib.misc.SoundUtil;
-import ct.buildcraft.lib.misc.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -75,5 +75,4 @@ public class ItemPaintbrush_BC8 extends ItemByEnum<DyeColor> {
         }
         return false;
     }
-
 }

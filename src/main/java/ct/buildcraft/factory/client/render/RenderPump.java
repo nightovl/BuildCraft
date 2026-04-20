@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.phys.Vec3;
 
 
 public class RenderPump implements BlockEntityRenderer<TilePump> {
@@ -151,6 +152,16 @@ public class RenderPump implements BlockEntityRenderer<TilePump> {
 
     @Override
 	public boolean shouldRenderOffScreen(TilePump p_112306_) {
+		return true;
+	}
+
+    @Override
+	public int getViewDistance() {
+		return 256;
+	}
+
+    @Override
+	public boolean shouldRender(TilePump tile, Vec3 cameraPos) {
 		return true;
 	}
 

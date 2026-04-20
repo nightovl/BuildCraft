@@ -19,15 +19,18 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.GlazedTerracottaBlock;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -49,7 +52,8 @@ public enum CustomPaintHelper {
     	RECOLOR_MAP.put(GlazedTerracottaBlock.class, "_glazed_terracotta");
 		RECOLOR_MAP.put(CandleBlock.class, "_candle");
 		RECOLOR_MAP.put(CandleCakeBlock.class, "_candle_cake");
-		RECOLOR_MAP.put(StainedGlassBlock.class, "_stained_glass_pane");
+		RECOLOR_MAP.put(StainedGlassBlock.class, "_stained_glass");
+		RECOLOR_MAP.put(StainedGlassPaneBlock.class, "_stained_glass_pane");
 		RECOLOR_MAP.put(WoolCarpetBlock.class, "_carpet");
 		RECOLOR_MAP.put(BannerBlock.class, "_banner");
 		RECOLOR_MAP.put(WallBannerBlock.class, "_wall_banner");
@@ -152,7 +156,9 @@ public enum CustomPaintHelper {
     	else return false;
     	Block newblock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(paint.getName() + type));
     	if(newblock == null) return false;
-    	world.setBlockAndUpdate(pos, newblock.defaultBlockState());
+    	BlockState[] newState = {newblock.defaultBlockState()};
+    	state.getValues().keySet().forEach(k -> newState[0] = newState[0].setValue((Property)k, state.getValue(k)));
+		world.setBlockAndUpdate(pos, newState[0]);
     	return true;
     	
     		

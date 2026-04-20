@@ -117,6 +117,8 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
     private long debugPowerRate = 0;
     private double blockPercentSoFar;
     private double moveDistanceSoFar;
+    /** Rotating index for fast frame-edge rescans, so broken frames are repaired quickly. */
+    private int frameEdgeScanIndex;
 
     private List<AABB> collisionBoxes = ImmutableList.of();
     private Vec3 collisionDrillPos;
@@ -133,7 +135,14 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
     	}
     	@Override
     	public int getListenerRadius() {
-    		return 32;
+    		int radius = 64;
+    		if (frameBox.isInitialized()) {
+    			radius = Math.max(radius, maxDistanceToBox(frameBox) + 4);
+    		}
+    		if (miningBox.isInitialized()) {
+    			radius = Math.max(radius, maxDistanceToBox(miningBox) + 4);
+    		}
+    		return radius;
     	}
     	@Override
     	public boolean handleGameEvent(ServerLevel w, Message msg) {
@@ -158,6 +167,12 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
 //            w.profiler.endSection();
     	}
     };
+
+    private int maxDistanceToBox(Box box) {
+        double d1 = Math.sqrt(worldPosition.distSqr(box.min()));
+        double d2 = Math.sqrt(worldPosition.distSqr(box.max()));
+        return (int) Math.ceil(Math.max(d1, d2));
+    }
 
     public TileQuarry(BlockPos pos, BlockState state) {
     	super(BCBuildersBlocks.QUARRY_TILE_BC8.get(), pos, state);
@@ -502,6 +517,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
         firstChecked = false;
         frameBreakBlockPoses.clear();
         framePlaceFramePoses.clear();
+        frameEdgeScanIndex = 0;
         BlockState state = level.getBlockState(worldPosition);
         if (state.getBlock() == BCBuildersBlocks.QUARRY.get() && frameBox.isInitialized()) {
             List<BlockPos> blocksInArea = frameBox.getBlocksInArea();
@@ -543,6 +559,16 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
 
         if (!firstChecked) {
             return;
+        }
+
+        if (!framePoses.isEmpty()) {
+            int scans = Math.min(8, framePoses.size());
+            for (int i = 0; i < scans; i++) {
+                if (frameEdgeScanIndex >= framePoses.size()) {
+                    frameEdgeScanIndex = 0;
+                }
+                check(framePoses.get(frameEdgeScanIndex++));
+            }
         }
 
         long max;

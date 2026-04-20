@@ -37,7 +37,6 @@ import net.minecraft.world.level.biome.Climate.ParameterPoint;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
 import net.minecraftforge.common.BiomeManager.BiomeType;
@@ -124,12 +123,7 @@ public class BCEnergyWorldGen {
     	FEATURE_REGISTER.register("worldgen.feature.oil", () -> OIL_FEATURE);
     	FEATURE_REGISTER.register(modEventBus);
     	BIOME_REGISTER.register(modEventBus);
-//    	getReplaceMentFromOverworldBiomeBuilder();
-//    	saveBiomeReplaceMent();
-    	if(!loadBiomeReplaceMent()) {
-    		getReplaceMentFromOverworldBiomeBuilder();
-    		saveBiomeReplaceMent();
-    	}
+    	getReplaceMentFromOverworldBiomeBuilder();
     }
     
     public static void init() {
@@ -159,10 +153,15 @@ public class BCEnergyWorldGen {
 					OverworldBiomeBuilder builder = (OverworldBiomeBuilder) constructor.newInstance();
 					method.invoke(builder, con);
 					BCLog.logger.debug("BCEnergyBiomes:invoke:successed");
-					for(var pair : list) {
-						if(pair.getSecond().equals(Biomes.DESERT)&&pair.getFirst().weirdness().max()>0) {
-							OIL_BIOME_REPLACEMENT.add(pair);
-							BCLog.logger.debug("BCEnergyBiomes:methodName:get desert biome for "+pair.getFirst());
+					for (var pair : list) {
+						ResourceKey<Biome> replacement = null;
+						if (pair.getSecond().equals(Biomes.DESERT) && pair.getFirst().weirdness().max() > 0) {
+							replacement = OIL_DESERT_KEY;
+						} else if (pair.getSecond().location().getPath().contains("ocean")) {
+							replacement = OIL_DEEP_OCEAN_KEY;
+						}
+						if (replacement != null) {
+							OIL_BIOME_REPLACEMENT.add(Pair.of(pair.getFirst(), replacement));
 						}
 					}
 				} catch (Exception e) {

@@ -15,8 +15,9 @@ import ct.buildcraft.lib.misc.data.Box;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -46,8 +47,7 @@ public abstract class OilStructure {
     /** Generates this structure in the world, but only between the given coordinates. */
     protected abstract void generateWithin(WorldGenLevel world, Box intersect);
 
-    /** @return The number of oil blocks that this structure will set. Note that this is called *after*
-     *         {@link #generateWithin(Level, Box)}, by the Spring type, so this can store the number set. */
+
     protected abstract int countOilBlocks();
 
     public void setOilIfCanReplace(WorldGenLevel world, BlockPos pos) {
@@ -69,6 +69,14 @@ public abstract class OilStructure {
         ALWAYS {
             @Override
             public boolean canReplace(WorldGenLevel world, BlockPos pos) {
+                BlockState state = world.getBlockState(pos);
+                if (state.is(BlockTags.LOGS)) {
+                    return false;
+                }
+                ResourceLocation key = net.minecraftforge.registries.ForgeRegistries.BLOCKS.getKey(state.getBlock());
+                if (key != null && key.getPath().contains("mushroom")) {
+                    return false;
+                }
                 return true;
             }
         },
