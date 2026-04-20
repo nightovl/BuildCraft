@@ -439,6 +439,8 @@ public final class Pipe implements IPipe, IDebuggable {
 
 	@Override
 	public void rotate(Rotation rot) {
+		if(this == Pipe.EMPTY)
+			return;
 		Map<Direction, Float> copyConnected = new EnumMap<Direction, Float>(connected);
 		Map<Direction, ConnectedType> copyTypes = new EnumMap<Direction, ConnectedType>(types);
 		connected.clear();

@@ -62,7 +62,7 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
         LaserBoxRenderer.renderLaserBoxDynamic(box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
      //   matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
         Minecraft.getInstance().getProfiler().popPush("path");
-
+        
         List<BlockPos> path = tile.path;
         if (path != null) {
             BlockPos last = null;
@@ -79,11 +79,11 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
             }
         }
 
-
+     //   matrix.translate(posx, posy, posz);
         Minecraft.getInstance().getProfiler().pop();
 
-   //     matrix.translate(posx, posy, posz);
-//        matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
+        matrix.translate(posx, posy, posz);
+  //      matrix.translate(posx + 0.5 ,posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
         if (tile.getBuilder() != null) {
             RenderSnapshotBuilder.render(tile.getBuilder(), tile.getLevel(), tile.getBlockPos(), partialTicks, matrix, buffer, itemRenderer);
         }

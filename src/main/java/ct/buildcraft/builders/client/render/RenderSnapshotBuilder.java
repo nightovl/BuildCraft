@@ -53,7 +53,7 @@ public class RenderSnapshotBuilder {
     ) {
     	Matrix4f pose = matrix.last().pose();
 		Matrix3f normal = matrix.last().normal();
-		 matrix.translate( -tilePos.getX(), - tilePos.getY(), -tilePos.getZ());
+		matrix.translate( -tilePos.getX(), - tilePos.getY(), -tilePos.getZ());
         for (SnapshotBuilder<T>.PlaceTask placeTask : snapshotBuilder.clientPlaceTasks) {
             Vec3 prevPos = snapshotBuilder.prevClientPlaceTasks.stream()
                 .filter(renderTaskLocal -> renderTaskLocal.pos.equals(placeTask.pos))
@@ -83,13 +83,13 @@ public class RenderSnapshotBuilder {
         }
         VertexConsumer bb = buffer.getBuffer(RenderType.cutoutMipped());
         Vec3 robotPos = snapshotBuilder.robotPos;
-       
+       // robotPos = Vec3.ZERO;
         if (robotPos != null) {
             if (snapshotBuilder.prevRobotPos != null) {
                 robotPos = snapshotBuilder.prevRobotPos.add(robotPos.subtract(snapshotBuilder.prevRobotPos).scale(partialTicks));
             }
             BlockPos robp = new BlockPos(robotPos);
-
+            
             int i = 0;
             for (Direction face : Direction.values()) {
 //            	RenderSystem._setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
@@ -109,8 +109,9 @@ public class RenderSnapshotBuilder {
                 i++;
             }
             
-            matrix.translate(robotPos.x(), robotPos.y() , robotPos.z() );
+        //    matrix.translate(robotPos.x(), robotPos.y() , robotPos.z() );
             //matrix.translate(0, 0, 0);
+            
             for (SnapshotBuilder.BreakTask breakTask : snapshotBuilder.clientBreakTasks) {
                 LaserRenderer_BC8.renderLaserDynamic(
                     pose, normal,
@@ -124,7 +125,8 @@ public class RenderSnapshotBuilder {
                         )],
                         robotPos.subtract(new Vec3(0, 0.27, 0)),
                         Vec3.atLowerCornerOf(breakTask.pos).add(VecUtil.VEC_HALF),
-                        1 / 16D
+                        1 / 16D,
+                        true
                     ),
                 	bb
                 );

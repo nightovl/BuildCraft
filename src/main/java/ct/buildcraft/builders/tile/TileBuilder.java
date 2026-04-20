@@ -318,7 +318,16 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             isDone = builder.tick();
             if (isDone) {
                 if (currentBasePosIndex < basePoses.size() - 1) {
-                    currentBasePosIndex++;
+                	BlockPos currentBasePos = getCurrentBasePos();
+                	Box newBox ;
+                    do{
+                    	currentBasePosIndex++;
+                    	BlockPos newBasePos = getCurrentBasePos();
+                    	if(newBasePos == null) break;
+                    	BlockPos dPos = newBasePos.subtract(currentBasePos);
+                    	newBox = new Box(currentBox.min().offset(dPos), currentBox.max().offset(dPos));
+                   // 	BCLog.d(currentBox.doesIntersectWith(newBox));
+                    }while(currentBox.doesTouchWith(newBox));
                     if (currentBasePosIndex == basePoses.size() && currentBasePosIndex > 1)
                         AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT);
                     if (currentBasePosIndex >= basePoses.size()) {
