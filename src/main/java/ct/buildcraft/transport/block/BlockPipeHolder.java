@@ -877,7 +877,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			toDrop.add(stack);
 		}
 		Pipe pipe = tile.getPipe();
-		if (pipe != null) {
+		if (pipe != Pipe.EMPTY) {
 			pipe.addDrops(toDrop, 1);// 1 is meaningless
 		}
 		return toDrop;
