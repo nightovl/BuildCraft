@@ -211,14 +211,14 @@ public class PathConnection extends MarkerConnection<PathConnection> {
             if (last == null) {
                 last = p;
             } else {
-                renderLaser(pose, matrix, VEC_HALF.add(Vec3.atLowerCornerOf(last)), VEC_HALF.add(Vec3.atLowerCornerOf(p)));
+                renderLaser(pose, matrix, Vec3.atCenterOf(last), Vec3.atCenterOf(p));
                 last = p;
             }
         }
         if (loop) {
             BlockPos from = positions.getLast();
             BlockPos to = positions.getFirst();
-            renderLaser(pose, matrix, VEC_HALF.add(Vec3.atLowerCornerOf(from)), VEC_HALF.add(Vec3.atLowerCornerOf(to)));
+            renderLaser(pose, matrix, Vec3.atCenterOf(from), Vec3.atCenterOf(to));
         }
     }
 

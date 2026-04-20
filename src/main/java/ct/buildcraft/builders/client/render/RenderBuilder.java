@@ -60,7 +60,7 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
         Box box = tile.getBox();
         matrix.translate(-posx, -posy, -posz);
         LaserBoxRenderer.renderLaserBoxDynamic(box, BuildCraftLaserManager.STRIPES_WRITE, pose, normal, bb, true);
-        matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
+     //   matrix.translate(posx + 0.5 - face.getStepX(),posy + 0.5 - face.getStepY(),posz + 0.5 - face.getStepZ());
         Minecraft.getInstance().getProfiler().popPush("path");
 
         List<BlockPos> path = tile.path;
@@ -68,11 +68,11 @@ public class RenderBuilder implements BlockEntityRenderer<TileBuilder> {
             BlockPos last = null;
             for (BlockPos p : path) {
                 if (last != null) {
-                    Vec3 from = Vec3.atBottomCenterOf(last);
-                    Vec3 to = Vec3.atBottomCenterOf(p);
+                    Vec3 from = Vec3.atCenterOf(last);
+                    Vec3 to = Vec3.atCenterOf(p);
                     Vec3 one = offset(from, to);
                     Vec3 two = offset(to, from);
-                    LaserData_BC8 data = new LaserData_BC8(BuildCraftLaserManager.STRIPES_WRITE_DIRECTION, one, two, 1 / 16.1);
+                    LaserData_BC8 data = new LaserData_BC8(BuildCraftLaserManager.STRIPES_WRITE_DIRECTION, one, two, 1 / 16.1, true);
                     LaserRenderer_BC8.renderLaserDynamic(pose, normal, data, bb);
                 }
                 last = p;
