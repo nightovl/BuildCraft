@@ -350,7 +350,7 @@
   "chat.pipe.power.iron.level.40": "Low",
   "chat.pipe.power.iron.level.640": "High",
   "chat.pipe.power.iron.level.80": "Medium-Low",
-  "chat.pipe.power.iron.mode": "Switched to %d MJ/t limit",
+  "chat.pipe.power.iron.mode": "Switched MJ/t limit to %d",
   "chat.pipe.power.iron.mode.numberless": "Switched to %s limit",
   "chat.pipe.rf.iron.mode": "Switched to %d RF/t limit",
   "color.black": "Black",
