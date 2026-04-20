@@ -26,7 +26,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PathConnection extends MarkerConnection<PathConnection> {
     private static final double RENDER_SCALE = 1 / 16.05;
-    private static final Vec3 VEC_HALF = new Vec3(0.5, 0.5, 0.5);
     private final Deque<BlockPos> positions = new LinkedList<>();
     private boolean loop = false;
 
