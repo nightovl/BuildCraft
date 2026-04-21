@@ -83,10 +83,10 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         "buildcrafttransport:pipe_dream"
     );
 
-/*    @Override
+    @Override
     public IdAllocator getIdAllocator() {
         return IDS;
-    }*/
+    }
 
     private int[] redstoneValues = new int[6];
     private int[] oldRedstoneValues = new int[] { -1, -1, -1, -1, -1, -1 };
