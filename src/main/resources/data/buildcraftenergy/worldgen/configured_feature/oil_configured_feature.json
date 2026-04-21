@@ -15,20 +15,36 @@
     ],
     "excessiveBiomes": [
       {
-        "biome": "buildcraftenergy:oil_desert",
+        "biome": "minecraft:desert",
         "noiseScale": 0.001,
         "noiseThreshold": 0.7
       },
       {
-        "biome": "buildcraftenergy:oil_deep_ocean",
+        "biome": "minecraft:deep_cold_ocean",
+        "noiseScale": 0.0005,
+        "noiseThreshold": 0.7
+      },
+      {
+        "biome": "minecraft:deep_ocean",
         "noiseScale": 0.0005,
         "noiseThreshold": 0.9
       }
     ],
-    "surfaceDepositBiomes": [],
+    "surfaceDepositBiomes": [
+      "minecraft:desert",
+      "minecraft:ocean",
+      "minecraft:deep_ocean",
+      "minecraft:cold_ocean",
+      "minecraft:deep_cold_ocean",
+      "minecraft:lukewarm_ocean",
+      "minecraft:deep_lukewarm_ocean",
+      "minecraft:warm_ocean",
+      "minecraft:frozen_ocean",
+      "minecraft:deep_frozen_ocean"
+    ],
     "oilWellGenerationRate": 1.0,
     "genOilInEveryVanillaBiomes": true,
-    "genOilInEveryModBiomes": true,
+    "genOilInEveryModBiomes": false,
     "oilStructureSetting": {
       "genOilState": {
         "Name": "buildcraftenergy:oil"

@@ -3,6 +3,7 @@ package ct.buildcraft.energy.generation.features;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -16,9 +17,11 @@ import ct.buildcraft.api.core.BCDebugging;
 import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.core.BCCoreBlocks;
 import ct.buildcraft.energy.BCEnergyConfig;
+import ct.buildcraft.energy.generation.features.OilFeatureConfiguration.ExcessiveBiome;
 import ct.buildcraft.energy.generation.features.OilFeatureConfiguration.GenSetting;
 import ct.buildcraft.energy.generation.features.OilStructure.GenByPredicate;
 import ct.buildcraft.energy.generation.features.OilStructure.ReplaceType;
+import ct.buildcraft.lib.delta.SimplexNoise;
 import ct.buildcraft.lib.misc.RandUtil;
 import ct.buildcraft.lib.misc.VecUtil;
 import ct.buildcraft.lib.misc.data.Box;
@@ -34,10 +37,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 public class OilGenerator {
     /** Random number, used to differentiate generators */
     private static final long MAGIC_GEN_NUMBER = 0xD0_46_B4_E4_0C_7D_07_CFL;
-    /** Salt for sparse chunk grid inside excessive biomes. */
-    private static final long GRID_MAGIC_NUMBER = 0x66_11_2A_7B_3C_59_0D_91L;
-    /** One oil center candidate per 2x2 chunk region in excessive biomes. */
-    private static final int EXCESSIVE_REGION_SIZE = 3;
 
     public static final boolean DEBUG_OILGEN_BASIC = BCDebugging.shouldDebugLog("energy.oilgen");
     public static final boolean DEBUG_OILGEN_ALL = BCDebugging.shouldDebugComplex("energy.oilgen");
@@ -67,15 +66,6 @@ public class OilGenerator {
     	return getStructures(level, (int)(key&0xFFFFFFFFL), (int)((key>>32)&0xFFFFFFFFL), false);
     }
     
-    private static boolean isRegionCandidate(WorldGenLevel world, int chunkX, int chunkZ, int regionSize, long magicNumber) {
-        int regionX = Math.floorDiv(chunkX, regionSize);
-        int regionZ = Math.floorDiv(chunkZ, regionSize);
-        Random rand = RandUtil.createRandomForChunk(world, regionX, regionZ, magicNumber);
-        int candidateX = regionX * regionSize + rand.nextInt(regionSize);
-        int candidateZ = regionZ * regionSize + rand.nextInt(regionSize);
-        return chunkX == candidateX && chunkZ == candidateZ;
-    }
-
     public static List<OilStructure> getStructures(WorldGenLevel world, int cx, int cz) {
     	if(level != world) {
     		level = world;
@@ -109,7 +99,7 @@ public class OilGenerator {
 //        	return ImmutableList.of();
 //        }
 
-        // Do not generate oil in excluded biomes
+        // Do nsot generate oil in excluded biomes
         boolean isExcludedBiome = config.excludedBiomes().contains(key);
         if (isExcludedBiome/* == BCEnergyConfig.excludedBiomesIsBlackList*/) {
             if (DEBUG_OILGEN_BASIC & log){//log) {
@@ -133,23 +123,32 @@ public class OilGenerator {
         
 
         boolean oilBiome = config.surfaceDepositBiomes().contains(key);
-        boolean excessiveBiome = config.excessiveBiomes().stream().anyMatch((a) -> a.biome().equals(key));
-
-        if (excessiveBiome && !isRegionCandidate(world, cx, cz, EXCESSIVE_REGION_SIZE, GRID_MAGIC_NUMBER)) {
-            if (DEBUG_OILGEN_ALL & log) {
-                BCLog.logger.info(
-                    "[energy.oilgen] Skipping chunk " + cx + ", " + cz
-                        + " because it is not the selected grid candidate for excessive biome " + key
-                );
-            }
-            return ImmutableList.of();
-        }
 
         double bonus = oilBiome ? 3.0 : 1.0;
         bonus *= config.oilWellGenerationRate();
-        if (excessiveBiome) {
-            bonus *= 15.0;
-        }
+/*        if (BCEnergyWorldGen.isTerraBlenderLoaded) {
+	        if (BCEnergyConfig.excessiveBiomes.contains(key)) 
+	            bonus *= 30.0;
+	        if (sampler == null) {
+	            ServerChunkCache serverchunkcache = serverlevel.getChunkSource();
+	            RandomState randomstate = serverchunkcache.randomState();
+	            sampler = randomstate.sampler();
+	        }
+	        DensityFunction.SinglePointContext densityfunction$singlepointcontext = new DensityFunction.SinglePointContext(x&0xFFFFFFFC, seaLevel&0xFFFFFFFC, z&0xFFFFFFFC);
+	        double compute = sampler.weirdness().compute(densityfunction$singlepointcontext);
+	        if(BCEnergyConfig.excessiveBiomes.contains(key) != compute > 0)
+	        BCLog.d("missmatch oil gen");
+	        
+        }*/
+        Optional<ExcessiveBiome> excessiveBiome = config.excessiveBiomes().stream().filter((a) -> a.biome().equals(key)).findAny();
+	    if(excessiveBiome.isPresent()){
+	    	ExcessiveBiome excessiveBiome0 = excessiveBiome.get();
+	    	double d0 = SimplexNoise.noise((x + xOffset)*excessiveBiome0.noiseScale(), (z + zOffset)*excessiveBiome0.noiseScale());
+	    	if(d0 > excessiveBiome0.noiseThreshold()) {
+	        	bonus *= 30.0;
+	        	BCLog.d("gen many oil "+ x + ", "+ z);
+	        }
+	    }
 	    GenSetting genSetting = config.genSetting();
         final GenType type;
         if (rand.nextDouble() * 100 <=  genSetting.largeOilGenProb() * bonus) {
@@ -170,7 +169,7 @@ public class OilGenerator {
             }
             return ImmutableList.of();
         }
-        if (DEBUG_OILGEN_BASIC & log) {
+        if (/*DEBUG_OILGEN_BASIC & */true) {
             BCLog.logger.info(
                 "[energy.oilgen] Generating an oil well (" + type.name().toLowerCase(Locale.ROOT)
                     + ") in " + toStr(world) + " chunk " + cx + ", " + cz + " at " + x + ", " + z
@@ -206,7 +205,7 @@ public class OilGenerator {
             structures.add(createSphere(new BlockPos(x, wellY, z), radius));
 
             // Generate a spout
-            if (BCEnergyConfig.enableOilSpouts) {
+            if (genSetting.enableOilSpouts()) {
                 int maxHeight, minHeight;
 
                 if (type == GenType.LARGE) {

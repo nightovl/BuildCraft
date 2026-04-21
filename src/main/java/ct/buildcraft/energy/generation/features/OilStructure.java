@@ -18,7 +18,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -226,6 +225,7 @@ public abstract class OilStructure {
         public final int radius;
         public final int height;
         private int count = 0;
+        private boolean generated = false;
 
         public Spout(BlockPos start, ReplaceType replaceType, int radius, int height) {
             super(createBox(start), replaceType);
@@ -242,6 +242,7 @@ public abstract class OilStructure {
         @Override
         protected void generateWithin(WorldGenLevel world, Box intersect) {
             count = 0;
+            generated = true;
             int segment = world.getChunk(start).getHighestSectionPosition();
             BlockPos worldTop = new BlockPos(start.getX(), segment + 16, start.getZ());
             for (int y = segment; y >= start.getY(); y--) {
@@ -272,10 +273,7 @@ public abstract class OilStructure {
 
         @Override
         protected int countOilBlocks() {
-            if (count == 0) {
-                throw new IllegalStateException("Called countOilBlocks before calling generateWithin!");
-            }
-            return count;
+            return generated ? count : 0;
         }
     }
 
