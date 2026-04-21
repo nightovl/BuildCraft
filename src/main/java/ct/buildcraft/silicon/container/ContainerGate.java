@@ -120,7 +120,7 @@ public class ContainerGate extends ContainerPipe {
         to.groups.clear();
         Map<EnumPipePart, List<T>> parts = new EnumMap<>(EnumPipePart.class);
         for (T val : from) {
-            parts.computeIfAbsent(val.sourcePart, p -> new ArrayList<>()).add(val);
+            parts.computeIfAbsent(val.getSourcePart(), p -> new ArrayList<>()).add(val);
         }
         List<T> list = parts.get(EnumPipePart.CENTER);
         if (list == null) {
@@ -187,12 +187,12 @@ public class ContainerGate extends ContainerPipe {
                 buffer.writeInt(possibleActions.size());
                 for (TriggerWrapper wrapper : possibleTriggers) {
                     buffer.writeUtf(wrapper.getUniqueTag());
-                    buffer.writeEnum(wrapper.sourcePart);
+                    buffer.writeEnum(wrapper.getSourcePart());
                 }
 
                 for (ActionWrapper wrapper : possibleActions) {
                     buffer.writeUtf(wrapper.getUniqueTag());
-                    buffer.writeEnum(wrapper.sourcePart);
+                    buffer.writeEnum(wrapper.getSourcePart());
                 }
             }
         }

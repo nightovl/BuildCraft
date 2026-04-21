@@ -48,7 +48,7 @@ public class TemplateBuilder extends SnapshotBuilder<ITileForTemplateBuilder> {
 
     @Override
     protected boolean hasEnoughToPlaceItems(BlockPos blockPos) {
-        return !tile.getInvResources().extract(null, 1, 1, true).isEmpty();
+        return !tile.needMeterial() || !tile.getInvResources().extract(null, 1, 1, true).isEmpty();
     }
 
     @Override

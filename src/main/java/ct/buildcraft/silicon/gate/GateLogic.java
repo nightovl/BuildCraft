@@ -297,7 +297,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
         List<IStatement> list = new ArrayList<>(statements.length);
         for (StatementPair pair : statements) {
             TriggerWrapper e = pair.trigger.get();
-            list.add(e == null ? e : e.delegate);
+            list.add(e == null ? e : e.getDelegate());
         }
         return list;
     }
@@ -307,7 +307,7 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
         List<IStatement> list = new ArrayList<>(statements.length);
         for (StatementPair pair : statements) {
             ActionWrapper e = pair.action.get();
-            list.add(e == null ? e : e.delegate);
+            list.add(e == null ? e : e.getDelegate());
         }
         return list;
     }
@@ -426,13 +426,13 @@ public class GateLogic implements IGate, IWireEmitter, IRedstoneStatementContain
                         if (allActionsActive) {
                             isOn = true;
                             StatementSlot slot = new StatementSlot();
-                            slot.statement = action.delegate;
+                            slot.statement = action.getDelegate();
                             slot.parameters = fullAction.action.getParameters().clone();
-                            slot.part = action.sourcePart;
+                            slot.part = action.getSourcePart();
                             activeActions.add(slot);
                             action.actionActivate(this, slot.parameters);
                             PipeEvent evt = new PipeEventActionActivate(getPipeHolder(), action.getDelegate(),
-                                slot.parameters, action.sourcePart);
+                                slot.parameters, action.getSourcePart());
                             getPipeHolder().fireEvent(evt);
                         } else {
                             action.actionDeactivated(this, fullAction.action.getParameters());

@@ -373,11 +373,13 @@ public class PluggableGate extends PipePluggable implements IWireEmitter , MenuP
 		case COUNTERCLOCKWISE_90 ->{
 			for(StatementPair pair : logic.statements) {
 				TriggerWrapper triggerWrapper = pair.trigger.get();
-				if(triggerWrapper != null) 
+				if(triggerWrapper != null) {
 					pair.trigger.set((TriggerWrapper) triggerWrapper.rotateLeft().rotateLeft().rotateLeft());
+				}
 				ActionWrapper actionWrapper = pair.action.get();
-				if(actionWrapper != null)
+				if(actionWrapper != null) {
 					pair.action.set((ActionWrapper) actionWrapper.rotateLeft().rotateLeft().rotateLeft());
+				}
 			}
 		}
 		case NONE ->{}

@@ -21,4 +21,6 @@ public interface ITileForSnapshotBuilder extends IPlayerOwned {
     boolean canExcavate();
 
     SnapshotBuilder<?> getBuilder();
+    
+    boolean needMeterial();
 }

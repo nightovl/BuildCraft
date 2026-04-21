@@ -53,6 +53,7 @@ public class ContainerBuilder extends ContainerBCTile<TileBuilder> {
         
 		addDataSlot(setting);
 
+		setting.set((setting.get()&0b0) | (playerInventory.player.isCreative() ? 0b0 : 0b1));
         for(int y = 0; y < 6; y++) {
             for(int x = 0; x < 4; x++) {
             	addSlot(new SlotDisplay(invRequire, x + y * 4, 179 + x * 18, 18 + y * 18));

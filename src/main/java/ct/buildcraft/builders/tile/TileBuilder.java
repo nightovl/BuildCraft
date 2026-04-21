@@ -590,4 +590,9 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 		return this.getBlockState().getBlock().getName();
 	}
 
+	@Override
+	public boolean needMeterial() {
+		return needMaterial;
+	}
+
 }
