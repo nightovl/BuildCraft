@@ -17,7 +17,6 @@ import ct.buildcraft.core.BCCoreConfig;
 import ct.buildcraft.core.blockEntity.TileMarkerVolume;
 import ct.buildcraft.core.client.BuildCraftLaserManager;
 import ct.buildcraft.core.marker.VolumeConnection;
-import ct.buildcraft.lib.client.render.DetachedRenderer;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8;
 import ct.buildcraft.lib.client.render.laser.LaserData_BC8.LaserType;
 import ct.buildcraft.lib.client.render.laser.LaserRenderer_BC8;

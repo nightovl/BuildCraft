@@ -62,7 +62,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -523,5 +522,10 @@ public class TileFiller extends TileBC_Neptune
 	@Override
 	public Component getDisplayName() {
 		return this.getBlockState().getBlock().getName();
+	}
+
+	@Override
+	public boolean needMeterial() {
+		return true;//TODO
 	}
 }

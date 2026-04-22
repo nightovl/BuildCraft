@@ -117,13 +117,13 @@ public class ItemFragileFluidContainer extends Item implements IItemFluidShard {
         }
     }
 
-    static void setFluid(ItemStack container, FluidStack fluid) {
+    public static void setFluid(ItemStack container, FluidStack fluid) {
         CompoundTag nbt =container.getOrCreateTag();
         nbt.put("fluid", fluid.writeToNBT(new CompoundTag()));
     }
 
     @Nullable
-    static FluidStack getFluid(ItemStack container) {
+    public static FluidStack getFluid(ItemStack container) {
         if (container.isEmpty()) {
             return FluidStack.EMPTY;
         }

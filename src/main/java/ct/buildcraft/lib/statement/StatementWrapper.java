@@ -22,10 +22,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class StatementWrapper implements IStatement, Comparable<StatementWrapper> {
-    public final IStatement delegate;
+    protected /*final*/ IStatement delegate;
 
     /** Used to determine the background colour of triggers and actions. */
-    public final EnumPipePart sourcePart;
+    protected /*final*/ EnumPipePart sourcePart;
 
     public StatementWrapper(IStatement delegate, EnumPipePart sourcePart) {
         this.delegate = delegate;
@@ -64,8 +64,11 @@ public abstract class StatementWrapper implements IStatement, Comparable<Stateme
 
     /** @see buildcraft.api.statements.IStatement#rotateLeft() */
     @Override
-    public IStatement rotateLeft() {
-        return this.delegate.rotateLeft();
+    public StatementWrapper rotateLeft() {
+    	this.delegate = this.delegate.rotateLeft();
+    	if(sourcePart.face != null)
+    		sourcePart = EnumPipePart.fromFacing(sourcePart.face.getClockWise());
+        return this;
     }
 
     /** @see buildcraft.api.statements.IStatement#getSprite() */
@@ -77,6 +80,14 @@ public abstract class StatementWrapper implements IStatement, Comparable<Stateme
     public BlockEntity getNeighbourTile(IStatementContainer source) {
         return source.getNeighbourTile(sourcePart.face);
     }
+    
+    public IStatement getDelegate() {
+    	return delegate;
+    }
+    
+	public EnumPipePart getSourcePart() {
+		return sourcePart;
+	}
 
     @Override
     public abstract StatementWrapper[] getPossible();

@@ -33,6 +33,7 @@ import ct.buildcraft.api.transport.pipe.PipeEvent;
 import ct.buildcraft.api.transport.pipe.PipeEventTileState;
 import ct.buildcraft.api.transport.pipe.PipeFlow;
 import ct.buildcraft.api.transport.pluggable.PipePluggable;
+import ct.buildcraft.compat.CompatCapTransfromer;
 import ct.buildcraft.lib.misc.AdvancementUtil;
 import ct.buildcraft.lib.misc.data.IdAllocator;
 import ct.buildcraft.lib.tile.TileBC_Neptune;
@@ -83,10 +84,10 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         "buildcrafttransport:pipe_dream"
     );
 
-/*    @Override
+    @Override
     public IdAllocator getIdAllocator() {
         return IDS;
-    }*/
+    }
 
     private int[] redstoneValues = new int[6];
     private int[] oldRedstoneValues = new int[] { -1, -1, -1, -1, -1, -1 };
@@ -501,7 +502,8 @@ public class TilePipeHolder extends TileBC_Neptune implements IPipeHolder, IDebu
         if (pipe.isConnected(side)) {
             BlockEntity neighbour = getNeighbourTile(side);
             if (neighbour != null) {
-                return neighbour.getCapability(capability, side.getOpposite());
+                //return neighbour.getCapability(capability, side.getOpposite());
+            	return CompatCapTransfromer.INSTANCE.getCap(neighbour, capability, side.getOpposite());
             }
         }
         return LazyOptional.empty();

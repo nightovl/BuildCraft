@@ -474,9 +474,10 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 		
 		VoxelShape[] allShape = getAllShape(world, pos);//TODO
 		VoxelShape centerShape = allShape[0];
+		if(allShape.length == 1)
+			return Shapes.empty();
 		for(int i =1 ;i<7;i++) {
 				centerShape = allShape[i] != null ? Shapes.or(centerShape, allShape[i]) : centerShape;
-				
 		}
 		if(pos.getX() == -114&&pos.getZ() == -50) {
 			BCLog.d(false);
@@ -877,7 +878,7 @@ public class BlockPipeHolder extends BlockBCTile_Neptune implements ICustomPaint
 			toDrop.add(stack);
 		}
 		Pipe pipe = tile.getPipe();
-		if (pipe != null) {
+		if (pipe != Pipe.EMPTY) {
 			pipe.addDrops(toDrop, 1);// 1 is meaningless
 		}
 		return toDrop;

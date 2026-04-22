@@ -66,6 +66,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -264,7 +265,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
         if (currentBox == null) {
             currentBox = new Box();
         }
-        BCLog.d(currentBox + "update");
     }
 
     private void updateBasePoses() {
@@ -318,13 +318,27 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
             isDone = builder.tick();
             if (isDone) {
                 if (currentBasePosIndex < basePoses.size() - 1) {
-                    currentBasePosIndex++;
+                	BlockPos currentBasePos = getCurrentBasePos();
+                	Box newBox ;
+                    do{
+                    	currentBasePosIndex++;
+                    	BlockPos newBasePos = getCurrentBasePos();
+                    	if(newBasePos == null) break;
+                    	BlockPos dPos = newBasePos.subtract(currentBasePos);
+                    	newBox = new Box(currentBox.min().offset(dPos), currentBox.max().offset(dPos));
+                   // 	BCLog.d(currentBox.doesIntersectWith(newBox));
+                    }while(currentBox.doesTouchWith(newBox));
                     if (currentBasePosIndex == basePoses.size() && currentBasePosIndex > 1)
                         AdvancementUtil.unlockAdvancement(getOwner().getId(), ADVANCEMENT);
                     if (currentBasePosIndex >= basePoses.size()) {
                         currentBasePosIndex = basePoses.size() - 1;
                     }
                     updateSnapshot(true);
+                }
+                else {
+                	ItemStack blueprint = invSnapshot.extractItem(0, 1, false);
+                	if(!invResources.insert(blueprint, true ,false).isEmpty())
+                		Containers.dropItemStack(level, getBlockPos().getX(), getBlockPos().getY()+1, getBlockPos().getZ(), blueprint);
                 }
             }
         }
@@ -579,6 +593,11 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
 	@Override
 	public Component getDisplayName() {
 		return this.getBlockState().getBlock().getName();
+	}
+
+	@Override
+	public boolean needMeterial() {
+		return needMaterial;
 	}
 
 }

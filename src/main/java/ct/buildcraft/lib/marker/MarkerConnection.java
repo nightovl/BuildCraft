@@ -6,15 +6,19 @@
 
 package ct.buildcraft.lib.marker;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
 import ct.buildcraft.lib.tile.TileMarker;
-
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,8 +41,7 @@ public abstract class MarkerConnection<C extends MarkerConnection<C>> {
     public abstract void renderInWorld(PoseStack pose, Matrix4f matrix);
 
     public void getDebugInfo(BlockPos caller, List<String> left) {
-    	left.add("MarkerConnection:DEBUG TODO");
-/*        Collection<BlockPos> positions = getMarkerPositions();
+        Collection<BlockPos> positions = getMarkerPositions();
         List<BlockPos> list = new ArrayList<>(positions);
         if (positions instanceof Set) {
             Collections.sort(list);
@@ -47,19 +50,19 @@ public abstract class MarkerConnection<C extends MarkerConnection<C>> {
             TileMarker<C> marker = subCache.getMarker(pos);
             String s = "  " + pos + " [";
             if (marker == null) {
-                s += TextFormatting.RED + "U";
+                s += ChatFormatting.RED + "U";
             } else {
-                s += TextFormatting.GREEN + "L";
+                s += ChatFormatting.GREEN + "L";
             }
             if (pos.equals(caller)) {
-                s += TextFormatting.BLACK + "S";
+                s += ChatFormatting.BLACK + "S";
             } else {
-                s += TextFormatting.AQUA + "C";
+                s += ChatFormatting.AQUA + "C";
             }
             s += getTypeInfo(pos, marker);
-            s += TextFormatting.RESET + "]";
+            s += ChatFormatting.RESET + "]";
             left.add(s);
-        }*/
+        }
     }
 
     protected String getTypeInfo(BlockPos pos, @Nullable TileMarker<C> value) {

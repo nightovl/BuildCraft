@@ -16,7 +16,7 @@ public interface IFlowItems extends IInjectable {
     /** @deprecated Use the version below with a simulate paramater. */
     @Deprecated
     default int tryExtractItems(int count, Direction from, @Nullable DyeColor colour, IStackFilter filter) {
-        return tryExtractItems(count, from, colour, filter, FluidAction.SIMULATE);
+        return tryExtractItems(count, from, colour, filter, FluidAction.EXECUTE);
     }
 
     /** Attempts to extract items from the inventory connected to this pipe on the given side.

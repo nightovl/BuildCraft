@@ -178,7 +178,7 @@ public class BlueprintBuilder extends SnapshotBuilder<ITileForBlueprintBuilder> 
 
     @Override
     protected boolean hasEnoughToPlaceItems(BlockPos blockPos) {
-        return tryExtractRequired(
+        return !tile.needMeterial() || tryExtractRequired(
             getBuildingInfo().toPlaceRequiredItems[posToIndex(blockPos)],
             getBuildingInfo().toPlaceRequiredFluids[posToIndex(blockPos)],
             true
@@ -187,11 +187,12 @@ public class BlueprintBuilder extends SnapshotBuilder<ITileForBlueprintBuilder> 
 
     @Override
     protected List<ItemStack> getToPlaceItems(BlockPos blockPos) {
-        return tryExtractRequired(
+        return tile.needMeterial() ? tryExtractRequired(
             getBuildingInfo().toPlaceRequiredItems[posToIndex(blockPos)],
             getBuildingInfo().toPlaceRequiredFluids[posToIndex(blockPos)],
             false
-        ).orElse(null);
+        ).orElse(null) : Stream.concat(getBuildingInfo().toPlaceRequiredItems[posToIndex(blockPos)].stream(), 
+        		getBuildingInfo().toPlaceRequiredFluids[posToIndex(blockPos)].stream().map(t -> new ItemStack(t.getFluid().getBucket()))).collect(Collectors.toList());
     }
 
     @Override

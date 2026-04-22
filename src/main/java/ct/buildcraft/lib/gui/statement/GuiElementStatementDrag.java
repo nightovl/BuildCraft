@@ -15,7 +15,6 @@ import ct.buildcraft.lib.gui.IGuiElement;
 import ct.buildcraft.lib.gui.IMenuElement;
 import ct.buildcraft.lib.misc.data.IReference;
 import ct.buildcraft.lib.statement.StatementWrapper;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 public class GuiElementStatementDrag implements IMenuElement {
 
@@ -82,7 +81,7 @@ public class GuiElementStatementDrag implements IMenuElement {
             } else {
                 GuiIcon background = GuiElementStatement.SLOT_COLOUR;
                 if (dragging instanceof StatementWrapper) {
-                    EnumPipePart part = ((StatementWrapper) dragging).sourcePart;
+                    EnumPipePart part = ((StatementWrapper) dragging).getSourcePart();
                     if (part != EnumPipePart.CENTER) {
                         background = background.offset(0, (1 + part.getIndex()) * 18);
                     }

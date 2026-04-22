@@ -10,7 +10,6 @@ import ct.buildcraft.api.core.EnumPipePart;
 import ct.buildcraft.api.core.render.ISprite;
 import ct.buildcraft.api.statements.IGuiSlot;
 import ct.buildcraft.api.statements.IStatementParameter;
-import ct.buildcraft.builders.filler.FillerStatementContext;
 import ct.buildcraft.lib.gui.BuildCraftGui;
 import ct.buildcraft.lib.gui.GuiIcon;
 import ct.buildcraft.lib.gui.IGuiElement;
@@ -135,7 +134,7 @@ public class GuiElementStatementSource<S extends IGuiSlot> implements IInteracti
         }
         GuiIcon background = GuiElementStatement.SLOT_COLOUR;
         if (guiSlot instanceof StatementWrapper) {
-            EnumPipePart part = ((StatementWrapper) guiSlot).sourcePart;
+            EnumPipePart part = ((StatementWrapper) guiSlot).getSourcePart();
             if (part != EnumPipePart.CENTER) {
                 background = background.offset(0, (1 + part.getIndex()) * 18);
             }

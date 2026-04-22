@@ -17,6 +17,7 @@ import ct.buildcraft.api.statements.ITriggerInternalSided;
 import ct.buildcraft.api.statements.ITriggerProvider;
 import ct.buildcraft.api.statements.containers.IRedstoneStatementContainer;
 import ct.buildcraft.api.tiles.TilesAPI;
+import ct.buildcraft.compat.CompatCapTransfromer;
 import ct.buildcraft.core.BCCoreStatements;
 import ct.buildcraft.lib.misc.CapUtil;
 
@@ -63,7 +64,7 @@ public enum CoreTriggerProvider implements ITriggerProvider {
         }
 
         if (!blockInventoryTriggers) {
-            IItemHandler itemHandler = tile.getCapability(CapUtil.CAP_ITEMS, side.getOpposite()).orElse(null);
+            IItemHandler itemHandler = CompatCapTransfromer.INSTANCE.getCap(tile, CapUtil.CAP_ITEMS, side.getOpposite()).orElse(null);
             if (itemHandler != null) {
                 res.add(BCCoreStatements.TRIGGER_INVENTORY_EMPTY);
                 res.add(BCCoreStatements.TRIGGER_INVENTORY_SPACE);
@@ -76,7 +77,8 @@ public enum CoreTriggerProvider implements ITriggerProvider {
         }
 
         if (!blockFluidHandlerTriggers) {
-            IFluidHandler fluidHandler = tile.getCapability(CapUtil.CAP_FLUIDS, side.getOpposite()).orElse(null);
+            IFluidHandler fluidHandler = CompatCapTransfromer.INSTANCE.getCap(tile, CapUtil.CAP_FLUIDS, side.getOpposite()).orElse(null);
+            //tile.getCapability(CapUtil.CAP_FLUIDS, side.getOpposite()).orElse(null);
             if (fluidHandler != null) {
 
                 int liquids = fluidHandler.getTanks();

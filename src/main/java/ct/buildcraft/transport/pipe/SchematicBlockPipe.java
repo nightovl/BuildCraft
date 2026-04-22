@@ -128,11 +128,11 @@ public class SchematicBlockPipe implements ISchematicBlock {
 	    	copy.putInt("x", blockPos.getX());
 	    	copy.putInt("y", blockPos.getY());
 	    	copy.putInt("z", blockPos.getZ());
-	    	tile.rotate(tileRotation);
-	    	tileTag = tile.serializeNBT();
 	    	int ordinal = tileRotation.ordinal();
 	    	int inverseId = ordinal ^ ((ordinal&1) << 1);
 			tile.rotate(Rotation.values()[inverseId]);
+	    	tileTag = tile.serializeNBT();
+	    	tile.rotate(tileRotation);
     	}
 		return tileTag != null && copy.equals(tileTag);
     }

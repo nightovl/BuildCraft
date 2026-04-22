@@ -11,7 +11,7 @@ import ct.buildcraft.lib.fluid.TankManager;
 
 public interface ITileForBlueprintBuilder extends ITileForSnapshotBuilder {
     Blueprint.BuildingInfo getBlueprintBuildingInfo();
-
+    
     IItemTransactor getInvResources();
 
     TankManager getTankManager();

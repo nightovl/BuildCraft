@@ -218,8 +218,7 @@ public class TankManager extends ForwardingList<Tank> implements IFluidHandlerAd
 
 	@Override
 	public int getTanks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return tanks.size();
 	}
 
 	@Override
@@ -234,19 +233,16 @@ public class TankManager extends ForwardingList<Tank> implements IFluidHandlerAd
 
 	@Override
 	public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-		// TODO Auto-generated method stub
-		return false;
+		return tanks.size() > tank && tanks.get(tank).isFluidValid(stack);
 	}
 
 	@Override
 	public boolean add(Tank e) {
-		tanks.add(e);
-		return true;
+		return tanks.add(e);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends Tank> c) {
-		tanks.addAll(c);
-		return false;
+		return tanks.addAll(c);
 	}
 }
