@@ -8,6 +8,7 @@ import ct.buildcraft.core.BCCore;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.misc.BlockUtil;
+import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,6 +50,9 @@ public class ItemWrench extends Item implements IToolWrench{
         var f = world.getBlockEntity(pos);
       //  if(f!=null)
         BCLog.logger.info("isTile? :"+(f!=null));
+        if(f != null) {
+        	f.getCapability(CapUtil.CAP_FLUIDS, side);
+        }
 		if(world.getBlockEntity(pos) instanceof TileBuilder tile) {
 			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench :"+(tile.path != null));
 			return InteractionResult.CONSUME;

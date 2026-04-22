@@ -6,6 +6,7 @@ package ct.buildcraft.lib;
 
 import ct.buildcraft.api.BCModules;
 import ct.buildcraft.api.core.BCLog;
+import ct.buildcraft.compat.ic2.Ic2Compat;
 import ct.buildcraft.lib.block.VanillaRotationHandlers;
 import ct.buildcraft.lib.expression.ExpressionDebugManager;
 import ct.buildcraft.lib.list.VanillaListHandlers;
@@ -16,6 +17,7 @@ import ct.buildcraft.lib.net.cache.BuildCraftObjectCaches;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -94,6 +96,9 @@ public class BCLib {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(BCLibEventDist.class);
+        
+        if(ModList.get().isLoaded("ic2"))
+        	Ic2Compat.init();
     }
 
     public void gatherData(GatherDataEvent event) {

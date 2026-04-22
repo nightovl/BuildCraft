@@ -37,6 +37,7 @@ import ct.buildcraft.api.transport.pipe.PipeEventFluid.PreMoveToCentre;
 import ct.buildcraft.api.transport.pipe.PipeEventHandler;
 import ct.buildcraft.api.transport.pipe.PipeEventStatement;
 import ct.buildcraft.api.transport.pipe.PipeFlow;
+import ct.buildcraft.compat.CompatCapTransfromer;
 import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.lib.misc.CapUtil;
 import ct.buildcraft.lib.misc.LocaleUtil;
@@ -160,7 +161,8 @@ public class PipeFlowFluids extends PipeFlow implements IFlowFluid, IDebuggable 
 
     @Override
     public boolean canConnect(Direction face, BlockEntity oTile) {
-        return oTile.getCapability(CapUtil.CAP_FLUIDS, face.getOpposite()).isPresent();
+       // return oTile.getCapability(CapUtil.CAP_FLUIDS, face.getOpposite()).isPresent();
+    	return CompatCapTransfromer.INSTANCE.getCap(oTile, CapUtil.CAP_FLUIDS, face.getOpposite()).isPresent();
     }
 
     @Override
