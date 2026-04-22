@@ -5,6 +5,7 @@ import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.tools.IToolWrench;
 import ct.buildcraft.builders.tile.TileBuilder;
 import ct.buildcraft.core.BCCore;
+import ct.buildcraft.core.BCCoreItems;
 import ct.buildcraft.factory.BCFactoryBlocks;
 import ct.buildcraft.factory.tile.TileTank;
 import ct.buildcraft.lib.misc.BlockUtil;
@@ -20,9 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 public class ItemWrench extends Item implements IToolWrench{
@@ -50,8 +53,12 @@ public class ItemWrench extends Item implements IToolWrench{
         var f = world.getBlockEntity(pos);
       //  if(f!=null)
         BCLog.logger.info("isTile? :"+(f!=null));
+/*        ItemStack p_36055_ = new ItemStack(BCCoreItems.FRAGILE_FLUID_SHARD.get());
+		ItemFragileFluidContainer.setFluid(p_36055_, new FluidStack(Fluids.LAVA, 500));
+		player.getInventory().add(p_36055_);*/
         if(f != null) {
         	f.getCapability(CapUtil.CAP_FLUIDS, side);
+        	
         }
 		if(world.getBlockEntity(pos) instanceof TileBuilder tile) {
 			ct.buildcraft.api.core.BCLog.logger.debug("ItemWrench :"+(tile.path != null));

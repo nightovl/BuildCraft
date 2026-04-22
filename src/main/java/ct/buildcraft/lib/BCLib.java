@@ -98,7 +98,7 @@ public class BCLib {
         MinecraftForge.EVENT_BUS.register(BCLibEventDist.class);
         
         if(ModList.get().isLoaded("ic2"))
-        	Ic2Compat.init();
+        	Ic2Compat.preInit();
     }
 
     public void gatherData(GatherDataEvent event) {
