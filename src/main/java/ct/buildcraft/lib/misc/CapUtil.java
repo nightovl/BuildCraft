@@ -20,6 +20,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -33,6 +34,9 @@ public class CapUtil {
 
     @Nonnull
     public static final Capability<IItemTransactor> CAP_ITEM_TRANSACTOR;
+    
+    @Nonnull
+    public static final Capability<IEnergyStorage> CAP_RF;
 
 
     static {
@@ -42,6 +46,7 @@ public class CapUtil {
 
         CAP_ITEMS = getCapNonNull(ForgeCapabilities.ITEM_HANDLER, IItemHandler.class);
         CAP_FLUIDS = getCapNonNull(ForgeCapabilities.FLUID_HANDLER, IFluidHandler.class);
+        CAP_RF = getCapNonNull(ForgeCapabilities.ENERGY, IEnergyStorage.class);
         CAP_ITEM_TRANSACTOR = CapabilityManager.get(new CapabilityToken<>(){});
         // FIXME: Move cap registration into API!
 

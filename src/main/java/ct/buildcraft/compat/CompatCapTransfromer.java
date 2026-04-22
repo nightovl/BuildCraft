@@ -37,6 +37,6 @@ public enum CompatCapTransfromer {
 			IFluidHandler transfromFluidCap = transfromFluidCap(provider, face);
 			return transfromFluidCap == null ? LazyOptional.empty() : LazyOptional.of(() -> transfromFluidCap).cast();
 		}
-		return LazyOptional.empty();TileEntitySteamGenerator
+		return LazyOptional.empty();
 	}
 }
