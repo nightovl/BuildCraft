@@ -108,8 +108,20 @@ public abstract class AbstractInvItemTransactor implements IItemTransactor {
 
     @Override
     public NonNullList<ItemStack> insert(NonNullList<ItemStack> stacks, boolean simulate) {
-        // WARNING: SLOW IMPL
-        return stacks;
+    	NonNullList<ItemStack> left = NonNullList.create();
+    	int size = getSlots();
+    	for(ItemStack item : stacks) {
+    		ItemStack insert = ItemStack.EMPTY;
+    		for(int i = 0;i < size;i++) {
+    			insert = insert(i, item, simulate);
+				if(ItemStack.isSame(item, insert))
+    				continue;
+    			break;
+    		}
+    		if(!insert.isEmpty())
+    			left.add(insert);
+    	}
+        return left;
     }
 
     @Nonnull

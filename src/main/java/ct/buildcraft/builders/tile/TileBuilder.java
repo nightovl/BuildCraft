@@ -66,6 +66,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -264,7 +265,6 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
         if (currentBox == null) {
             currentBox = new Box();
         }
-        BCLog.d(currentBox + "update");
     }
 
     private void updateBasePoses() {
@@ -334,6 +334,11 @@ public class TileBuilder extends TileBC_Neptune implements IDebuggable, ITileFor
                         currentBasePosIndex = basePoses.size() - 1;
                     }
                     updateSnapshot(true);
+                }
+                else {
+                	ItemStack blueprint = invSnapshot.extractItem(0, 1, false);
+                	if(!invResources.insert(blueprint, true ,false).isEmpty())
+                		Containers.dropItemStack(level, getBlockPos().getX(), getBlockPos().getY()+1, getBlockPos().getZ(), blueprint);
                 }
             }
         }
