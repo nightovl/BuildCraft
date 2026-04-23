@@ -322,6 +322,9 @@ public enum FacadeStateManager implements IFacadeRegistry {
                         continue;
                     }
                 }
+                if (shouldSkipFacadeState(block, state)) {
+                    continue;
+                }
                 final ItemStack requiredStack;
                 try {
                     requiredStack = getRequiredStack(state);
@@ -433,7 +436,8 @@ public enum FacadeStateManager implements IFacadeRegistry {
         }
         if (path.contains("chute") || path.contains("vine") || path.contains("sculk_vein") || path.contains("glow_lichen")
             || path.contains("chorus_flower") || path.contains("sunflower") || path.contains("rose_bush")
-            || path.contains("lilac") || path.contains("peony")) {
+            || path.contains("lilac") || path.contains("peony") || path.equals("cobweb")
+            || path.equals("wheat") || path.equals("kelp") || path.equals("kelp_plant")) {
             return true;
         }
         if (block instanceof net.minecraft.world.level.block.SlabBlock) {
@@ -447,6 +451,20 @@ public enum FacadeStateManager implements IFacadeRegistry {
             return true;
         }
         return path.contains("berry");
+    }
+
+    private static boolean shouldSkipFacadeState(Block block, BlockState state) {
+        if (block == Blocks.TARGET) {
+            for (Property<?> property : state.getProperties()) {
+                if ("power".equals(property.getName())) {
+                    Object value = state.getValue((Property) property);
+                    if (value instanceof Integer integer && integer.intValue() != 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean shouldIgnoreFacadeProperty(Block block, Property<?> property) {
