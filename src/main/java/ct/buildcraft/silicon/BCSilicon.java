@@ -11,6 +11,8 @@ import ct.buildcraft.api.facades.FacadeAPI;
 import ct.buildcraft.builders.BCBuildersConfig;
 import ct.buildcraft.lib.CreativeTabManager;
 import ct.buildcraft.lib.CreativeTabManager.CreativeTabBC;
+import ct.buildcraft.silicon.plug.FacadeBlockStateInfo;
+import ct.buildcraft.silicon.plug.FacadeInstance;
 import ct.buildcraft.silicon.plug.FacadeStateManager;
 import ct.buildcraft.transport.BCTransport;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,16 +65,21 @@ public class BCSilicon {
     }
 
     public static void commonSetup(FMLCommonSetupEvent evt) {
+        if (BCSiliconItems.PLUG_FACADE_ITEM.isPresent()) {
+            FacadeAPI.facadeItem = BCSiliconItems.PLUG_FACADE_ITEM.get();
+        }
         FacadeStateManager.init();
         BCBuildersConfig.reloadConfig(MODID);
     }
 
     public static void postInit(FMLLoadCompleteEvent evt) {
- /*       if (BCSiliconItems.plugFacade != null) {
+        if (BCSiliconItems.PLUG_FACADE_ITEM.isPresent()) {
             FacadeBlockStateInfo state = FacadeStateManager.previewState;
-            FacadeInstance inst = FacadeInstance.createSingle(state, false);
-            tabFacades.setItem(BCSiliconItems.plugFacade.createItemStack(inst));
-        }*/
+            if (state != null) {
+                FacadeInstance inst = FacadeInstance.createSingle(state, false);
+                tabFacades.setItem(BCSiliconItems.PLUG_FACADE_ITEM.get().createItemStack(inst));
+            }
+        }
 
         if (!BCModules.TRANSPORT.isLoaded()) {
             tabPlugs.setItem(BCSiliconItems.PLUG_GATE_ITEM.get());
