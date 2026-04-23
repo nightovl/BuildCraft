@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
@@ -57,6 +58,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
@@ -94,54 +96,91 @@ public enum FacadeStateManager implements IFacadeRegistry {
     }
 
     public static void receiveInterModComms(IMCMessage message) {
-    	throw new UnsupportedOperationException("Not finished method?");
-    	//TODO
-/*        String id = message.modId();
-        var a = new IMCMessage(id, id, id, null);
+        String id = getImcMethod(message);
+        String sender = getImcSender(message);
         if (FacadeAPI.IMC_FACADE_DISABLE.equals(id)) {
-            if (!message.isResourceLocationMessage()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have a resourcelocation value, not a " + message);
+            ResourceLocation loc = getImcResourceLocation(message);
+            if (loc == null) {
                 return;
             }
-            ResourceLocation loc = message.();
-            Block block = Block.REGISTRY.getObject(loc);
-            if (block == Blocks.AIR) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have a valid block target, not " + block + " (" + message + ")");
+            Block block = ForgeRegistries.BLOCKS.getValue(loc);
+            if (block == null || block == Blocks.AIR) {
                 return;
             }
-            disabledBlocks.put(block, message.senderModId());
+            disabledBlocks.put(block, sender);
         } else if (FacadeAPI.IMC_FACADE_CUSTOM.equals(id)) {
-            if (!message.isNBTMessage()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have an nbt value, not a " + message);
+            CompoundTag nbt = getImcNbt(message);
+            if (nbt == null) {
                 return;
             }
-            CompoundTag nbt = message.getNBTValue();
             String regName = nbt.getString(FacadeAPI.NBT_CUSTOM_BLOCK_REG_KEY);
-            int meta = nbt.getInteger(FacadeAPI.NBT_CUSTOM_BLOCK_META);
-            ItemStack stack = new ItemStack(nbt.getCompoundTag(FacadeAPI.NBT_CUSTOM_ITEM_STACK));
-            if (regName.isEmpty()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have a registry name for the block, stored as "
-                    + FacadeAPI.NBT_CUSTOM_BLOCK_REG_KEY);
+            ItemStack stack = ItemStack.of(nbt.getCompound(FacadeAPI.NBT_CUSTOM_ITEM_STACK));
+            if (regName.isEmpty() || stack.isEmpty()) {
                 return;
             }
-            if (stack.isEmpty()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have a valid ItemStack stored in " + FacadeAPI.NBT_CUSTOM_ITEM_STACK);
+            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(regName));
+            if (block == null || block == Blocks.AIR) {
                 return;
             }
-            Block block = Block.REGISTRY.getObject(new ResourceLocation(regName));
-            if (block == Blocks.AIR) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
-                    + id + " should have a valid block target, not " + block + " (" + message + ")");
-                return;
+            BlockState state = block.defaultBlockState();
+            if (nbt.contains(FacadeAPI.NBT_CUSTOM_BLOCK_META)) {
+                int legacyMeta = nbt.getInt(FacadeAPI.NBT_CUSTOM_BLOCK_META);
+                BlockState legacy = Block.stateById(legacyMeta);
+                if (legacy.getBlock() == block) {
+                    state = legacy;
+                }
             }
-            BlockState state = block.getStateFromMeta(meta);
-            customBlocks.put(state, stack);
-        }*/
+            customBlocks.put(state, stack.copy());
+        }
+    }
+
+    private static String getImcMethod(IMCMessage message) {
+        Object value = invokeNoArg(message, "method");
+        if (value instanceof String s) return s;
+        value = invokeNoArg(message, "key");
+        if (value instanceof String s) return s;
+        return "";
+    }
+
+    private static String getImcSender(IMCMessage message) {
+        Object value = invokeNoArg(message, "senderModId");
+        if (value instanceof String s) return s;
+        value = invokeNoArg(message, "modId");
+        if (value instanceof String s) return s;
+        value = invokeNoArg(message, "getSender");
+        if (value instanceof String s) return s;
+        return "unknown";
+    }
+
+    private static ResourceLocation getImcResourceLocation(IMCMessage message) {
+        Object value = invokeNoArg(message, "getResourceLocationValue");
+        if (value instanceof ResourceLocation rl) return rl;
+        value = invokeNoArg(message, "resourceLocationValue");
+        if (value instanceof ResourceLocation rl) return rl;
+        return null;
+    }
+
+    private static CompoundTag getImcNbt(IMCMessage message) {
+        Object value = invokeNoArg(message, "getNBTValue");
+        if (value instanceof CompoundTag tag) return tag;
+        value = invokeNoArg(message, "getNbtValue");
+        if (value instanceof CompoundTag tag) return tag;
+        value = invokeNoArg(message, "getMessageSupplier");
+        if (value instanceof java.util.function.Supplier<?> supplier) {
+            Object supplied = supplier.get();
+            if (supplied instanceof CompoundTag tag) return tag;
+        }
+        return null;
+    }
+
+    private static Object invokeNoArg(Object target, String name) {
+        try {
+            Method m = target.getClass().getMethod(name);
+            m.setAccessible(true);
+            return m.invoke(target);
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
     }
 
     /** @return One of:
@@ -197,17 +236,23 @@ public enum FacadeStateManager implements IFacadeRegistry {
     private static ItemStack getRequiredStack(BlockState state) {
         ItemStack stack = customBlocks.get(state);
         if (stack != null) {
-            return stack;
+            return stack.copy();
         }
         Block block = state.getBlock();
         Item item = block.asItem();
         if (item != Items.AIR) {
             return new ItemStack(item, 1);
         }
-        return ItemStack.EMPTY;
+        ItemStack clone = block.getCloneItemStack(state, (BlockHitResult) null, new SingleBlockAccess(state), BlockPos.ZERO, null);
+        if (!clone.isEmpty()) {
+            clone.setCount(1);
+            return clone;
+        }
+        return StackUtil.EMPTY;
     }
 
     public static void init() {
+        FacadeAPI.registry = INSTANCE;
         defaultState = new FacadeBlockStateInfo(Blocks.AIR.defaultBlockState(), StackUtil.EMPTY, ImmutableSet.of());
         if (FacadeAPI.facadeItem == null) {
             previewState = defaultState;
@@ -386,7 +431,12 @@ public enum FacadeStateManager implements IFacadeRegistry {
         if (path.startsWith("waxed_")) {
             return true;
         }
-        if (path.contains("chute")) {
+        if (path.contains("chute") || path.contains("vine") || path.contains("sculk_vein") || path.contains("glow_lichen")
+            || path.contains("chorus_flower") || path.contains("sunflower") || path.contains("rose_bush")
+            || path.contains("lilac") || path.contains("peony")) {
+            return true;
+        }
+        if (block instanceof net.minecraft.world.level.block.SlabBlock) {
             return true;
         }
         BlockState state = block.defaultBlockState();
@@ -403,10 +453,7 @@ public enum FacadeStateManager implements IFacadeRegistry {
         String name = property.getName();
         if ("waterlogged".equals(name) || "persistent".equals(name) || "distance".equals(name)
             || "facing".equals(name) || "horizontal_facing".equals(name) || "powered".equals(name)
-            || "note".equals(name) || "instrument".equals(name)) {
-            return true;
-        }
-        if (block instanceof net.minecraft.world.level.block.SlabBlock && "type".equals(name)) {
+            || "note".equals(name) || "instrument".equals(name) || "type".equals(name)) {
             return true;
         }
         return false;
@@ -422,7 +469,7 @@ public enum FacadeStateManager implements IFacadeRegistry {
         return sb.toString();
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static String getPropertyValueName(BlockState state, Property<?> property) {
         Property raw = (Property) property;
         Comparable value = state.getValue(raw);
@@ -510,5 +557,17 @@ public enum FacadeStateManager implements IFacadeRegistry {
             realStates[i] = (FacadePhasedState) states[i];
         }
         return new FacadeInstance(realStates, isHollow);
+    }
+
+    @Override
+    public void disableBlock(Block block) {
+        disabledBlocks.put(block, "direct_api");
+    }
+
+    @Override
+    public void mapStateToStack(BlockState state, ItemStack stack) {
+        if (state != null && !stack.isEmpty()) {
+            customBlocks.put(state, stack.copy());
+        }
     }
 }
