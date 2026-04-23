@@ -6,16 +6,17 @@
 
 package ct.buildcraft.silicon.plug;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
@@ -40,8 +41,9 @@ import ct.buildcraft.silicon.recipe.FacadeSwapRecipe;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.DyeColor;
@@ -55,7 +57,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
@@ -93,107 +94,54 @@ public enum FacadeStateManager implements IFacadeRegistry {
     }
 
     public static void receiveInterModComms(IMCMessage message) {
-        String id = getImcMethod(message);
-        String sender = getImcSender(message);
+    	throw new UnsupportedOperationException("Not finished method?");
+    	//TODO
+/*        String id = message.modId();
+        var a = new IMCMessage(id, id, id, null);
         if (FacadeAPI.IMC_FACADE_DISABLE.equals(id)) {
-            ResourceLocation loc = getImcResourceLocation(message);
-            if (loc == null) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
-                    + id + " should have a ResourceLocation value, not " + message);
+            if (!message.isResourceLocationMessage()) {
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
+                    + id + " should have a resourcelocation value, not a " + message);
                 return;
             }
-            Block block = ForgeRegistries.BLOCKS.getValue(loc);
-            if (block == null || block == Blocks.AIR) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
-                    + id + " should have a valid block target, not " + loc + " (" + message + ")");
+            ResourceLocation loc = message.();
+            Block block = Block.REGISTRY.getObject(loc);
+            if (block == Blocks.AIR) {
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
+                    + id + " should have a valid block target, not " + block + " (" + message + ")");
                 return;
             }
-            disabledBlocks.put(block, sender);
+            disabledBlocks.put(block, message.senderModId());
         } else if (FacadeAPI.IMC_FACADE_CUSTOM.equals(id)) {
-            CompoundTag nbt = getImcNbt(message);
-            if (nbt == null) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
-                    + id + " should have an nbt value, not " + message);
+            if (!message.isNBTMessage()) {
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
+                    + id + " should have an nbt value, not a " + message);
                 return;
             }
+            CompoundTag nbt = message.getNBTValue();
             String regName = nbt.getString(FacadeAPI.NBT_CUSTOM_BLOCK_REG_KEY);
-            ItemStack stack = ItemStack.of(nbt.getCompound(FacadeAPI.NBT_CUSTOM_ITEM_STACK));
+            int meta = nbt.getInteger(FacadeAPI.NBT_CUSTOM_BLOCK_META);
+            ItemStack stack = new ItemStack(nbt.getCompoundTag(FacadeAPI.NBT_CUSTOM_ITEM_STACK));
             if (regName.isEmpty()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
                     + id + " should have a registry name for the block, stored as "
                     + FacadeAPI.NBT_CUSTOM_BLOCK_REG_KEY);
                 return;
             }
             if (stack.isEmpty()) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
                     + id + " should have a valid ItemStack stored in " + FacadeAPI.NBT_CUSTOM_ITEM_STACK);
                 return;
             }
-            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(regName));
-            if (block == null || block == Blocks.AIR) {
-                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + sender + " - "
-                    + id + " should have a valid block target, not " + regName + " (" + message + ")");
+            Block block = Block.REGISTRY.getObject(new ResourceLocation(regName));
+            if (block == Blocks.AIR) {
+                BCLog.logger.warn("[facade.imc] Received an invalid IMC message from " + message.senderModId() + " - "
+                    + id + " should have a valid block target, not " + block + " (" + message + ")");
                 return;
             }
-            BlockState state = block.defaultBlockState();
-            if (nbt.contains(FacadeAPI.NBT_CUSTOM_BLOCK_META)) {
-                int legacyMeta = nbt.getInt(FacadeAPI.NBT_CUSTOM_BLOCK_META);
-                state = Block.stateById(legacyMeta);
-                if (state.getBlock() != block) {
-                    state = block.defaultBlockState();
-                }
-            }
+            BlockState state = block.getStateFromMeta(meta);
             customBlocks.put(state, stack);
-        }
-    }
-
-    private static String getImcMethod(IMCMessage message) {
-        Object value = invokeNoArg(message, "method");
-        if (value instanceof String s) return s;
-        value = invokeNoArg(message, "key");
-        if (value instanceof String s) return s;
-        return "";
-    }
-
-    private static String getImcSender(IMCMessage message) {
-        Object value = invokeNoArg(message, "senderModId");
-        if (value instanceof String s) return s;
-        value = invokeNoArg(message, "modId");
-        if (value instanceof String s) return s;
-        value = invokeNoArg(message, "getSender");
-        if (value instanceof String s) return s;
-        return "unknown";
-    }
-
-    private static ResourceLocation getImcResourceLocation(IMCMessage message) {
-        Object value = invokeNoArg(message, "getResourceLocationValue");
-        if (value instanceof ResourceLocation rl) return rl;
-        value = invokeNoArg(message, "resourceLocationValue");
-        if (value instanceof ResourceLocation rl) return rl;
-        return null;
-    }
-
-    private static CompoundTag getImcNbt(IMCMessage message) {
-        Object value = invokeNoArg(message, "getNBTValue");
-        if (value instanceof CompoundTag tag) return tag;
-        value = invokeNoArg(message, "getNbtValue");
-        if (value instanceof CompoundTag tag) return tag;
-        value = invokeNoArg(message, "getMessageSupplier");
-        if (value instanceof java.util.function.Supplier<?> supplier) {
-            Object supplied = supplier.get();
-            if (supplied instanceof CompoundTag tag) return tag;
-        }
-        return null;
-    }
-
-    private static Object invokeNoArg(Object target, String name) {
-        try {
-            Method m = target.getClass().getMethod(name);
-            m.setAccessible(true);
-            return m.invoke(target);
-        } catch (ReflectiveOperationException ignored) {
-            return null;
-        }
+        }*/
     }
 
     /** @return One of:
@@ -209,6 +157,9 @@ public enum FacadeStateManager implements IFacadeRegistry {
         String disablingMod = disabledBlocks.get(block);
         if (disablingMod != null) {
             return new InteractionResultHolder<>(InteractionResult.FAIL, "it has been disabled by " + disablingMod);
+        }
+        if (isUserBlacklistedFacadeBlock(block)) {
+            return new InteractionResultHolder<>(InteractionResult.FAIL, "it is blacklisted for facade deduplication");
         }
         if (block instanceof IFluidBlock || block instanceof LiquidBlock) {
             return new InteractionResultHolder<>(InteractionResult.FAIL, "it is a fluid block");
@@ -253,16 +204,10 @@ public enum FacadeStateManager implements IFacadeRegistry {
         if (item != Items.AIR) {
             return new ItemStack(item, 1);
         }
-        ItemStack clone = block.getCloneItemStack(state, (BlockHitResult) null, new SingleBlockAccess(state), BlockPos.ZERO, null);
-        if (!clone.isEmpty()) {
-            clone.setCount(1);
-            return clone;
-        }
-        return StackUtil.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     public static void init() {
-        FacadeAPI.registry = INSTANCE;
         defaultState = new FacadeBlockStateInfo(Blocks.AIR.defaultBlockState(), StackUtil.EMPTY, ImmutableSet.of());
         if (FacadeAPI.facadeItem == null) {
             previewState = defaultState;
@@ -364,16 +309,25 @@ public enum FacadeStateManager implements IFacadeRegistry {
                     BCLog.logger.info("[silicon.facade]   pre-" + key + ":");
                     vars.keySet().forEach(p -> BCLog.logger.info("[silicon.facade]       " + p));
                 }
-                vars.values().removeIf(Objects::nonNull);
+                vars.entrySet().removeIf(entry -> Objects.nonNull(entry.getValue())
+                    || shouldIgnoreFacadeProperty(block, entry.getKey()));
                 if (DEBUG && !vars.isEmpty()) {
                     BCLog.logger.info("[silicon.facade]   " + key + ":");
                     vars.keySet().forEach(p -> BCLog.logger.info("[silicon.facade]       " + p));
                 }
             });
+            Set<String> addedSignatures = new HashSet<>();
             for (Entry<BlockState, ItemStack> entry : usedStates.entrySet()) {
                 BlockState state = entry.getKey();
                 ItemStack stack = entry.getValue();
                 Map<Property<?>, Comparable<?>> vars = varyingProperties.get(new ItemStackKey(stack));
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                String signature = createFacadeSignature(state, stack, vars);
+                if (!addedSignatures.add(signature)) {
+                    continue;
+                }
                 try {
                     ImmutableSet<Property<?>> varSet = ImmutableSet.copyOf(vars.keySet());
                     FacadeBlockStateInfo info = new FacadeBlockStateInfo(state, stack, varSet);
@@ -421,6 +375,58 @@ public enum FacadeStateManager implements IFacadeRegistry {
             }
             BCLog.logger.warn("[silicon.facade] Skipping " + block + " as something about it threw an exception! ", e);
         }
+    }
+
+    private static boolean isUserBlacklistedFacadeBlock(Block block) {
+        ResourceLocation key = ForgeRegistries.BLOCKS.getKey(block);
+        if (key == null) {
+            return false;
+        }
+        String path = key.getPath();
+        if (path.startsWith("waxed_")) {
+            return true;
+        }
+        if (path.contains("chute")) {
+            return true;
+        }
+        BlockState state = block.defaultBlockState();
+        if (state.is(BlockTags.FLOWERS)) {
+            return true;
+        }
+        if (block == Blocks.GRASS || block == Blocks.TALL_GRASS || block == Blocks.FERN || block == Blocks.LARGE_FERN) {
+            return true;
+        }
+        return path.contains("berry");
+    }
+
+    private static boolean shouldIgnoreFacadeProperty(Block block, Property<?> property) {
+        String name = property.getName();
+        if ("waterlogged".equals(name) || "persistent".equals(name) || "distance".equals(name)
+            || "facing".equals(name) || "horizontal_facing".equals(name) || "powered".equals(name)
+            || "note".equals(name) || "instrument".equals(name)) {
+            return true;
+        }
+        if (block instanceof net.minecraft.world.level.block.SlabBlock && "type".equals(name)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static String createFacadeSignature(BlockState state, ItemStack stack, Map<Property<?>, Comparable<?>> vars) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(new ItemStackKey(stack));
+        vars.keySet().stream()
+            .sorted((a, b) -> a.getName().compareTo(b.getName()))
+            .forEach(prop -> sb.append('|').append(prop.getName()).append('=')
+                .append(safeToString(() -> getPropertyValueName(state, prop))));
+        return sb.toString();
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static String getPropertyValueName(BlockState state, Property<?> property) {
+        Property raw = (Property) property;
+        Comparable value = state.getValue(raw);
+        return raw.getName(value);
     }
 
     private static <V extends Comparable<V>> boolean doesPropertyConform(Property<V> property) {
@@ -504,17 +510,5 @@ public enum FacadeStateManager implements IFacadeRegistry {
             realStates[i] = (FacadePhasedState) states[i];
         }
         return new FacadeInstance(realStates, isHollow);
-    }
-
-    @Override
-    public void disableBlock(Block block) {
-        disabledBlocks.put(block, "direct_api");
-    }
-
-    @Override
-    public void mapStateToStack(BlockState state, ItemStack stack) {
-        if (state != null && !stack.isEmpty()) {
-            customBlocks.put(state, stack.copy());
-        }
     }
 }
