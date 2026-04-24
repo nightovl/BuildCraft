@@ -9,6 +9,7 @@ package ct.buildcraft.silicon.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 
+import ct.buildcraft.api.facades.FacadeAPI;
 import ct.buildcraft.api.facades.FacadeType;
 import ct.buildcraft.api.facades.IFacade;
 import ct.buildcraft.api.facades.IFacadeItem;
@@ -51,6 +52,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemPluggableFacade extends Item implements IItemPluggable, IFacadeItem {
     public ItemPluggableFacade() {
         super(new Item.Properties().durability(0).tab(BCSilicon.tabFacades));
+        FacadeAPI.facadeItem = this;
 //        setHasSubtypes(true);
     }
 
