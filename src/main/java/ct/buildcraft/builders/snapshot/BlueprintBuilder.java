@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import ct.buildcraft.api.core.BCLog;
 import ct.buildcraft.api.schematics.ISchematicBlock;
 import ct.buildcraft.api.schematics.ISchematicEntity;
 import ct.buildcraft.api.schematics.SchematicEntityContext;
@@ -98,7 +99,7 @@ public class BlueprintBuilder extends SnapshotBuilder<ITileForBlueprintBuilder> 
         return Stream.concat(
             requiredItems == null ? Stream.empty() : requiredItems.stream(),
             requiredFluids == null ? Stream.empty() : requiredFluids.stream()
-                .map(FluidUtil::getFilledBucket)
+                .map(FluidUtilBC::getFragileFluid)
         );
     }
 

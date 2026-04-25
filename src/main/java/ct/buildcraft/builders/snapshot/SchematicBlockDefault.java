@@ -190,7 +190,7 @@ public class SchematicBlockDefault implements ISchematicBlock {
 
     @Nonnull
     @Override
-    public List<ItemStack> computeRequiredItems() {
+    public List<ItemStack> computeRequiredItems(Level level) {
         Set<JsonRule> rules = RulesLoader.getRules(blockState, tileNbt);
         List<List<RequiredExtractor>> collect = rules.stream()
             .map(rule -> rule.requiredExtractors)
@@ -208,14 +208,14 @@ public class SchematicBlockDefault implements ISchematicBlock {
 
     @Nonnull
     @Override
-    public List<FluidStack> computeRequiredFluids() {
+    public List<FluidStack> computeRequiredFluids(Level level) {
         Set<JsonRule> rules = RulesLoader.getRules(blockState, tileNbt);
         return rules.stream()
             .map(rule -> rule.requiredExtractors)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
             .flatMap(requiredExtractor -> requiredExtractor.extractFluidsFromBlock(blockState, tileNbt).stream())
-            .filter(Objects::nonNull)
+            .filter(((Predicate<FluidStack>) FluidStack::isEmpty).negate())
             .collect(Collectors.toList());
     }
 
@@ -348,9 +348,9 @@ public class SchematicBlockDefault implements ISchematicBlock {
 
     @Override
     public boolean isBuilt(Level world, BlockPos blockPos) {
-        return blockState != null &&((world.getBlockState(blockPos) == blockState) ||
+        return blockState != null &&((world.getBlockState(blockPos) == blockState.rotate(world, blockPos, tileRotation)) ||
                 (canBeReplacedWithBlocks.contains(world.getBlockState(blockPos).getBlock()) &&
-                        BlockUtil.blockStatesWithoutBlockEqual(blockState, world.getBlockState(blockPos), ignoredProperties)));
+                        BlockUtil.blockStatesWithoutBlockEqual(blockState.rotate(world, blockPos, tileRotation), world.getBlockState(blockPos), ignoredProperties)));
     }
 
     @Override

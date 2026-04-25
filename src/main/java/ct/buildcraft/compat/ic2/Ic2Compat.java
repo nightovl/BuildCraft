@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
 
 import ct.buildcraft.compat.CompatCapTransfromer;
-import ct.buildcraft.energy.BCEnergy;
 import ct.buildcraft.energy.BCEnergyFluids;
 import ct.buildcraft.lib.fluid.BCFluid;
 import ic2.api.recipe.Recipes;
@@ -12,7 +11,29 @@ import ic2.core.block.comp.Fluids;
 import ic2.core.block.generator.tileentity.TileEntityGeoGenerator;
 import ic2.core.block.generator.tileentity.TileEntitySemifluidGenerator;
 import ic2.core.block.heatgenerator.tileentity.TileEntityFluidHeatGenerator;
+import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
+import ic2.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
+import ic2.core.block.machine.tileentity.TileEntityBlastFurnace;
+import ic2.core.block.machine.tileentity.TileEntityCanner;
+import ic2.core.block.machine.tileentity.TileEntityCondenser;
+import ic2.core.block.machine.tileentity.TileEntityCropmatron;
+import ic2.core.block.machine.tileentity.TileEntityElectrolyzer;
+import ic2.core.block.machine.tileentity.TileEntityFermenter;
+import ic2.core.block.machine.tileentity.TileEntityFluidBottler;
+import ic2.core.block.machine.tileentity.TileEntityFluidDistributor;
+import ic2.core.block.machine.tileentity.TileEntityFluidRegulator;
+import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
+import ic2.core.block.machine.tileentity.TileEntityMatter;
 import ic2.core.block.machine.tileentity.TileEntityOreWashing;
+import ic2.core.block.machine.tileentity.TileEntityPump;
+import ic2.core.block.machine.tileentity.TileEntityReplicator;
+import ic2.core.block.machine.tileentity.TileEntitySolarDestiller;
+import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
+import ic2.core.block.machine.tileentity.TileEntitySteamRepressurizer;
+import ic2.core.block.machine.tileentity.TileEntityTank;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
+import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
+import ic2.core.block.reactor.tileentity.TileEntityReactorFluidPort;
 
 public class Ic2Compat {
 
@@ -52,7 +73,31 @@ public class Ic2Compat {
 		registerDefaultHandle(TileEntityOreWashing.class);
 		registerDefaultHandle(TileEntitySemifluidGenerator.class);
 		registerDefaultHandle(TileEntityFluidHeatGenerator.class);
-
+		registerDefaultHandle(TileEntitySteamKineticGenerator.class);
+		registerDefaultHandle(TileEntityStirlingKineticGenerator.class);
+		registerDefaultHandle(TileEntityBlastFurnace.class);
+		registerDefaultHandle(TileEntityCanner.class);
+		registerDefaultHandle(TileEntityCondenser.class);
+		registerDefaultHandle(TileEntityCropmatron.class);
+		registerDefaultHandle(TileEntityElectrolyzer.class);
+		registerDefaultHandle(TileEntityFermenter.class);
+		registerDefaultHandle(TileEntityFermenter.class);
+		registerDefaultHandle(TileEntityFluidBottler.class);
+		registerDefaultHandle(TileEntityFluidDistributor.class);
+		registerDefaultHandle(TileEntityFluidRegulator.class);
+		registerDefaultHandle(TileEntityLiquidHeatExchanger.class);
+		registerDefaultHandle(TileEntityMatter.class);
+		registerDefaultHandle(TileEntityPump.class);
+		registerDefaultHandle(TileEntityReplicator.class);
+		registerDefaultHandle(TileEntitySolarDestiller.class);
+		registerDefaultHandle(TileEntitySteamGenerator.class);
+		registerDefaultHandle(TileEntitySteamRepressurizer.class);
+		registerDefaultHandle(TileEntityTank.class);
+		registerDefaultHandle(TileEntityReactorFluidPort.class);
+		registerDefaultHandle(TileEntityReactorChamberElectric.class);
+		registerDefaultHandle(TileEntityNuclearReactorElectric.class);
+		
+		
 	}
 	
 	public static void init() {
