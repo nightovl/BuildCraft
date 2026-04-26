@@ -160,7 +160,7 @@ public class TilePump extends TileMiner {
         Direction[] directions = queueFluid.getFluidType().isLighterThanAir() ? SEARCH_GASEOUS : SEARCH_NORMAL;
         boolean isWater
             = !BCCoreConfig.pumpsConsumeWater && FluidUtilBC.areFluidsEqual(queueFluid, Fluids.WATER);
-        final int maxDistance = Math.min(BCCoreConfig.pumpMaxDistance, 48);
+        final int maxDistance = BCCoreConfig.pumpMaxDistance;//Math.min(BCCoreConfig.pumpMaxDistance, 48);
         final int maxLengthSquared = maxDistance * maxDistance;
         List<BlockPos> nextPosesToCheckCopy = new ArrayList<>();
         outer: while (!nextPosesToCheck.isEmpty()) {
