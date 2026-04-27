@@ -21,15 +21,15 @@ public final class FacadeAPI {
     }
 
     public static void disableBlock(Block block) {
-//        FMLInterModComms.sendMessage(IMC_MOD_TARGET, IMC_FACADE_DISABLE, block.getRegistryName());
+        if (registry != null) {
+            registry.disableBlock(block);
+        }
     }
 
     public static void mapStateToStack(BlockState state, ItemStack stack) {
-    	CompoundTag nbt = new CompoundTag();
-        nbt.putString(NBT_CUSTOM_BLOCK_REG_KEY, state.getBlock().getDescriptionId());
-     //   nbt.setInteger(NBT_CUSTOM_BLOCK_META, state.getBlock().tag(state));
-        nbt.put(NBT_CUSTOM_ITEM_STACK, stack.serializeNBT());
-//        FMLInterModComms.sendMessage(IMC_MOD_TARGET, IMC_FACADE_CUSTOM, nbt);
+        if (registry != null) {
+            registry.mapStateToStack(state, stack);
+        }
     }
 
     public static boolean isFacadeMessageId(String id) {

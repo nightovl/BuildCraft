@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import com.mojang.authlib.GameProfile;
@@ -32,6 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
@@ -176,52 +178,40 @@ public class MessageUtil {
         return null;
     }
 
-    /** Writes a block state using the block ID and its metadata. Not suitable for full states. */
-    @SuppressWarnings("rawtypes")
+    /** Writes a full block state in a registry-safe form for 1.19.2. */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void writeBlockState(FriendlyByteBuf buf, BlockState state) {
         Block block = state.getBlock();
-        buf.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(block));
-        int meta = Block.getId(state);
-        buf.writeByte(meta);
-        BlockState readState = Block.stateById(meta);
-        if (readState != state) {
-            buf.writeBoolean(true);
-            Map<Property, Comparable<?>> differingProperties = new HashMap<>();
-            for (Property<?> property : state.getProperties()) {
-                Comparable<?> inputValue = state.getValue(property);
-                Comparable<?> readValue = readState.getValue(property);
-                if (!inputValue.equals(readValue)) {
-                    differingProperties.put(property, inputValue);
-                }
-            }
-            buf.writeByte(differingProperties.size());
-            for (Entry<Property, Comparable<?>> entry : differingProperties.entrySet()) {
-                buf.writeUtf(entry.getKey().getName());
-                buf.writeUtf(entry.getKey().getName(entry.getValue()));
-            }
-        } else {
-            buf.writeBoolean(false);
+        ResourceLocation key = ForgeRegistries.BLOCKS.getKey(block);
+        if (key == null) {
+            key = ForgeRegistries.BLOCKS.getKey(Blocks.AIR);
+            state = Blocks.AIR.defaultBlockState();
+        }
+        buf.writeResourceLocation(key);
+        Collection<Property<?>> properties = state.getProperties();
+        buf.writeVarInt(properties.size());
+        for (Property property : properties) {
+            buf.writeUtf(property.getName());
+            buf.writeUtf(property.getName(state.getValue(property)));
         }
     }
 
     public static BlockState readBlockState(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation();
         Block block = ForgeRegistries.BLOCKS.getValue(id);
-        int meta = buf.readUnsignedByte();
-        BlockState state = Block.stateById(meta);
-        if(state.getBlock() != block)
-        	return block.defaultBlockState();
-        if (buf.readBoolean()) {
-            int count = buf.readByte();
-            Map<String,Property<?>> properties = 
-            		state.getBlock().defaultBlockState().getProperties().stream()
-            		.collect(Collectors.toUnmodifiableMap(Property::getName, (a) -> a, (a,b) -> a));       
-            for (int p = 0; p < count; p++) {
-                String name = buf.readUtf(256);
-                String value = buf.readUtf(256);
-                if(properties.containsKey(name)) {
-                	state = propertyReadHelper(state, value, properties.get(name));
-                }
+        if (block == null) {
+            block = Blocks.AIR;
+        }
+        BlockState state = block.defaultBlockState();
+        int count = buf.readVarInt();
+        Map<String, Property<?>> properties = state.getProperties().stream()
+            .collect(Collectors.toMap(Property::getName, a -> a, (a, b) -> a));
+        for (int p = 0; p < count; p++) {
+            String name = buf.readUtf(256);
+            String value = buf.readUtf(256);
+            Property<?> prop = properties.get(name);
+            if (prop != null) {
+                state = propertyReadHelper(state, value, prop);
             }
         }
         return state;
