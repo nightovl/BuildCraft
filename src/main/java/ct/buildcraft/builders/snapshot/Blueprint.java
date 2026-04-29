@@ -158,12 +158,13 @@ public class Blueprint extends Snapshot {
                             List<ItemStack> requiredItems = schematicBlock.computeRequiredItems(level);
 							toPlaceRequiredItems[posToIndex(x, y, z)] = requiredItems;
 							
-                        	List<FluidStack> requiredFluids = new ArrayList<FluidStack>();
+/*                        	List<FluidStack> requiredFluids = new ArrayList<FluidStack>();
                         	requiredItems.stream().map(FluidUtil::getFluidHandler)
                         		.map(opt -> opt.lazyMap(fluidHandler -> fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE)))
                         		.filter(LazyOptional::isPresent).map(opt -> opt.orElse(FluidStack.EMPTY)).forEach(requiredFluids::add);
                         	requiredFluids.addAll(schematicBlock.computeRequiredFluids(level));
-                            toPlaceRequiredFluids[posToIndex(x, y, z)] = requiredFluids;
+                            toPlaceRequiredFluids[posToIndex(x, y, z)] = requiredFluids;*/
+							toPlaceRequiredFluids[posToIndex(x, y, z)] = schematicBlock.computeRequiredFluids(level);
                         }
                     }
                 }
@@ -176,8 +177,8 @@ public class Blueprint extends Snapshot {
             for (ISchematicEntity schematicEntity : getSnapshot().entities) {
                 ISchematicEntity rotatedSchematicEntity = schematicEntity.getRotated(rotation);
                 entitiesBuilder.add(rotatedSchematicEntity);
-                entitiesRequiredItemsBuilder.put(rotatedSchematicEntity, schematicEntity.computeRequiredItems());
-                entitiesRequiredFluidsBuilder.put(rotatedSchematicEntity, schematicEntity.computeRequiredFluids());
+                entitiesRequiredItemsBuilder.put(rotatedSchematicEntity, schematicEntity.computeRequiredItems(level));
+                entitiesRequiredFluidsBuilder.put(rotatedSchematicEntity, schematicEntity.computeRequiredFluids(level));
             }
             entities = entitiesBuilder.build();
             entitiesRequiredItems = entitiesRequiredItemsBuilder.build();

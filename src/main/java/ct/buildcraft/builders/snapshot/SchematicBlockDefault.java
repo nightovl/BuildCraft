@@ -201,7 +201,7 @@ public class SchematicBlockDefault implements ISchematicBlock {
                 ? Stream.of(new RequiredExtractorItemFromBlock())
                 : collect.stream().flatMap(Collection::stream)
         )
-            .flatMap(requiredExtractor -> requiredExtractor.extractItemsFromBlock(blockState, tileNbt).stream())
+            .flatMap(requiredExtractor -> requiredExtractor.extractItemsFromBlock(blockState, tileNbt, level).stream())
             .filter(((Predicate<ItemStack>) ItemStack::isEmpty).negate())
             .collect(Collectors.toList());
     }
@@ -214,7 +214,7 @@ public class SchematicBlockDefault implements ISchematicBlock {
             .map(rule -> rule.requiredExtractors)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
-            .flatMap(requiredExtractor -> requiredExtractor.extractFluidsFromBlock(blockState, tileNbt).stream())
+            .flatMap(requiredExtractor -> requiredExtractor.extractFluidsFromBlock(blockState, tileNbt, level).stream())
             .filter(((Predicate<FluidStack>) FluidStack::isEmpty).negate())
             .collect(Collectors.toList());
     }
@@ -348,9 +348,10 @@ public class SchematicBlockDefault implements ISchematicBlock {
 
     @Override
     public boolean isBuilt(Level world, BlockPos blockPos) {
-        return blockState != null &&((world.getBlockState(blockPos) == blockState.rotate(world, blockPos, tileRotation)) ||
-                (canBeReplacedWithBlocks.contains(world.getBlockState(blockPos).getBlock()) &&
-                        BlockUtil.blockStatesWithoutBlockEqual(blockState.rotate(world, blockPos, tileRotation), world.getBlockState(blockPos), ignoredProperties)));
+        BlockState blockState2 = world.getBlockState(blockPos);
+		return blockState != null &&((blockState2 == blockState) ||
+                (canBeReplacedWithBlocks.contains(blockState2.getBlock()) &&
+                        BlockUtil.blockStatesWithoutBlockEqual(blockState, blockState2, ignoredProperties)));
     }
 
     @Override
