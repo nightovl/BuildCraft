@@ -34,6 +34,7 @@ import ct.buildcraft.api.mj.MjAPI;
 import ct.buildcraft.api.mj.MjBattery;
 import ct.buildcraft.api.mj.MjCapabilityHelper;
 import ct.buildcraft.api.tiles.IDebuggable;
+import ct.buildcraft.api.tiles.TilesAPI;
 import ct.buildcraft.builders.BCBuildersBlocks;
 import ct.buildcraft.builders.BCBuildersConfig;
 import ct.buildcraft.core.BCCoreConfig;
@@ -180,6 +181,7 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
         caps.addCapabilityInstance(
             CapUtil.CAP_ITEM_TRANSACTOR, AutomaticProvidingTransactor.INSTANCE, EnumPipePart.VALUES
         );
+        caps.addCapabilityInstance(TilesAPI.CAP_HAS_WORK, () -> frameBox.isInitialized() && miningBox.isInitialized(), EnumPipePart.VALUES);
     }
 
     @Nonnull
