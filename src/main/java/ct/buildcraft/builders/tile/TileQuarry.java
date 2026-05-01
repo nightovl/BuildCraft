@@ -177,11 +177,11 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
 
     public TileQuarry(BlockPos pos, BlockState state) {
     	super(BCBuildersBlocks.QUARRY_TILE_BC8.get(), pos, state);
+        caps.addCapabilityInstance(TilesAPI.CAP_HAS_WORK, this::hasWork, EnumPipePart.VALUES);
         caps.addProvider(new MjCapabilityHelper(new MjBatteryReceiver(battery)));
         caps.addCapabilityInstance(
             CapUtil.CAP_ITEM_TRANSACTOR, AutomaticProvidingTransactor.INSTANCE, EnumPipePart.VALUES
         );
-        caps.addCapabilityInstance(TilesAPI.CAP_HAS_WORK, () -> frameBox.isInitialized() && miningBox.isInitialized(), EnumPipePart.VALUES);
     }
 
     @Nonnull
@@ -439,6 +439,13 @@ public class TileQuarry extends TileBC_Neptune implements IDebuggable, IChunkLoa
 
     private boolean canIgnoreInFrameBox(BlockPos blockPos) {
         return !level.isEmptyBlock(blockPos) && BlockUtil.getFluidWithFlowing(level, blockPos) == Fluids.EMPTY;
+    }
+
+    private boolean hasWork() {
+        if (!frameBox.isInitialized() || !miningBox.isInitialized()) return false;
+        if (!firstChecked || currentTask != null) return true;
+        if (!frameBreakBlockPoses.isEmpty() || !framePlaceFramePoses.isEmpty()) return true;
+        return boxIterator == null || boxIterator.hasNext();
     }
 
     private void check(BlockPos blockPos) {
